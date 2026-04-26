@@ -90,7 +90,7 @@ function Header() {
                     {/* LOGIN */}
                     <Button
                         as={Link}
-                        to="/auth"
+                        to="/login"
                         variant="link"
                         className="text-dark d-none d-sm-flex align-items-center"
                     >

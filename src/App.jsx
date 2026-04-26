@@ -3,6 +3,7 @@ import './index.css'
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Toaster as Sonner } from "sonner";
 import MainLayout from './components/layout/MainLayout';
+import Login from './components/Login/Login';
 function App() {
 
 
@@ -14,7 +15,7 @@ function App() {
             <Route element={<MainLayout />}>
               <Route path="/" element={<Index />} />
             </Route>
-            
+            <Route path='/login' element={<Login/>}/>
           </Routes>
       
     </BrowserRouter>
