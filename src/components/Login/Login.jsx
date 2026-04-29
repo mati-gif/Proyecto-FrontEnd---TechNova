@@ -3,12 +3,11 @@ import { Link } from "react-router-dom";
 import { Container, Form, Button, Tabs, Tab } from "react-bootstrap";
 import { Cpu, Eye, EyeOff } from "lucide-react";
 import { initialLoginFormErrors } from "./Login.data"
+import Register from "../Register/Register";
 
 
 function Login({ onLogin }) {
     const [tab, setTab] = useState("login");
-    const [loginForm, setLoginForm] = useState({ email: "", password: "" });
-    const [registerForm, setRegisterForm] = useState({ name: "", email: "", password: "" });
 
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
@@ -189,74 +188,10 @@ function Login({ onLogin }) {
 
                             {/* REGISTER */}
                             <Tab eventKey="register" title="Crear cuenta">
-                                <div className="tn-fade-in">
-                                    <h1 className="h4 fw-bold mb-1">
-                                        Crear cuenta
-                                    </h1>
-                                    <p className="text-secondary small mb-4">
-                                        Es rápido y gratis
-                                    </p>
-
-                                    <Form
-                                    // onSubmit={handleRegister}
-                                    >
-                                        <Form.Group className="mb-3">
-                                            <Form.Label>Nombre</Form.Label>
-                                            <Form.Control
-                                                value={registerForm.name}
-                                                onChange={(e) =>
-                                                    setRegisterForm({ ...registerForm, name: e.target.value })
-                                                }
-                                                isInvalid={!!errors.name}
-                                            />
-                                            <Form.Control.Feedback type="invalid">
-                                                {errors.name}
-                                            </Form.Control.Feedback>
-                                        </Form.Group>
-
-                                        <Form.Group className="mb-3">
-                                            <Form.Label>Email</Form.Label>
-                                            <Form.Control
-                                                type="email"
-                                                value={registerForm.email}
-                                                onChange={(e) =>
-                                                    setRegisterForm({
-                                                        ...registerForm,
-                                                        email: e.target.value,
-                                                    })
-                                                }
-                                                isInvalid={!!errors.email}
-                                            />
-                                            <Form.Control.Feedback type="invalid">
-                                                {errors.email}
-                                            </Form.Control.Feedback>
-                                        </Form.Group>
-
-                                        <Form.Group className="mb-4">
-                                            <Form.Label>Contraseña</Form.Label>
-                                            <Form.Control
-                                                type="password"
-                                                value={registerForm.password}
-                                                onChange={(e) =>
-                                                    setRegisterForm({
-                                                        ...registerForm,
-                                                        password: e.target.value,
-                                                    })
-                                                }
-                                                isInvalid={!!errors.password}
-                                            />
-                                            <Form.Control.Feedback type="invalid">
-                                                {errors.password}
-                                            </Form.Control.Feedback>
-                                        </Form.Group>
-
-                                        <Button type="submit" className="w-100">
-                                            Crear cuenta
-                                        </Button>
-                                    </Form>
-                                </div>
+                                
+                                <Register onRegisterSuccess={() => setTab("login")}/>
                             </Tab>
-
+                            
                         </Tabs>
                     </div>
 

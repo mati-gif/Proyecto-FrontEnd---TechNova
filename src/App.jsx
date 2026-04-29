@@ -5,6 +5,7 @@ import { Toaster as Sonner } from "sonner";
 import MainLayout from './components/layout/MainLayout';
 import Login from './components/Login/Login';
 import { useState } from 'react';
+import Register from './components/Register/Register';
 function App() {
 
     const [isSignedIn, setIsSignedIn] = useState(false);
