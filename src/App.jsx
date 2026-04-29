@@ -4,8 +4,14 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Toaster as Sonner } from "sonner";
 import MainLayout from './components/layout/MainLayout';
 import Login from './components/Login/Login';
+import { useState } from 'react';
 function App() {
 
+    const [isSignedIn, setIsSignedIn] = useState(false);
+
+    const handleLogin = () =>{
+      setIsSignedIn(true)
+    }
 
   return (
     <>
@@ -15,7 +21,7 @@ function App() {
             <Route element={<MainLayout />}>
               <Route path="/" element={<Index />} />
             </Route>
-            <Route path='/login' element={<Login/>}/>
+            <Route path='/login' element={<Login onLogin={handleLogin}/>}/>
           </Routes>
       
     </BrowserRouter>
