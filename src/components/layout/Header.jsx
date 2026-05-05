@@ -50,7 +50,7 @@ function Header() {
                         <Nav.Link
                             key={cat.id}
                             as={Link}
-                            to={`/catalogo?categoria=${cat.id}`}
+                            to={`/catalog?category=${cat.id}`}
                             className="text-secondary"
                         >
                             {cat.name}
@@ -154,7 +154,7 @@ function Header() {
                                 <Nav.Link
                                     key={cat.id}
                                     as={Link}
-                                    to={`/catalogo?categoria=${cat.id}`}
+                                    to={`/catalog?category=${cat.id}`}
                                     onClick={() => setShowMobile(false)}
                                 >
                                     {cat.name}
