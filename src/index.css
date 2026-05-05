@@ -43,3 +43,19 @@
   -webkit-background-clip: text;
   color: transparent;
 }
+
+.tn-category-tile {
+    display: block;
+    padding: 1.5rem;
+    border: 1px solid rgba(15, 23, 42, .08);
+    border-radius: 1rem;
+    background: #fff;
+    text-decoration: none;
+    color: inherit;
+}
+
+.tn-category-tile:hover {
+  background-color: #f8f9fa;
+  transform: translateY(-2px);
+  transition: 0.2s;
+}

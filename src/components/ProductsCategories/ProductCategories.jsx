@@ -7,7 +7,7 @@ import ProductCard from "../../components/ProductCard/ProductCard";
 
 function ProductCategories() {
   const [searchParams] = useSearchParams();
-  const categoria = searchParams.get("categoria");
+  const categoria = searchParams.get("category");
 
   // Filtrado por categoría
   const productosFiltrados = categoria

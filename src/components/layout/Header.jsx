@@ -35,14 +35,21 @@ function Header() {
             <Container className="d-flex align-items-center" style={{ height: 70 }}>
 
                 {/* LOGO */}
-                <Link to="/" className="d-flex align-items-center text-decoration-none text-dark">
-                    <div className="me-2 p-2 rounded bg-primary text-white">
-                        <Cpu size={20} />
-                    </div>
-                    <span className="fw-bold fs-4">
-                        Tech<span className="text-primary">Nova</span>
-                    </span>
-                </Link>
+               <Link
+  to="/"
+  className="d-flex align-items-center text-decoration-none text-dark"
+>
+  <img
+    src="/logo-technova.jpg"
+    alt="TechNova"
+    style={{ height: "40px", width: "auto", borderRadius: "6px"}}
+    className="me-2"
+  />
+
+  <span className="fw-bold fs-4">
+    Tech<span className="text-primary">Nova</span>
+  </span>
+</Link>
 
                 {/* CATEGORÍAS DESKTOP */}
                 <Nav className="d-none d-lg-flex ms-4">
@@ -78,7 +85,7 @@ function Header() {
                         <Form.Control
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
-                            placeholder="Buscar..."
+                            placeholder="Buscar productos"
                             style={{ paddingLeft: 30 }}
                         />
                     </div>
@@ -168,7 +175,7 @@ function Header() {
                             <Form.Control
                                 value={search}
                                 onChange={(e) => setSearch(e.target.value)}
-                                placeholder="Buscar..."
+                                placeholder="Buscar productos"
                             />
                         </Form>
 

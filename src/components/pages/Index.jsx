@@ -108,7 +108,7 @@ function Index() {
 
                 <Row>
                     {CATEGORIES.map(cat => (
-                        <Col md={3} key={cat.id} className="mb-3">
+                        <Col md={3} key={cat.id} className="mb-3" >
                             <Link
                                 to={`/catalog?category=${cat.id}`}
                                 className="tn-category-tile d-block p-3 border rounded"

@@ -106,7 +106,6 @@ function Footer() {
                 {/* COPYRIGHT */}
                 <div className="d-flex flex-column flex-md-row justify-content-between text-secondary small">
                     <span>© {new Date().getFullYear()} TechNova</span>
-                    <span>Hecho con ⚡</span>
                 </div>
 
             </Container>
