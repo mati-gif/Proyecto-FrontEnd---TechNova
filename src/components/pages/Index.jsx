@@ -40,7 +40,7 @@ function Index() {
                             <div className="d-flex gap-2 mt-3">
                                 <Button
                                     as={Link}
-                                    to="/catalogo"
+                                    to="/catalog"
                                     variant="light"
                                     className="d-flex align-items-center gap-2"
                                 >
@@ -108,9 +108,9 @@ function Index() {
 
                 <Row>
                     {CATEGORIES.map(cat => (
-                        <Col md={3} key={cat.id} className="mb-3">
+                        <Col md={3} key={cat.id} className="mb-3" >
                             <Link
-                                to={`/catalogo?categoria=${cat.id}`}
+                                to={`/catalog?category=${cat.id}`}
                                 className="tn-category-tile d-block p-3 border rounded"
                             >
                                 <h5>{cat.name}</h5>

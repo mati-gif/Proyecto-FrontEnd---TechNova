@@ -4,27 +4,23 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Toaster as Sonner } from "sonner";
 import MainLayout from './components/layout/MainLayout';
 import Login from './components/Login/Login';
-import { useState } from 'react';
-import Register from './components/Register/Register';
+import ProductCategories from './components/ProductsCategories/ProductCategories';
+import ProductCard from './components/ProductCard/ProductCard';
+import SingleProduct from './components/SingleProduct/SingleProduct';
+
 function App() {
-
-    const [isSignedIn, setIsSignedIn] = useState(false);
-
-    const handleLogin = () =>{
-      setIsSignedIn(true)
-    }
-
   return (
     <>
     <Sonner position="top-right" richColors />
     <BrowserRouter>
-    <Routes>
-            <Route element={<MainLayout />}>
-              <Route path="/" element={<Index />} />
-            </Route>
-            <Route path='/login' element={<Login onLogin={handleLogin}/>}/>
-          </Routes>
-      
+      <Routes>
+        <Route element={<MainLayout />}>
+          <Route path="/" element={<Index />} />
+          <Route path='/login' element={<Login/>}/>
+          <Route path='/catalog' element={<ProductCategories/>}/>
+          <Route path='/product/:slug' element={<SingleProduct/>}/>
+        </Route>
+      </Routes>
     </BrowserRouter>
     </>
   )

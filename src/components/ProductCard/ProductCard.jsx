@@ -18,7 +18,7 @@ function ProductCard({ product }) {
         <Card className="h-100 tn-card-hover">
 
             {/* IMAGEN */}
-            <Link to={`/producto/${product.slug}`}>
+            <Link to={`/product/${product.slug}`}>
                 <div className="position-relative">
                     <Card.Img
                         variant="top"
@@ -52,7 +52,7 @@ function ProductCard({ product }) {
                 <small className="text-secondary">{product.brand}</small>
 
                 <Link
-                    to={`/producto/${product.slug}`}
+                    to={`/product/${product.slug}`}
                     className="text-decoration-none text-dark fw-bold"
                 >
                     {product.name}
