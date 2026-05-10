@@ -17,7 +17,7 @@ import smartwatch from "../assets/smartwatch.jpg";
 
 export const PRODUCTS = [
     {
-        id: "p1",
+        id: 1,
         slug: "monitor-ultrawide-curvo-34",
         name: 'Monitor Curvo UltraWide 34"',
         brand: "NovaView",
@@ -34,9 +34,10 @@ export const PRODUCTS = [
         features: ["WQHD 3440x1440", "144Hz / 1ms", "HDR400", "Iluminación RGB", "USB-C 65W"],
         isFeatured: true,
         isNew: true,
+        
     },
     {
-        id: "p2",
+        id: 2,
         slug: "monitor-4k-profesional-27",
         name: 'Monitor 4K Profesional 27"',
         brand: "NovaView",
@@ -53,7 +54,7 @@ export const PRODUCTS = [
         isFeatured: true,
     },
     {
-        id: "p3",
+        id: 3,
         slug: "teclado-mecanico-rgb-pro",
         name: "Teclado Mecánico RGB Pro",
         brand: "KeyForge",
@@ -71,7 +72,7 @@ export const PRODUCTS = [
         isFeatured: true,
     },
     {
-        id: "p4",
+        id: 4,
         slug: "teclado-wireless-minimal-75",
         name: "Teclado Wireless Minimal 75%",
         brand: "KeyForge",
@@ -87,7 +88,7 @@ export const PRODUCTS = [
         features: ["Bluetooth 5.2 + 2.4G + USB-C", "Batería 4000mAh", "Layout 75%", "Switches silenciosos"],
     },
     {
-        id: "p5",
+        id: 5,
         slug: "auriculares-pro-anc",
         name: "Auriculares Pro ANC",
         brand: "SonicWave",
@@ -106,7 +107,7 @@ export const PRODUCTS = [
         isNew: true,
     },
     {
-        id: "p6",
+        id: 6,
         slug: "headset-gaming-rgb-7-1",
         name: "Headset Gaming RGB 7.1",
         brand: "SonicWave",
@@ -122,7 +123,7 @@ export const PRODUCTS = [
         features: ["Sonido 7.1 virtual", "Micrófono cardioide", "RGB sync", "Drivers 50mm", "Multiplataforma"],
     },
     {
-        id: "p7",
+        id: 7,
         slug: "earbuds-true-wireless",
         name: "Earbuds True Wireless",
         brand: "SonicWave",
@@ -138,7 +139,7 @@ export const PRODUCTS = [
         features: ["ANC", "IPX5", "Carga inalámbrica", "32h totales", "Bluetooth 5.3"],
     },
     {
-        id: "p8",
+        id: 8,
         slug: "mouse-gaming-rgb-pro",
         name: "Mouse Gaming RGB Pro",
         brand: "PulseTech",
@@ -156,7 +157,7 @@ export const PRODUCTS = [
         isNew: true,
     },
     {
-        id: "p9",
+        id: 9,
         slug: "mouse-wireless-ergonomico",
         name: "Mouse Wireless Ergonómico",
         brand: "PulseTech",
@@ -172,7 +173,7 @@ export const PRODUCTS = [
         features: ["Diseño ergonómico", "Scroll silencioso", "USB-C recargable", "Multi-dispositivo"],
     },
     {
-        id: "p10",
+        id: 10,
         slug: "laptop-gaming-rtx-16",
         name: 'Laptop Gaming RTX 16"',
         brand: "ZenithPC",
@@ -189,7 +190,7 @@ export const PRODUCTS = [
         isFeatured: true,
     },
     {
-        id: "p11",
+        id: 11,
         slug: "ultrabook-pro-14",
         name: 'Ultrabook Pro 14"',
         brand: "ZenithPC",
@@ -206,7 +207,7 @@ export const PRODUCTS = [
         features: ["Snapdragon X Elite", "16GB LPDDR5X", "SSD 512GB", "22h batería", "Pantalla OLED 2.8K"],
     },
     {
-        id: "p12",
+        id: 12,
         slug: "webcam-streaming-4k",
         name: "Webcam Streaming 4K",
         brand: "ClearView",
@@ -222,7 +223,7 @@ export const PRODUCTS = [
         features: ["4K 30fps", "Autofocus AI", "HDR", "Micrófonos estéreo", "Privacy shutter"],
     },
     {
-        id: "p13",
+        id: 13,
         slug: "microfono-condensador-usb",
         name: "Micrófono Condensador USB",
         brand: "ClearView",
@@ -238,7 +239,7 @@ export const PRODUCTS = [
         features: ["Cardioide", "USB plug & play", "Cero-latencia", "Trípode incluido", "192kHz/24bit"],
     },
     {
-        id: "p14",
+        id: 14,
         slug: "ssd-externo-portable-2tb",
         name: "SSD Externo Portable 2TB",
         brand: "VeloStore",
@@ -254,7 +255,7 @@ export const PRODUCTS = [
         features: ["2TB", "1050MB/s", "USB-C 3.2 Gen2", "Aluminio", "Resistente a golpes"],
     },
     {
-        id: "p15",
+        id: 15,
         slug: "smartwatch-titanium-pro",
         name: "Smartwatch Titanium Pro",
         brand: "PulseTech",

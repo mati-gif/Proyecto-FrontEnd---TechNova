@@ -6,12 +6,13 @@ import { CATEGORIES } from "../../data/categories";
 import ProductCard from "../../components/ProductCard/ProductCard";
 import heroImage from "../../assets/hero-tech.jpg";
 
-import React from 'react'
+import React, { useState } from 'react'
 
 function Index() {
     const featured = PRODUCTS.filter(p => p.isFeatured).slice(0, 4);
     const newest = PRODUCTS.filter(p => p.isNew).slice(0, 4);
 
+    
 
 
     return (
@@ -102,7 +103,7 @@ function Index() {
                 </Container>
             </section>
 
-            {/* CATEGORÍAS (ahora con tus datos) */}
+            {/* CATEGORÍAS  */}
             <Container className="py-5">
                 <h2 className="mb-4">Categorías</h2>
 
@@ -129,7 +130,7 @@ function Index() {
                 <Row>
                     {featured.map(p => (
                         <Col md={3} key={p.id} className="mb-4">
-                            <ProductCard product={p} />
+                            <ProductCard  product={p} />
                         </Col>
                     ))}
                 </Row>
@@ -143,7 +144,7 @@ function Index() {
                     <Row>
                         {newest.map(p => (
                             <Col md={3} key={p.id} className="mb-4">
-                                <ProductCard product={p} />
+                                <ProductCard  product={p} />
                             </Col>
                         ))}
                     </Row>
