@@ -21,19 +21,12 @@ function App() {
       <Routes>
         <Route element={<MainLayout />}>
           <Route path="/" element={<Index />} />
+          <Route path="/carrito"element={<Cart/>}/>
           <Route path='/login' element={<Login/>}/>
           <Route path='/catalog' element={<ProductCategories/>}/>
           <Route path='/product/:slug' element={<SingleProduct/>}/>
         </Route>
       </Routes>
-    <Routes>
-            <Route element={<MainLayout />}>
-              <Route path="/" element={<Index />} />
-              <Route path="/carrito"element={<Cart/>}/>
-            </Route>
-            <Route path='/login' element={<Login onLogin={handleLogin}/>}/>
-          </Routes>
-      
     </BrowserRouter>
     </CartContextProvider>
     </>
