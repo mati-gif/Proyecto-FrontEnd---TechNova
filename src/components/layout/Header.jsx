@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import {
@@ -15,16 +15,23 @@ import {
     ShoppingCart,
     User
 } from "lucide-react";
-
+import { cartContext } from '../Context/cartContext';
 import { CATEGORIES } from "../../data/categories";
+
+
 function Header() {
 
     const [search, setSearch] = useState("");
     const [showMobile, setShowMobile] = useState(false);
 
-    // simulamos carrito (después lo hacemos real)
-    const cartCount = 2;
+    
+    //carrito real
+    const {cart,totalQuantity} = useContext(cartContext)
 
+    console.log(cart);
+    console.log(totalQuantity);
+    
+    
     const handleSearch = (e) => {
         e.preventDefault();
         console.log("Buscar:", search);
@@ -107,7 +114,7 @@ function Header() {
                     >
                         <ShoppingCart size={16} />
 
-                        {cartCount > 0 && (
+                        {totalQuantity > 0 && (
                             <span
                                 style={{
                                     position: "absolute",
@@ -120,7 +127,7 @@ function Header() {
                                     padding: "2px 6px"
                                 }}
                             >
-                                {cartCount}
+                                {totalQuantity}
                             </span>
                         )}
                     </Button>

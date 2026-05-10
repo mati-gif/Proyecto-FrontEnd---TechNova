@@ -1,18 +1,25 @@
-import React from 'react'
+import React,{useContext} from 'react'
 import { Card, Button, Badge } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { ShoppingCart, Star } from "lucide-react";
+import { cartContext } from '../Context/cartContext';
 
 
 function ProductCard({ product }) {
 
+   const {cart,handleAddToCart} = useContext(cartContext)
+    
+
+    
     const outOfStock = product.stock <= 0;
 
     const discount = product.originalPrice
         ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
         : 0;
 
-        console.log(product);
+        console.log(cart);
+        
+        
         
     return (
         <Card className="h-100 tn-card-hover">
@@ -91,8 +98,9 @@ function ProductCard({ product }) {
                     className="mt-auto"
                     variant="primary"
                     disabled={outOfStock}
+                    onClick={() =>handleAddToCart(product)}
                 >
-                    <ShoppingCart size={16} /> Agregar
+                    <ShoppingCart  size={16} /> Agregar
                 </Button>
 
             </Card.Body>
