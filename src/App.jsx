@@ -12,6 +12,11 @@ import { useState } from 'react';
 import Register from './components/Register/Register';
 import Cart from './components/Cart/Cart';
 import CartContextProvider from './components/Context/CartContextProvider';
+import HeaderAdmin from './components/layout/Admin/HeaderAdmin';
+import AdminLayout from './components/layout/Admin/AdminLayout';
+import AdminDashboard from './components/pages/AdminDashboard';
+import AdminProducts from './components/pages/AdminProducts';
+import AdminProductsForm from './components/pages/AdminProductsForm';
 function App() {
   return (
     <>
@@ -25,6 +30,12 @@ function App() {
           <Route path='/login' element={<Login/>}/>
           <Route path='/catalog' element={<ProductCategories/>}/>
           <Route path='/product/:slug' element={<SingleProduct/>}/>
+        </Route>
+        <Route  element={<AdminLayout />}>
+        {/* <Route path={"/adminHeader"} element={<HeaderAdmin/>}/> */}
+          <Route path='/admin/dashboard' element={<AdminDashboard/>}/>
+          <Route path='/admin/products' element={<AdminProducts/>}/>
+          <Route  path='/admin/products/new' element={<AdminProductsForm/>}/>
         </Route>
       </Routes>
     </BrowserRouter>
