@@ -11,10 +11,7 @@ import React, { useState } from 'react'
 function Index() {
     const featured = PRODUCTS.filter(p => p.isFeatured).slice(0, 4);
     const newest = PRODUCTS.filter(p => p.isNew).slice(0, 4);
-
     
-
-
     return (
         <>
             {/* HERO */}
