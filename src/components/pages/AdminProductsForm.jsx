@@ -1,10 +1,16 @@
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { Card, Form, Row, Col, Button } from "react-bootstrap";
 import { ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
+import { PRODUCTS } from "../../data/products";
 
 function AdminProductsForm() {
+
+    const { id } = useParams();
+    console.log(id);
+
+    const [isEditing,setIsEditing] = useState(false)
 
     const [form, setForm] = useState({
         name: "",
@@ -15,17 +21,60 @@ function AdminProductsForm() {
         image: "",
         category: "",
         subcategory: "",
-        features: [],
+        features: "",
         isFeatured: false,
         isNew: false
     });
 
+    useEffect(() => {
+        if (id) {
+
+            const productFound = PRODUCTS.find((p) => p.id === Number(id))
+
+            
+            if (productFound) {
+                setIsEditing(true)
+                setForm({
+                    name: productFound.name,
+                    brand: productFound.brand,
+                    description: productFound.description,
+                    price: productFound.price,
+                    stock: productFound.stock,
+                    image: productFound.image,
+                    category: productFound.category,
+                    subcategory: productFound.subcategory,
+
+                    // array => string
+                    features: productFound.features.join("\n"),
+
+                    isFeatured: productFound.isFeatured,
+                    isNew: productFound.isNew
+                });
+
+                
+            }
+        }
+        
+    },[id])
+
+
+
     const [errors, setErrors] = useState({})
 
-    const handdleFormChange = (event) => {
-        setForm(name, brand, description, price, stock, image, category, subCategory = event.target.value)
+
+    const handleFormChange = (event) => {
+
+        //hago destructuring con los atributos del input para que sean variables
+        const { name, value, type, checked } = event.target
+        setForm({
+            ...form,
+            [name]: type === "checkbox" ? checked : value //esto hace que sea dinamico , si name : brand y value: logitech , queda brand:logitech
+            //tambien hace que si el type es checkbox usa checked (para los switches) si no usa value 
+
+        })
 
     }
+
 
     const validateErrors = () => {
 
@@ -53,6 +102,22 @@ function AdminProductsForm() {
 
         setErrors(newErrors)
     }
+
+    const handleSubmit = (event) => {
+
+        event.preventDefault();
+
+        const isValid = validateErrors();
+
+        if (!isValid) {
+            toast.error("Hay errores en el formulario")
+            return;
+        }
+
+        console.log(form);
+
+        toast.success("Producto creado")
+    }
     return (
         <div>
 
@@ -74,7 +139,7 @@ function AdminProductsForm() {
             </h2>
 
             <Form
-            // onSubmit={handleSubmit}
+                onSubmit={handleSubmit}
             >
 
                 <Row className="g-3">
@@ -92,14 +157,15 @@ function AdminProductsForm() {
                                         <Form.Label>Nombre</Form.Label>
 
                                         <Form.Control
+                                            type="text"
                                             name="name"
-                                        // value={form.name}
-                                        // onChange={handleChange}
-                                        // isInvalid={!!errors.name}
+                                            value={form.name}
+                                            onChange={handleFormChange}
+                                            isInvalid={!!errors.name}
                                         />
 
                                         <Form.Control.Feedback type="invalid">
-                                            {/* {errors.name} */}
+                                            {errors.name}
                                         </Form.Control.Feedback>
                                     </Col>
 
@@ -109,13 +175,13 @@ function AdminProductsForm() {
 
                                         <Form.Control
                                             name="brand"
-                                        // value={form.brand}
-                                        // onChange={handleChange}
-                                        // isInvalid={!!errors.brand}
+                                            value={form.brand}
+                                            onChange={handleFormChange}
+                                            isInvalid={!!errors.brand}
                                         />
 
                                         <Form.Control.Feedback type="invalid">
-                                            {/* {errors.brand} */}
+                                            {errors.brand}
                                         </Form.Control.Feedback>
                                     </Col>
 
@@ -125,13 +191,13 @@ function AdminProductsForm() {
 
                                         <Form.Control
                                             name="image"
-                                        // value={form.image}
-                                        // onChange={handleChange}
-                                        // isInvalid={!!errors.image}
+                                            value={form.image}
+                                            onChange={handleFormChange}
+                                            isInvalid={!!errors.image}
                                         />
 
                                         <Form.Control.Feedback type="invalid">
-                                            {/* {errors.image} */}
+                                            {errors.image}
                                         </Form.Control.Feedback>
                                     </Col>
 
@@ -141,23 +207,23 @@ function AdminProductsForm() {
 
                                         <Form.Control
                                             as="textarea"
-                                        // rows={4}
-                                        // name="description"
-                                        // value={form.description}
-                                        // onChange={handleChange}
-                                        // isInvalid={!!errors.description}
+                                            rows={4}
+                                            name="description"
+                                            value={form.description}
+                                            onChange={handleFormChange}
+                                            isInvalid={!!errors.description}
                                         />
 
                                         <Form.Control.Feedback type="invalid">
-                                            {/* {errors.description} */}
+                                            {errors.description}
                                         </Form.Control.Feedback>
                                     </Col>
                                     {/* CARACTERISTICAS */}
                                     <Col xs={12}>
                                         <Form.Label>Características (una por línea)</Form.Label>
                                         <Form.Control as="textarea" rows={4}
-                                            // value={form.features}
-                                            // onChange={(e) => update("features", e.target.value)}
+                                            value={form.features}
+                                            onChange={handleFormChange}
                                             placeholder={"Ej: Bluetooth 5.3\nBatería 30h\nIPX5"} />
                                     </Col>
 
@@ -185,14 +251,14 @@ function AdminProductsForm() {
 
                                     <Form.Control
                                         type="number"
-                                    // name="price"
-                                    // value={form.price}
-                                    // onChange={handleChange}
-                                    // isInvalid={!!errors.price}
+                                        name="price"
+                                        value={form.price}
+                                        onChange={handleFormChange}
+                                        isInvalid={!!errors.price}
                                     />
 
                                     <Form.Control.Feedback type="invalid">
-                                        {/* {errors.price} */}
+                                        {errors.price}
                                     </Form.Control.Feedback>
 
                                 </Form.Group>
@@ -204,13 +270,13 @@ function AdminProductsForm() {
                                     <Form.Control
                                         type="number"
                                         name="stock"
-                                    // value={form.stock}
-                                    // onChange={handleChange}
-                                    // isInvalid={!!errors.stock}
+                                        value={form.stock}
+                                        onChange={handleFormChange}
+                                        isInvalid={!!errors.stock}
                                     />
 
                                     <Form.Control.Feedback type="invalid">
-                                        {/* {errors.stock} */}
+                                        {errors.stock}
                                     </Form.Control.Feedback>
 
                                 </Form.Group>
@@ -232,8 +298,8 @@ function AdminProductsForm() {
 
                                     <Form.Select
                                         name="category"
-                                    // value={form.category}
-                                    // onChange={handleChange}
+                                        value={form.category}
+                                        onChange={handleFormChange}
                                     >
                                         <option value="perifericos">Periféricos</option>
                                         <option value="audio">Audio</option>
@@ -248,8 +314,8 @@ function AdminProductsForm() {
 
                                     <Form.Select
                                         name="subcategory"
-                                    // value={form.subcategory}
-                                    // onChange={handleChange}
+                                        value={form.subcategory}
+                                        onChange={handleFormChange}
                                     >
                                         <option value="mouses">Mouses</option>
                                         <option value="teclados">Teclados</option>
@@ -272,16 +338,16 @@ function AdminProductsForm() {
                                     type="switch"
                                     label="Destacado"
                                     name="isFeatured"
-                                // checked={form.isFeatured}
-                                // onChange={handleChange}
+                                    checked={form.isFeatured}
+                                    onChange={handleFormChange}
                                 />
 
                                 <Form.Check
                                     type="switch"
                                     label="Nuevo"
                                     name="isNew"
-                                // checked={form.isNew}
-                                // onChange={handleChange}
+                                    checked={form.isNew}
+                                    onChange={handleFormChange}
                                 />
 
                             </Card.Body>
@@ -296,7 +362,7 @@ function AdminProductsForm() {
                                 </h3>
 
                                 <img
-                                    // src={form.image || "/placeholder.svg"}
+                                    src={form.image || "/placeholder.svg"}
                                     alt="preview"
                                     className="rounded w-100 bg-light"
                                     style={{
@@ -327,7 +393,7 @@ function AdminProductsForm() {
                         type="submit"
                         variant="primary"
                     >
-                        Crear producto
+                        {isEditing == true ? "editar producto" : "crear producto"}
                     </Button>
 
                 </div>

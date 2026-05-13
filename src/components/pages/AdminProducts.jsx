@@ -85,7 +85,7 @@ function AdminProducts() {
                                     </span>
                                 </td>
                                 <td className="text-end">
-                                    <Link to={`/admin/products/${p.id}/editar`} className="btn btn-sm btn-outline-secondary me-1">
+                                    <Link to={`/admin/products/${p.id}/edit`} className="btn btn-sm btn-outline-secondary me-1">
                                         <Pencil size={14} />
                                     </Link>
                                     <Button variant="outline-danger" size="sm" >

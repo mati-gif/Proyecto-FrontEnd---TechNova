@@ -17,7 +17,7 @@ function AdminDashboard() {
             value: PRODUCTS.length,
             icon: Package, 
             color: "#2b56f5",
-            to: "/admin/productos"
+            to: "/admin/products"
         },
         {
             label: "Pedidos totales",
