@@ -182,3 +182,37 @@
     border-right-color: var(--border);
   }
 }
+
+
+/* Estilo para el contador de productos lateral */
+
+.list-group-item-action {
+  border: none !important; 
+  border-radius: 8px !important; 
+  margin-bottom: 2px;
+  color: #495057; 
+  transition: all 0.2s ease;
+}
+
+.list-group-item-action:hover:not(.active) {
+  background-color: #e4e4e43c !important; 
+  color: #0000ff !important; 
+}
+
+.list-group-item-action.active {
+  background-color: #0000ff !important; 
+  border-color: #0000ff !important;     
+  color: #ffffff !important;           
+  font-weight: 600;
+}
+
+.category-counter {
+  color: rgb(160, 160, 160);
+  font-family: var(--bs-font-sans-serif); 
+  font-size: 0.75em;                     
+  font-weight: 700;                      
+  line-height: 1;
+}
+
+
+
