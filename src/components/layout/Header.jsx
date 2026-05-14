@@ -24,14 +24,14 @@ function Header() {
     const [search, setSearch] = useState("");
     const [showMobile, setShowMobile] = useState(false);
 
-    
+
     //carrito real
-    const {cart,totalQuantity} = useContext(cartContext)
+    const { cart, totalQuantity } = useContext(cartContext)
 
     console.log(cart);
     console.log(totalQuantity);
-    
-    
+
+
     const handleSearch = (e) => {
         e.preventDefault();
         console.log("Buscar:", search);
@@ -42,21 +42,21 @@ function Header() {
             <Container className="d-flex align-items-center" style={{ height: 70 }}>
 
                 {/* LOGO */}
-               <Link
-  to="/"
-  className="d-flex align-items-center text-decoration-none text-dark"
->
-  <img
-    src="/logo-technova.jpg"
-    alt="TechNova"
-    style={{ height: "40px", width: "auto", borderRadius: "6px"}}
-    className="me-2"
-  />
+                <Link
+                    to="/"
+                    className="d-flex align-items-center text-decoration-none text-dark"
+                >
+                    <img
+                        src="/logo-technova.jpg"
+                        alt="TechNova"
+                        style={{ height: "40px", width: "auto", borderRadius: "6px" }}
+                        className="me-2"
+                    />
 
-  <span className="fw-bold fs-4">
-    Tech<span className="text-primary">Nova</span>
-  </span>
-</Link>
+                    <span className="fw-bold fs-4">
+                        Tech<span className="text-primary">Nova</span>
+                    </span>
+                </Link>
 
                 {/* CATEGORÍAS DESKTOP */}
                 <Nav className="d-none d-lg-flex ms-4">
