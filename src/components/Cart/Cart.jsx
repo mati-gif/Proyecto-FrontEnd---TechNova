@@ -33,7 +33,7 @@ function Cart() {
                     Tu carrito está vacío
                 </h1>
                 <p className="text-secondary mb-4">¡Descubrí lo último en tecnología!</p>
-                <Button as={Link} to="/catalogo" size="lg" variant="primary">
+                <Button as={Link} to="/catalog" size="lg" variant="primary">
                     Explorar productos
                 </Button>
             </Container>
