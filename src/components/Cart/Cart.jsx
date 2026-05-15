@@ -163,9 +163,11 @@ function Cart() {
                                     {/* {user ? "Continuar compra" : "Iniciar sesión y pagar"} */}
                                     <ArrowRight size={16} />
                                 </Button>
-                                <Button to="/catalogo" variant="link" size="sm" className="w-100 mt-2 text-secondary text-decoration-none">
+                                <Link to={"/checkout"}>
+                                <Button to="/checkout" variant="link" size="sm" className="w-100 mt-2 text-secondary text-decoration-none">
                                     Seguir comprando
                                 </Button>
+                                </Link>
                             </Card.Body>
                         </Card>
                     </div>
