@@ -34,7 +34,9 @@ const sidebarStyles = `
 `;
 function AdminLayout() {
     const user = {
-        role: "admin"
+        // role: "admin"
+        role: "superadmin"
+
     }
     const isSuperadmin = user?.role === "superadmin";
     const linkClass = ({ isActive }) =>
@@ -65,7 +67,7 @@ function AdminLayout() {
                                     <Package size={14} className="me-2" /> Productos
                                 </NavLink>
                                 {isSuperadmin && (
-                                    <NavLink to="/admin/usuarios" className={linkClass}>
+                                    <NavLink to="/admin/users" className={linkClass}>
                                         <Users size={14} className="me-2" /> Usuarios
                                     </NavLink>
                                 )}

@@ -29,6 +29,13 @@ function HeaderAdmin() {
         role: "admin"
 
     }
+
+    //     const user = {
+    //     name: "SuperAdmin",
+    //     email: "superAdmin@email.com",
+    //     role: "superadmin"
+
+    // }
     return (
         <>
             <header className="tn-header">

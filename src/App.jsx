@@ -17,6 +17,12 @@ import AdminLayout from './components/layout/Admin/AdminLayout';
 import AdminDashboard from './components/pages/AdminDashboard';
 import AdminProducts from './components/pages/AdminProducts';
 import AdminProductsForm from './components/pages/AdminProductsForm';
+import AdminUsers from './components/pages/AdminUsers';
+import UserLayout from './components/layout/UsuarioLayout/UserLayout';
+import Orders from './components/Orders/HistoryOrders';
+import CheckOut from './components/pages/CheckOut';
+import Payment from './components/pages/Payment';
+import Success from './components/pages/Success';
 import NotFound from './components/NotFound/NotFound';
 import ContactUs from './components/ContactUs/ContactUs';
 function App() {
@@ -26,6 +32,7 @@ function App() {
     <Sonner position="top-right" richColors />
     <BrowserRouter>
       <Routes>
+        {/* rutas para el usuario sin logguear */}
         <Route element={<MainLayout />}>
           <Route path="/" element={<Index />} />
           <Route path="/cart"element={<Cart/>}/>
@@ -35,12 +42,26 @@ function App() {
           <Route path='/contact-us' element={<ContactUs/>}/>
           <Route path="*" element={<NotFound/>} />
         </Route>
+        {/* rutas para el usuario con rol de usuario (usuario comun) despues de haberse logueado */}
+        <Route element={<UserLayout/>}>
+          <Route path='/history-orders' element={<Orders/>}/>
+          <Route path='/checkout' element={<CheckOut/>} />
+          <Route path='/payment' element={<Payment/>}/>
+          <Route path='/success' element={<Success/>}/>
+          
+
+
+        </Route>
+
+
+        {/* rutas para el usuario con role de admin y superadmin despues de haberse loggueado */}
         <Route  element={<AdminLayout />}>
         {/* <Route path={"/adminHeader"} element={<HeaderAdmin/>}/> */}
           <Route path='/admin/dashboard' element={<AdminDashboard/>}/>
           <Route path='/admin/products' element={<AdminProducts/>}/>
           <Route  path='/admin/products/new' element={<AdminProductsForm/>}/>
           <Route  path='/admin/products/:id/edit' element={<AdminProductsForm/>}/>
+          <Route  path='/admin/users' element={<AdminUsers/>}/>
         </Route>
       </Routes>
     </BrowserRouter>
