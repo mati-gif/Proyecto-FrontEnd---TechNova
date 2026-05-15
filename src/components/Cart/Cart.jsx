@@ -13,6 +13,8 @@ function Cart() {
     const { cart, handleAddToCart, handleDecreaseQuantity, totalPrice,handleDeleteProduct } = useContext(cartContext)
     console.log(cart);
 
+
+
     //  constantes de envío 
     const shippingThreshold = 500000; // Monto para envío gratis
     const shippingCost = totalPrice >= shippingThreshold ? 0 : 5000;
@@ -31,7 +33,7 @@ function Cart() {
                     Tu carrito está vacío
                 </h1>
                 <p className="text-secondary mb-4">¡Descubrí lo último en tecnología!</p>
-                <Button as={Link} to="/catalog" size="lg" variant="primary">
+                <Button as={Link} to="/catalogo" size="lg" variant="primary">
                     Explorar productos
                 </Button>
             </Container>
@@ -163,7 +165,6 @@ function Cart() {
                                 </Button>
                                 <Link to={"/checkout"}>
                                 <Button to="/checkout" variant="link" size="sm" className="w-100 mt-2 text-secondary text-decoration-none">
-                                <Button to="/catalog" variant="link" size="sm" className="w-100 mt-2 text-secondary text-decoration-none">
                                     Seguir comprando
                                 </Button>
                                 </Link>
