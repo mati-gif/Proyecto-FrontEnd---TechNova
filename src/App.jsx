@@ -23,6 +23,8 @@ import Orders from './components/Orders/HistoryOrders';
 import CheckOut from './components/pages/CheckOut';
 import Payment from './components/pages/Payment';
 import Success from './components/pages/Success';
+import NotFound from './components/NotFound/NotFound';
+import ContactUs from './components/ContactUs/ContactUs';
 function App() {
   return (
     <>
@@ -33,10 +35,12 @@ function App() {
         {/* rutas para el usuario sin logguear */}
         <Route element={<MainLayout />}>
           <Route path="/" element={<Index />} />
-          <Route path="/carrito"element={<Cart/>}/>
+          <Route path="/cart"element={<Cart/>}/>
           <Route path='/login' element={<Login/>}/>
           <Route path='/catalog' element={<ProductCategories/>}/>
           <Route path='/product/:slug' element={<SingleProduct/>}/>
+          <Route path='/contact-us' element={<ContactUs/>}/>
+          <Route path="*" element={<NotFound/>} />
         </Route>
         {/* rutas para el usuario con rol de usuario (usuario comun) despues de haberse logueado */}
         <Route element={<UserLayout/>}>

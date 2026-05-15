@@ -1,47 +1,62 @@
 import React from 'react'
 import { Link } from "react-router-dom";
 import { Container, Row, Col } from "react-bootstrap";
-import { Cpu } from "lucide-react";
 import { FaInstagram, FaTwitter } from "react-icons/fa";
+import 'bootstrap-icons/font/bootstrap-icons.css';
 function Footer() {
     return (
-        <footer className="border-top bg-light mt-5 pt-5 pb-3">
+        <footer className="border-top bg-light pt-5 pb-3">
             <Container>
 
                 <Row className="g-4">
 
                     {/* LOGO + INFO */}
                     <Col xs={12} md={6}>
+                        {/* LOGO */}
                         <Link
                             to="/"
-                            className="d-inline-flex align-items-center text-decoration-none text-dark mb-2"
+                            className="d-flex align-items-center text-decoration-none text-dark"
                         >
-                            <div className="me-2 p-2 bg-primary text-white rounded">
-                                <Cpu size={20} />
-                            </div>
-
+                            <img
+                                src="/logo-technova.jpg"
+                                alt="TechNova"
+                                style={{ height: "40px", width: "auto", borderRadius: "6px" }}
+                                className="me-2"
+                            />
+        
                             <span className="fw-bold fs-4">
                                 Tech<span className="text-primary">Nova</span>
                             </span>
                         </Link>
 
-                        <p className="text-secondary small" style={{ maxWidth: 360 }}>
+                        <p className="text-secondary small" style={{ maxWidth: 360, marginTop: 10 }}>
                             Tu tienda de tecnología premium. Encontrá lo último en monitores,
                             periféricos, audio y más.
                         </p>
 
                         {/* ICONOS */}
                         <div className="d-flex gap-2 mt-3">
-                            {[FaTwitter, FaInstagram].map((Icon, i) => (
-                                <a
-                                    key={i}
-                                    href="#"
-                                    className="d-inline-flex align-items-center justify-content-center border rounded text-secondary"
-                                    style={{ width: 36, height: 36 }}
-                                >
-                                    <Icon size={16} />
-                                </a>
-                            ))}
+                            <a
+                                href="https://wa.me/5493412456789"
+                                className="d-inline-flex align-items-center justify-content-center border rounded text-secondary"
+                                style={{ width: 36, height: 36 }}
+                            >
+                                <i className="bi bi-whatsapp" style={{ fontSize: 16 }}></i>
+                            </a>
+                            <a
+                                href="https://web.facebook.com/technova-ecommerce"
+                                className="d-inline-flex align-items-center justify-content-center border rounded text-secondary"
+                                style={{ width: 36, height: 36 }}
+                            >
+                                <i className="bi bi-facebook" style={{ fontSize: 16 }}></i>
+                            </a>
+                            <a
+                                href="https://www.instagram.com/technova-ecommerce"
+                                className="d-inline-flex align-items-center justify-content-center border rounded text-secondary"
+                                style={{ width: 36, height: 36 }}
+                            >
+                                <i className="bi bi-instagram" style={{ fontSize: 16 }}></i>
+                            </a>
                         </div>
                     </Col>
 
@@ -51,26 +66,26 @@ function Footer() {
 
                         <ul className="list-unstyled small">
                             <li className="mb-2">
-                                <Link to="/catalogo" className="text-secondary text-decoration-none">
-                                    Catálogo
+                                <Link to="/catalog" className="text-secondary text-decoration-none">
+                                    <i className="bi bi-bag"></i> <span>Catálogo</span>
                                 </Link>
                             </li>
 
                             <li className="mb-2">
-                                <Link to="/catalogo?categoria=monitores" className="text-secondary text-decoration-none">
-                                    Monitores
+                                <Link to="/catalog?category=monitores" className="text-secondary text-decoration-none">
+                                    <i className="bi bi-display"></i> <span>Monitores</span>
                                 </Link>
                             </li>
 
                             <li className="mb-2">
-                                <Link to="/catalogo?categoria=audio" className="text-secondary text-decoration-none">
-                                    Audio
+                                <Link to="/catalog?category=audio" className="text-secondary text-decoration-none">
+                                    <i className="bi bi-mic-fill"></i> <span>Audio</span>
                                 </Link>
                             </li>
 
                             <li className="mb-2">
-                                <Link to="/catalogo?categoria=computadoras" className="text-secondary text-decoration-none">
-                                    Computadoras
+                                <Link to="/catalog?category=computadoras" className="text-secondary text-decoration-none">
+                                    <i className="bi bi-laptop"></i> <span>Computadoras</span>
                                 </Link>
                             </li>
                         </ul>
@@ -78,23 +93,21 @@ function Footer() {
 
                     {/* SOPORTE */}
                     <Col xs={6} md={3}>
-                        <h6 className="fw-semibold mb-3">Soporte</h6>
+                        <h6 className="fw-semibold mb-3">Pagos y envíos</h6>
 
                         <ul className="list-unstyled small">
                             <li className="mb-2">
-                                <a href="#" className="text-secondary text-decoration-none">Envíos</a>
+                                <i className="bi bi-box2-heart"></i> <span className="text-secondary">Envío gratis en compras superiores a $100.000</span>
                             </li>
 
                             <li className="mb-2">
-                                <a href="#" className="text-secondary text-decoration-none">Devoluciones</a>
+                                <i className="bi bi-credit-card"></i> <span className="text-secondary">Aceptamos todos los medios de pago</span>
                             </li>
 
                             <li className="mb-2">
-                                <a href="#" className="text-secondary text-decoration-none">Garantía</a>
-                            </li>
-
-                            <li className="mb-2">
-                                <a href="#" className="text-secondary text-decoration-none">Contacto</a>
+                                <Link to="/contact-us" className="text-secondary text-decoration-none">
+                                    <i className="bi bi-info-square"></i> <span>¿Necesitas ayuda? Escribinos</span>
+                                </Link>
                             </li>
                         </ul>
                     </Col>
@@ -105,7 +118,7 @@ function Footer() {
 
                 {/* COPYRIGHT */}
                 <div className="d-flex flex-column flex-md-row justify-content-between text-secondary small">
-                    <span>© {new Date().getFullYear()} TechNova</span>
+                    <span>© 2026 TechNova</span>
                 </div>
 
             </Container>

@@ -107,6 +107,7 @@ function Header() {
                         to="/login"
                         variant="link"
                         className="text-dark d-none d-sm-flex align-items-center"
+                        style={{ textDecoration: "none" }}
                     >
                         <User size={16} className="me-1" />
                         Ingresar
@@ -115,7 +116,7 @@ function Header() {
                     {/* CARRITO */}
                     <Button
                         as={Link}
-                        to="/carrito"
+                        to="/cart"
                         variant="outline-secondary"
                         className="position-relative d-flex align-items-center gap-1"
                     >
