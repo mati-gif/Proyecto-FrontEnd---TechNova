@@ -112,7 +112,7 @@ function UserHeader() {
                 {user.email}
               </Dropdown.Header>
               <Dropdown.Divider />
-              <Dropdown.Item as={Link} to="/pedidos">
+              <Dropdown.Item as={Link} to="/history-orders">
                 <Package size={14} className="me-2" /> Mis pedidos
               </Dropdown.Item>
               {(user.role === "admin" || user.role === "superadmin") && (

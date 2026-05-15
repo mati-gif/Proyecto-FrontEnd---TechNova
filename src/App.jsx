@@ -35,7 +35,7 @@ function App() {
         {/* rutas para el usuario sin logguear */}
         <Route element={<MainLayout />}>
           <Route path="/" element={<Index />} />
-          <Route path="/cart"element={<Cart/>}/>
+          <Route path="/my-cart" element={<Cart/>}/>
           <Route path='/login' element={<Login/>}/>
           <Route path='/catalog' element={<ProductCategories/>}/>
           <Route path='/product/:slug' element={<SingleProduct/>}/>

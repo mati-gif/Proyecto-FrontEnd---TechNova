@@ -116,7 +116,7 @@ function Header() {
                     {/* CARRITO */}
                     <Button
                         as={Link}
-                        to="/cart"
+                        to="/my-cart"
                         variant="outline-secondary"
                         className="position-relative d-flex align-items-center gap-1"
                     >
