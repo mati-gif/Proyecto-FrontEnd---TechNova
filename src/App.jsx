@@ -17,6 +17,8 @@ import AdminLayout from './components/layout/Admin/AdminLayout';
 import AdminDashboard from './components/pages/AdminDashboard';
 import AdminProducts from './components/pages/AdminProducts';
 import AdminProductsForm from './components/pages/AdminProductsForm';
+import NotFound from './components/NotFound/NotFound';
+import ContactUs from './components/ContactUs/ContactUs';
 function App() {
   return (
     <>
@@ -26,10 +28,12 @@ function App() {
       <Routes>
         <Route element={<MainLayout />}>
           <Route path="/" element={<Index />} />
-          <Route path="/carrito"element={<Cart/>}/>
+          <Route path="/cart"element={<Cart/>}/>
           <Route path='/login' element={<Login/>}/>
           <Route path='/catalog' element={<ProductCategories/>}/>
           <Route path='/product/:slug' element={<SingleProduct/>}/>
+          <Route path='/contact-us' element={<ContactUs/>}/>
+          <Route path="*" element={<NotFound/>} />
         </Route>
         <Route  element={<AdminLayout />}>
         {/* <Route path={"/adminHeader"} element={<HeaderAdmin/>}/> */}
