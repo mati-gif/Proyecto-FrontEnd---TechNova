@@ -8,6 +8,8 @@ function AdminDashboard() {
 
     const user = {
         role: "admin"
+        // role: "superadmin"
+
     }
     const isSuperadmin = user?.role === "superadmin";
     const lowStock = PRODUCTS.filter((p) => p.stock <= 5).length;
@@ -36,7 +38,7 @@ function AdminDashboard() {
             value: 100,
             icon: Users,
             color: "#7d3df0",
-            to: "/admin/usuarios"
+            to: "/admin/users"
         }] : []),
     ];
     return (
@@ -72,10 +74,10 @@ function AdminDashboard() {
                         Atajos
                     </h2>
                     <div className="d-flex flex-wrap gap-2">
-                        <Link to="/admin/productos/nuevo" className="btn btn-primary btn-sm">+ Nuevo producto</Link>
+                        <Link to="/admin/products/new" className="btn btn-primary btn-sm">+ Nuevo producto</Link>
                         <Link to="/admin/products" className="btn btn-outline-secondary btn-sm">Gestionar productos</Link>
                         {isSuperadmin && (
-                            <Link to="/admin/usuarios" className="btn btn-outline-secondary btn-sm">Gestionar usuarios</Link>
+                            <Link to="/admin/users" className="btn btn-outline-secondary btn-sm">Gestionar usuarios</Link>
                         )}
                     </div>
                     {lowStock > 0 && (
