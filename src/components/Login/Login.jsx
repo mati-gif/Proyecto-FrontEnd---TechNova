@@ -4,15 +4,19 @@ import { Container, Form, Button, Tabs, Tab } from "react-bootstrap";
 import { Cpu, Eye, EyeOff } from "lucide-react";
 import { initialLoginFormErrors } from "./Login.data"
 import Register from "../Register/Register";
+import { useNavigate } from "react-router-dom";
 
 
 function Login({ onLogin }) {
+    const navigate = useNavigate();
+
+
     const [tab, setTab] = useState("login");
 
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [errors, setErrors] = useState(initialLoginFormErrors);
-    const [showPassword,setShowPassword] = useState(false)
+    const [showPassword, setShowPassword] = useState(false)
 
     const emailInputRef = useRef(null)
     const passwordInputRef = useRef(null)
@@ -75,8 +79,8 @@ function Login({ onLogin }) {
         }
 
         setErrors(initialLoginFormErrors)
-        onLogin()
-
+        //onLogin()
+        navigate('/admin/dashboard');
 
     }
 
@@ -85,7 +89,7 @@ function Login({ onLogin }) {
         return regex.test(email);
     };
 
-    const handleShowPassword = () =>{
+    const handleShowPassword = () => {
         setShowPassword(!showPassword)
     }
 
@@ -171,7 +175,7 @@ function Login({ onLogin }) {
                                                         color: "#6c757d"
                                                     }}
                                                 >
-                                                    {showPassword ? <Eye size={18} /> : <EyeOff size={18} /> }
+                                                    {showPassword ? <Eye size={18} /> : <EyeOff size={18} />}
                                                 </span>
                                             </div>
                                             <Form.Control.Feedback type="invalid">
@@ -188,10 +192,10 @@ function Login({ onLogin }) {
 
                             {/* REGISTER */}
                             <Tab eventKey="register" title="Crear cuenta">
-                                
-                                <Register onRegisterSuccess={() => setTab("login")}/>
+
+                                <Register onRegisterSuccess={() => setTab("login")} />
                             </Tab>
-                            
+
                         </Tabs>
                     </div>
 
