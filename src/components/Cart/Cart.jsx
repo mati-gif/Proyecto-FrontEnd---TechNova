@@ -57,7 +57,7 @@ function Cart() {
                                 className="border">
                                 <Card.Body className="d-flex gap-3">
                                     <Link
-                                        to={`/producto/${product.slug}`}
+                                        to={`/product/${product.slug}`}
                                         className="flex-shrink-0">
                                         <img
                                             src={product.image}
@@ -75,7 +75,7 @@ function Cart() {
                                             {product.brand}
                                         </div>
                                         <Link
-                                            to={`/producto/${product.slug}`}
+                                            to={`/product/${product.slug}`}
                                             className="text-decoration-none text-dark fw-semibold">
                                             {product.name}
                                         </Link>
