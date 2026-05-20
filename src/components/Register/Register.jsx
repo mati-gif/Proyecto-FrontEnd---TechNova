@@ -5,7 +5,7 @@ import { Container, Form, Button, Tabs, Tab } from "react-bootstrap";
 import { initialRegisterFormErrors } from "./Register.data"
 import { Eye, EyeOff } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import {successToast,errorToast} from "../shared/toast/toast.js";
+import { successToast, errorToast } from "../shared/toast/toast.js";
 function Register({ onRegisterSuccess }) {
 
     const [email, setEmail] = useState("")
@@ -43,6 +43,8 @@ function Register({ onRegisterSuccess }) {
             name: false
         }))
     }
+
+
 
     const handleRegister = (event) => {
         event.preventDefault();
@@ -94,6 +96,14 @@ function Register({ onRegisterSuccess }) {
             }))
             return
         }
+
+        manageRegister(name, email, password);
+
+        onRegisterSuccess()
+    }
+
+    const manageRegister = (name, email, password) => {
+
         fetch("http://localhost:3000/register", {
             headers: {
                 "Accept": "application/json",
@@ -116,10 +126,9 @@ function Register({ onRegisterSuccess }) {
                 // navigate("/login")// cuando se maneje los roles que te direccione a otra pagina 
             })
             .catch((err) => {
-                console.log(err)                
+                console.log(err)
                 errorToast(`Ha ocurrido un error: ${err.message || JSON.stringify(err)}`)
             })
-        onRegisterSuccess()
     }
 
     const validateEmail = (email) => {
