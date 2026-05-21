@@ -6,29 +6,32 @@ import { cartContext } from '../../Context/CartContext/cartContext';
 import { CATEGORIES } from "../../../data/categories";
 
 function UserHeader() {
-      const [search, setSearch] = useState("");
-    const [showMobile, setShowMobile] = useState(false);
+  const [search, setSearch] = useState("");
+  const navigate = useNavigate();
+  const [showMobile, setShowMobile] = useState(false);
 
 
-    //carrito real
-    const { cart, totalQuantity } = useContext(cartContext)
+  //carrito real
+  const { cart, totalQuantity } = useContext(cartContext)
 
-    console.log(cart);
-    console.log(totalQuantity);
+  console.log(cart);
+  console.log(totalQuantity);
 
 
-    const handleSearch = (e) => {
-        e.preventDefault();
-        console.log("Buscar:", search);
-        setSearch("");
-    };
-
-    const user = {
-        name: "Mati",
-        email: "mati@email.com",
-        role: "user"
-
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (search.trim() !== "") {
+      navigate(`/catalog?q=${search}`);
     }
+    setSearch("");
+  };
+
+  const user = {
+    name: "Mati",
+    email: "mati@email.com",
+    role: "user"
+
+  }
   return (
     <header className="tn-header">
       <Container className="d-flex align-items-center" style={{ height: 70 }}>
@@ -112,7 +115,7 @@ function UserHeader() {
                 {user.email}
               </Dropdown.Header>
               <Dropdown.Divider />
-              <Dropdown.Item as={Link} to="/pedidos">
+              <Dropdown.Item as={Link} to="/history-orders">
                 <Package size={14} className="me-2" /> Mis pedidos
               </Dropdown.Item>
               {(user.role === "admin" || user.role === "superadmin") && (

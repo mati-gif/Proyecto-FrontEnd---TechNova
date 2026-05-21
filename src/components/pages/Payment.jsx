@@ -131,6 +131,7 @@ function Payment() {
                                 className="w-100 d-flex align-items-center justify-content-center gap-2 shadow-glow"
                             // disabled={processing}
                             >
+                                <span>Aceptar</span>
                                 {/* {processing ? (
                                     <><Spinner as="span" animation="border" size="sm" /> Procesando pago...</>
                                 ) : (

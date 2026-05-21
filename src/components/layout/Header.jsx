@@ -1,6 +1,6 @@
 import React, { useContext } from 'react'
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
     Container,
     Nav,
@@ -19,9 +19,11 @@ import { cartContext } from '../Context/CartContext/cartContext';
 import { CATEGORIES } from "../../data/categories";
 
 
+
 function Header() {
 
     const [search, setSearch] = useState("");
+    const navigate = useNavigate();
     const [showMobile, setShowMobile] = useState(false);
 
 
@@ -34,7 +36,9 @@ function Header() {
 
     const handleSearch = (e) => {
         e.preventDefault();
-        console.log("Buscar:", search);
+        if (search.trim() !== "") {
+            navigate(`/catalog?q=${search}`);
+        }
         setSearch("");
     };
     return (
@@ -107,6 +111,7 @@ function Header() {
                         to="/login"
                         variant="link"
                         className="text-dark d-none d-sm-flex align-items-center"
+                        style={{ textDecoration: "none" }}
                     >
                         <User size={16} className="me-1" />
                         Ingresar
@@ -115,7 +120,7 @@ function Header() {
                     {/* CARRITO */}
                     <Button
                         as={Link}
-                        to="/carrito"
+                        to="/my-cart"
                         variant="outline-secondary"
                         className="position-relative d-flex align-items-center gap-1"
                     >
