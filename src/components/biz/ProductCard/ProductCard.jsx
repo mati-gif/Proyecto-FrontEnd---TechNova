@@ -15,11 +15,7 @@ function ProductCard({ product }) {
 
     const discount = product.originalPrice
         ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
-        : 0;
-
-        console.log(cart);
-        
-        
+        : 0;        
         
     return (
         <Card className="h-100 tn-card-hover">

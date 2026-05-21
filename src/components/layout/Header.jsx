@@ -30,9 +30,6 @@ function Header() {
     //carrito real
     const { cart, totalQuantity } = useContext(cartContext)
 
-    console.log(cart);
-    console.log(totalQuantity);
-
 
     const handleSearch = (e) => {
         e.preventDefault();

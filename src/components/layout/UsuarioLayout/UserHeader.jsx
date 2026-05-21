@@ -3,7 +3,9 @@ import { Link, useNavigate } from "react-router-dom";
 import { Container, Nav, Navbar, Form, Button, Dropdown, Offcanvas } from "react-bootstrap";
 import { Cpu, Search, ShoppingCart, User, LogOut, Package, ShieldCheck } from "lucide-react";
 import { cartContext } from '../../Context/CartContext/cartContext';
+import { AuthContext } from "../../Context/AuthContext/authContext";
 import { CATEGORIES } from "../../../data/categories";
+import { errorToast, successToast } from "../../shared/toast/toast";
 
 function UserHeader() {
   const [search, setSearch] = useState("");
@@ -13,6 +15,9 @@ function UserHeader() {
 
   //carrito real
   const { cart, totalQuantity } = useContext(cartContext)
+
+  const {handleUserLogout} = useContext(AuthContext)
+  
 
   console.log(cart);
   console.log(totalQuantity);
@@ -30,6 +35,12 @@ function UserHeader() {
     name: "Mati",
     email: "mati@email.com",
     role: "user"
+
+  }
+
+  const handleLogOutUser = () =>{
+    handleUserLogout()
+    successToast("Saliste de tu cuenta! 👋😊")
 
   }
   return (
@@ -124,7 +135,7 @@ function UserHeader() {
                 </Dropdown.Item>
               )}
               <Dropdown.Divider />
-              <Dropdown.Item className="text-danger">
+              <Dropdown.Item className="text-danger" onClick={handleLogOutUser}>
                 <LogOut size={14} className="me-2" />
                 Cerrar sesión
               </Dropdown.Item>
@@ -135,7 +146,7 @@ function UserHeader() {
           {/* CARRITO */}
           <Button
             as={Link}
-            to="/carrito"
+            to="/my-cart"
             variant="outline-secondary"
             className="position-relative d-flex align-items-center gap-1"
           >

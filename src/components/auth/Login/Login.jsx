@@ -8,51 +8,46 @@ import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../Context/AuthContext/authContext";
 import { errorToast, successToast } from "../../shared/toast/toast";
 
-
 function Login({ onLogin }) {
     const navigate = useNavigate();
 
-
     const [tab, setTab] = useState("login");
-
-    const [email, setEmail] = useState("")
-    const [password, setPassword] = useState("")
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
     const [errors, setErrors] = useState(initialLoginFormErrors);
-    const [showPassword, setShowPassword] = useState(false)
-    const [showPassword, setShowPassword] = useState(false)
-
+    const [showPassword, setShowPassword] = useState(false);
     const { token, handleUserLogin } = useContext(AuthContext);
 
-    const emailInputRef = useRef(null)
-    const passwordInputRef = useRef(null)
+    const emailInputRef = useRef(null);
+    const passwordInputRef = useRef(null);
 
     const handleEmailChange = (event) => {
-        setEmail(event.target.value)
+        setEmail(event.target.value);
         setErrors((prevErrors) => ({
             ...prevErrors,
             email: false
-        }))
-    }
+        }));
+    };
 
     const handlePasswordChange = (event) => {
-        setPassword(event.target.value)
+        setPassword(event.target.value);
         setErrors((prevErrors) => ({
             ...prevErrors,
             password: false
-        }))
-    }
+        }));
+    };
 
     const handleLogin = (event) => {
         event.preventDefault();
 
-        if (email == "") {
-            emailInputRef.current.focus()
+        if (email === "") {
+            emailInputRef.current.focus();
             setErrors((prevErrors) => ({
                 ...prevErrors,
                 emailErrorDescription: "El email es requerido",
                 email: true
-            }))
-            return
+            }));
+            return;
         }
         if (!validateEmail(email)) {
             emailInputRef.current.focus();
@@ -60,8 +55,8 @@ function Login({ onLogin }) {
                 ...prevErrors,
                 email: true,
                 emailErrorDescription: "El email debe tener formato @email.com"
-            }))
-            return
+            }));
+            return;
         }
 
         if (password === "") {
@@ -70,7 +65,7 @@ function Login({ onLogin }) {
                 ...prevErrors,
                 passwordErrorDescription: "La contraseña es requerida",
                 password: true
-            }))
+            }));
             return;
         }
         if (password.includes(' ')) {
@@ -79,23 +74,15 @@ function Login({ onLogin }) {
                 ...prevErrors,
                 passwordErrorDescription: "La contraseña no puede contener espacios",
                 password: true
-            }))
+            }));
             return;
         }
 
-        manageLogin(email, password)
-        // setEmail("")
-        // setPassword("")
-        setErrors(initialLoginFormErrors)
-        //onLogin()
-        navigate('/admin/dashboard');
-        // onLogin()
+        manageLogin(email, password);
+        navigate("/")
+    };
 
-
-    }
-
-    const manageLogin = () => {
-
+    const manageLogin = (email, password) => {
         fetch("http://localhost:3000/login", {
             headers: {
                 "Accept": "application/json",
@@ -110,31 +97,30 @@ function Login({ onLogin }) {
                 if (!res.ok) {
                     throw body;
                 }
-                return body
+                return body;
             })
             .then((res) => {
-                handleUserLogin(res.token)
-                successToast(res.message)
-
-                console.log("El token del usuario es : ", token);
-
-
+                handleUserLogin(res.token);
+                successToast(res.message);
+                console.log("El token del usuario es : ", res.token);
+                setEmail("")
+                setPassword("")
+                setErrors(initialLoginFormErrors)
             })
             .catch((err) => {
-                errorToast(`Ha ocurrido un error: ${err.message || JSON.stringify(err)}`)
+                errorToast(`Ha ocurrido un error: ${err.message || JSON.stringify(err)}`);
             });
-
-    }
+    };
 
     const validateEmail = (email) => {
         const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return regex.test(email);
     };
 
+    // 🌟 CORREGIDO: Declaración única y cierre de llaves correcto
     const handleShowPassword = () => {
-    const handleShowPassword = () => {
-        setShowPassword(!showPassword)
-    }
+        setShowPassword(!showPassword);
+    };
 
     return (
         <>
@@ -204,7 +190,7 @@ function Login({ onLogin }) {
                                                     placeholder="Ingresar contraseña"
                                                     onChange={handlePasswordChange}
                                                     ref={passwordInputRef}
-                                                    isInvalid={!!errors.password}//isInvalid = true pone el color rojo del texto es react boostrap
+                                                    isInvalid={!!errors.password}
                                                     style={{ paddingRight: "45px" }}
                                                 />
 
@@ -220,7 +206,6 @@ function Login({ onLogin }) {
                                                         zIndex: 5
                                                     }}
                                                 >
-                                                    {showPassword ? <Eye size={18} /> : <EyeOff size={18} />}
                                                     {showPassword ? <Eye size={18} /> : <EyeOff size={18} />}
                                                 </span>
                                                 <Form.Control.Feedback type="invalid">
@@ -239,13 +224,8 @@ function Login({ onLogin }) {
 
                             {/* REGISTER */}
                             <Tab eventKey="register" title="Crear cuenta">
-
-                                <Register onRegisterSuccess={() => setTab("login")} />
-
                                 <Register onRegisterSuccess={() => setTab("login")} />
                             </Tab>
-
-
                         </Tabs>
                     </div>
 
@@ -257,7 +237,7 @@ function Login({ onLogin }) {
                 </Container>
             </div>
         </>
-    )
+    );
 }
 
-export default Login
+export default Login;

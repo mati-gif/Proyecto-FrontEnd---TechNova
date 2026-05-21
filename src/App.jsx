@@ -9,7 +9,7 @@ import ProductCategories from './components/biz/ProductsCategories/ProductCatego
 import SingleProduct from './components/biz/SingleProduct/SingleProduct';
 
 import { useState } from 'react';
-import Register from './components/auth/Register/Register';
+// import Register from './components/auth/Register/Register';
 import Cart from './components/biz/Cart/Cart';
 import CartContextProvider from './components/Context/CartContext/CartContextProvider';
 import HeaderAdmin from './components/layout/Admin/HeaderAdmin';
@@ -26,20 +26,19 @@ import Success from './components/pages/Success';
 import ContactUs from './components/ContactUs/ContactUs';
 import Protected from './components/routes/protected/Protected';
 import NotFound from "./components/routes/notFound/NotFound";
+import { ToastContainer } from "react-toastify";
 
 
 
 function App() {
 
-  const user = { isLogged: true, role: "admin" }
+  // const user = { isLogged: true, role: "admin" }
 
-
-
-  
   return (
     <>
+      <Sonner position="top-right" richColors />
       <CartContextProvider>
-        <Sonner position="top-right" richColors />
+        <ToastContainer />
         <BrowserRouter>
           <Routes>
             {/* rutas para el usuario sin logguear */}
@@ -50,50 +49,30 @@ function App() {
               <Route path='/catalog' element={<ProductCategories />} />
               <Route path='/product/:slug' element={<SingleProduct />} />
               <Route path='/contact-us' element={<ContactUs />} />
-              <Route path="*" element={<NotFound />} />
-            </Route>
-            {/* rutas para el usuario con rol de usuario (usuario comun) despues de haberse loggueado */}
-            <Route element={<Protected isSignedIn={user.isLogged} />}>
-              <Route element={<UserLayout />}>
-                <Route path='/history-orders' element={<Orders />} />
-                <Route path='/checkout' element={<CheckOut />} />
-                <Route path='/payment' element={<Payment />} />
-                <Route path='/success' element={<Success />} />
-              </Route>
-            </Route>
-    <CartContextProvider>
-    <Sonner position="top-right" richColors />
-    <ToastContainer />
-    <BrowserRouter>
-      <Routes>
-        {/* rutas para el usuario sin logguear */}
-        <Route element={<MainLayout />}>
-          <Route path="/" element={<Index />} />
-          <Route path="/carrito"element={<Cart/>}/>
-          <Route path='/login' element={<Login/>}/>
-          <Route path='/catalog' element={<ProductCategories/>}/>
-          <Route path='/product/:slug' element={<SingleProduct/>}/>
-        </Route>
-        {/* rutas para el usuario con rol de usuario (usuario comun) despues de haberse logueado */}
-        <Route element={<UserLayout/>}>
-          <Route path='/history-orders' element={<Orders/>}/>
-          <Route path='/checkout' element={<CheckOut/>} />
-          <Route path='/payment' element={<Payment/>}/>
-          <Route path='/success' element={<Success/>}/>
-        </Route>
 
+            {/* rutas para el usuario con rol de usuario (usuario comun) despues de haberse logueado */}
+            <Route element={<Protected allowedRoles={['user', 'admin', 'superadmin']} />}>
+              <Route path='/history-orders' element={<Orders />} />
+              <Route path='/checkout' element={<CheckOut />} />
+              <Route path='/payment' element={<Payment />} />
+              <Route path='/success' element={<Success />} />
+            </Route>
+          </Route>
 
+            
             {/* rutas para el usuario con role de admin y superadmin despues de haberse loggueado */}
-            <Route element={<Protected isSignedIn={user.isLogged && (user.role === 'admin')} />}>
-              <Route element={<AdminLayout />}>
-                {/* <Route path={"/adminHeader"} element={<HeaderAdmin/>}/> */}
-                <Route path='/admin/dashboard' element={<AdminDashboard />} />
-                <Route path='/admin/products' element={<AdminProducts />} />
-                <Route path='/admin/products/new' element={<AdminProductsForm />} />
-                <Route path='/admin/products/:id/edit' element={<AdminProductsForm />} />
-                <Route path='/admin/users' element={<AdminUsers />} />
-              </Route>
+            {/* <Route element={<Protected isSignedIn={user.isLogged && (user.role === 'admin')} />}> */}
+            <Route element={<AdminLayout />}>
+              {/* <Route path={"/adminHeader"} element={<HeaderAdmin/>}/> */}
+              <Route path='/admin/dashboard' element={<AdminDashboard />} />
+              <Route path='/admin/products' element={<AdminProducts />} />
+              <Route path='/admin/products/new' element={<AdminProductsForm />} />
+              <Route path='/admin/products/:id/edit' element={<AdminProductsForm />} />
+              <Route path='/admin/users' element={<AdminUsers />} />
             </Route>
+            {/* </Route> */}
+            <Route path="*" element={<NotFound />} />
+
           </Routes>
         </BrowserRouter>
       </CartContextProvider>
