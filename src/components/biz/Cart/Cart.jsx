@@ -2,8 +2,8 @@ import React, { useContext } from 'react'
 import { Link, useNavigate } from "react-router-dom";
 import { Container, Row, Col, Button, Card } from "react-bootstrap";
 import { Minus, Plus, Trash2, ShoppingBag, ArrowRight } from "lucide-react";
-import { cartContext } from '../Context/cartContext';
-import { formatPrice } from '../utils/formatPrice';
+import { cartContext } from '../../Context/CartContext/cartContext';
+import { formatPrice } from '../../utils/formatPrice';
 
 
 function Cart() {

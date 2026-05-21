@@ -15,7 +15,7 @@ import {
     ShoppingCart,
     User
 } from "lucide-react";
-import { cartContext } from '../Context/cartContext';
+import { cartContext } from '../Context/CartContext/cartContext';
 import { CATEGORIES } from "../../data/categories";
 
 

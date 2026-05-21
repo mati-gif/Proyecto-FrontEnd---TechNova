@@ -2,10 +2,10 @@
 import React, { useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { Container, Form, Button, Tabs, Tab } from "react-bootstrap";
-import { initialRegisterFormErrors } from "./Register.data"
+import { initialRegisterFormErrors } from "./Register.data.js"
 import { Eye, EyeOff } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { successToast, errorToast } from "../shared/toast/toast.js";
+import { successToast, errorToast } from "../../shared/toast/toast.js";
 function Register({ onRegisterSuccess }) {
 
     const [email, setEmail] = useState("")
@@ -49,6 +49,16 @@ function Register({ onRegisterSuccess }) {
     const handleRegister = (event) => {
         event.preventDefault();
 
+        if (name == "") {
+            nameInputRef.current.focus();
+            setErrors((prevErrors) => ({
+                ...prevErrors,
+                nameErrorDescription: "El nombre no puede estar vacio",
+                name: true
+            }))
+            return
+        }
+
         if (email == "") {
             emailInputRef.current.focus()
             setErrors((prevErrors) => ({
@@ -85,16 +95,6 @@ function Register({ onRegisterSuccess }) {
                 password: true
             }))
             return;
-        }
-
-        if (name == "") {
-            nameInputRef.current.focus();
-            setErrors((prevErrors) => ({
-                ...prevErrors,
-                nameErrorDescription: "El nombre no puede estar vacio",
-                name: true
-            }))
-            return
         }
 
         manageRegister(name, email, password);

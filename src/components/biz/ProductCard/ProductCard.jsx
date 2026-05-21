@@ -2,7 +2,7 @@ import React,{useContext} from 'react'
 import { Card, Button, Badge } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { ShoppingCart, Star } from "lucide-react";
-import { cartContext } from '../Context/cartContext';
+import { cartContext } from '../../Context/CartContext/cartContext';
 
 
 function ProductCard({ product }) {

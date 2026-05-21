@@ -2,8 +2,8 @@ import React,{useContext} from 'react'
 import { Link } from "react-router-dom";
 import { Container, Card, Badge, Button, Accordion } from "react-bootstrap";
 import { Package, ShoppingBag, MapPin, CreditCard } from "lucide-react";
-import { formatPrice } from "../utils/formatPrice";
-import { cartContext } from '../Context/cartContext';
+import { formatPrice } from "../../utils/formatPrice";
+import { cartContext } from '../../Context/CartContext/cartContext';
 function HistoryOrders() {
 
   const orders = [{

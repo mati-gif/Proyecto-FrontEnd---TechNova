@@ -1,9 +1,11 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useContext } from "react";
 import { Link } from "react-router-dom";
 import { Container, Form, Button, Tabs, Tab } from "react-bootstrap";
 import { Cpu, Eye, EyeOff } from "lucide-react";
-import { initialLoginFormErrors } from "./Login.data"
+import { initialLoginFormErrors } from "./Login.data";
 import Register from "../Register/Register";
+import { AuthContext } from "../../Context/AuthContext/authContext";
+import { errorToast, successToast } from "../../shared/toast/toast";
 
 
 function Login({ onLogin }) {
@@ -12,7 +14,9 @@ function Login({ onLogin }) {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [errors, setErrors] = useState(initialLoginFormErrors);
-    const [showPassword,setShowPassword] = useState(false)
+    const [showPassword, setShowPassword] = useState(false)
+
+    const { token, handleUserLogin } = useContext(AuthContext);
 
     const emailInputRef = useRef(null)
     const passwordInputRef = useRef(null)
@@ -74,9 +78,44 @@ function Login({ onLogin }) {
             return;
         }
 
+        manageLogin(email, password)
+        // setEmail("")
+        // setPassword("")
         setErrors(initialLoginFormErrors)
-        onLogin()
+        // onLogin()
 
+
+    }
+
+    const manageLogin = () => {
+
+        fetch("http://localhost:3000/login", {
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            },
+            method: "POST",
+            body: JSON.stringify({ email, password })
+        })
+            .then(async res => {
+                const body = await res.json();
+                console.log("El cuerpo del body es: ", body);
+                if (!res.ok) {
+                    throw body;
+                }
+                return body
+            })
+            .then((res) => {
+                handleUserLogin(res.token)
+                successToast(res.message)
+
+                console.log("El token del usuario es : ", token);
+
+
+            })
+            .catch((err) => {
+                errorToast(`Ha ocurrido un error: ${err.message || JSON.stringify(err)}`)
+            });
 
     }
 
@@ -85,7 +124,7 @@ function Login({ onLogin }) {
         return regex.test(email);
     };
 
-    const handleShowPassword = () =>{
+    const handleShowPassword = () => {
         setShowPassword(!showPassword)
     }
 
@@ -150,7 +189,7 @@ function Login({ onLogin }) {
 
                                         <Form.Group className="mb-4">
                                             <Form.Label>Contraseña</Form.Label>
-                                            <div className="position-relative">
+                                            <div className="input-group has-validation">
                                                 <Form.Control
                                                     type={showPassword ? "text" : "password"}
                                                     value={password}
@@ -158,6 +197,7 @@ function Login({ onLogin }) {
                                                     onChange={handlePasswordChange}
                                                     ref={passwordInputRef}
                                                     isInvalid={!!errors.password}//isInvalid = true pone el color rojo del texto es react boostrap
+                                                    style={{ paddingRight: "45px" }}
                                                 />
 
                                                 <span
@@ -168,15 +208,17 @@ function Login({ onLogin }) {
                                                         top: "50%",
                                                         transform: "translateY(-50%)",
                                                         cursor: "pointer",
-                                                        color: "#6c757d"
+                                                        color: "#6c757d",
+                                                        zIndex: 5
                                                     }}
                                                 >
-                                                    {showPassword ? <Eye size={18} /> : <EyeOff size={18} /> }
+                                                    {showPassword ? <Eye size={18} /> : <EyeOff size={18} />}
                                                 </span>
+                                                <Form.Control.Feedback type="invalid">
+                                                    {errors.password && errors.passwordErrorDescription}
+                                                </Form.Control.Feedback>
                                             </div>
-                                            <Form.Control.Feedback type="invalid">
-                                                {errors.password && errors.passwordErrorDescription}
-                                            </Form.Control.Feedback>
+
                                         </Form.Group>
 
                                         <Button type="submit" className="w-100">
@@ -188,10 +230,10 @@ function Login({ onLogin }) {
 
                             {/* REGISTER */}
                             <Tab eventKey="register" title="Crear cuenta">
-                                
-                                <Register onRegisterSuccess={() => setTab("login")}/>
+
+                                <Register onRegisterSuccess={() => setTab("login")} />
                             </Tab>
-                            
+
                         </Tabs>
                     </div>
 

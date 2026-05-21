@@ -3,8 +3,8 @@ import { useSearchParams, Link } from "react-router-dom";
 import { Container, Row, Col, ListGroup, Badge, Form } from "react-bootstrap";
 import { PRODUCTS } from "../../../data/products";
 import { CATEGORIES } from "../../../data/categories";
-import ProductCard from "../../components/ProductCard/ProductCard";
-import "../../App.css";
+import ProductCard from "../ProductCard/ProductCard";
+import "../../../App";
 
 function ProductCategories() {
   const [searchParams, setSearchParams] = useSearchParams();

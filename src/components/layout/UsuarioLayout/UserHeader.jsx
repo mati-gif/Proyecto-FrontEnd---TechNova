@@ -2,7 +2,7 @@ import { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Container, Nav, Navbar, Form, Button, Dropdown, Offcanvas } from "react-bootstrap";
 import { Cpu, Search, ShoppingCart, User, LogOut, Package, ShieldCheck } from "lucide-react";
-import { cartContext } from '../../Context/cartContext';
+import { cartContext } from '../../Context/CartContext/cartContext';
 import { CATEGORIES } from "../../../data/categories";
 
 function UserHeader() {

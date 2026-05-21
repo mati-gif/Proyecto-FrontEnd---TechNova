@@ -3,7 +3,7 @@ import { Container, Row, Col, Button, Badge } from "react-bootstrap";
 import { Truck, ShieldCheck, CreditCard, Zap, ArrowRight, Star } from "lucide-react";
 import { PRODUCTS } from "../../data/products";
 import { CATEGORIES } from "../../data/categories";
-import ProductCard from "../../components/ProductCard/ProductCard";
+import ProductCard from "../biz/ProductCard/ProductCard";
 import heroImage from "../../assets/hero-tech.jpg";
 
 import React, { useState } from 'react'

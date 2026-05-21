@@ -5,7 +5,7 @@ import { MapPin, ArrowRight, Check } from "lucide-react";
 import { z } from "zod";
 import { toast } from "sonner";
 import { formatPrice } from "../utils/formatPrice";
-import { cartContext } from "../Context/cartContext";
+import { cartContext } from "../Context/CartContext/cartContext";
 
 function CheckOut() {
     const [errors,setErrors] = useState(false)

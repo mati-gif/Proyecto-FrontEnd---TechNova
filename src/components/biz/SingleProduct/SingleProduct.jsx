@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { PRODUCTS } from "../../data/products";
+import { PRODUCTS } from "../../../data/products";
 import { Container } from "react-bootstrap";
 
 function SingleProduct() {
