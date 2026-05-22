@@ -32,8 +32,6 @@ import { ToastContainer } from "react-toastify";
 
 function App() {
 
-  // const user = { isLogged: true, role: "admin" }
-
   return (
     <>
       <Sonner position="top-right" richColors />
@@ -57,20 +55,19 @@ function App() {
               <Route path='/payment' element={<Payment />} />
               <Route path='/success' element={<Success />} />
             </Route>
-          </Route>
+            </Route>
 
             
             {/* rutas para el usuario con role de admin y superadmin despues de haberse loggueado */}
-            {/* <Route element={<Protected isSignedIn={user.isLogged && (user.role === 'admin')} />}> */}
+          <Route element={<Protected allowedRoles={[ 'admin', 'superadmin']} />}>
             <Route element={<AdminLayout />}>
-              {/* <Route path={"/adminHeader"} element={<HeaderAdmin/>}/> */}
               <Route path='/admin/dashboard' element={<AdminDashboard />} />
               <Route path='/admin/products' element={<AdminProducts />} />
               <Route path='/admin/products/new' element={<AdminProductsForm />} />
               <Route path='/admin/products/:id/edit' element={<AdminProductsForm />} />
               <Route path='/admin/users' element={<AdminUsers />} />
             </Route>
-            {/* </Route> */}
+          </Route>
             <Route path="*" element={<NotFound />} />
 
           </Routes>

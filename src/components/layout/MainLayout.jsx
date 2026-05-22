@@ -26,7 +26,7 @@ function MainLayout() {
     return (
         <div className="d-flex flex-column min-vh-100">
             {/* <Header /> */}
-            {token && userRole === "user" ? <UserHeader/> : <Header/>}
+            {token ? <UserHeader/> : <Header/>}
             <main className="flex-grow-1">
                 <Outlet />
             </main>
