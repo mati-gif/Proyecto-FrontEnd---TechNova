@@ -3,34 +3,32 @@ import { useSearchParams, Link } from "react-router-dom";
 import { Container, Row, Col, ListGroup, Badge, Form } from "react-bootstrap";
 import { PRODUCTS } from "../../../data/products";
 import { CATEGORIES } from "../../../data/categories";
-import ProductCard from "../../components/ProductCard/ProductCard";
-import "../../App.css";
+import ProductCard from "../ProductCard/ProductCard";
+import "../../../App";
 
 function ProductCategories() {
   const [searchParams, setSearchParams] = useSearchParams();
   const categoria = searchParams.get("category");
   const marcaActiva = searchParams.get("brand");
-  const searchQuery = searchParams.get("q");
 
   // Filtrado de Categoría + Marca
   const productosFiltrados = PRODUCTS.filter((p) => {
     const matchCategoria = categoria ? p.category === categoria : true;
     const matchMarca = marcaActiva ? p.brand === marcaActiva : true;
-    const matchBusqueda = searchQuery ? p.name.toLowerCase().includes(searchQuery.toLowerCase()) : true;
-    return matchCategoria && matchMarca && matchBusqueda;
+    return matchCategoria && matchMarca;
   });
 
   // Marcas de los productos según la categoría seleccionada
-  const productosParaMarcas = categoria
-    ? PRODUCTS.filter(p => p.category === categoria)
+  const productosParaMarcas = categoria 
+    ? PRODUCTS.filter(p => p.category === categoria) 
     : PRODUCTS;
-
+    
   const marcasDisponibles = [...new Set(productosParaMarcas.map(p => p.brand))];
 
   // Función para cambiar la marca sin borrar la categoría
   const handleMarcaClick = (brand) => {
     if (brand === marcaActiva) {
-      searchParams.delete("brand");
+      searchParams.delete("brand"); 
     } else {
       searchParams.set("brand", brand);
     }
@@ -44,16 +42,16 @@ function ProductCategories() {
           {/* Filtro Categorias */}
           <h5 className="mb-3">Categorías</h5>
           <ListGroup variant="flush" className="mb-4 shadow-sm rounded">
-            <ListGroup.Item
-              action
-              as={Link}
-              to="/catalog"
+            <ListGroup.Item 
+              action 
+              as={Link} 
+              to="/catalog" 
               active={!categoria}
               className="d-flex justify-content-between align-items-center"
             >
               Todos los productos
               <span className="category-counter">
-                {PRODUCTS.length}
+                {PRODUCTS.length} 
               </span>
             </ListGroup.Item>
 
@@ -61,7 +59,7 @@ function ProductCategories() {
               // Contar cuántos productos hay en esta categoría
               const count = PRODUCTS.filter(p => p.category === cat.id).length;
               return (
-                <ListGroup.Item
+                <ListGroup.Item 
                   key={cat.id}
                   action as={Link} to={`/catalog?category=${cat.id}`}
                   active={categoria === cat.id}
@@ -80,7 +78,7 @@ function ProductCategories() {
           <h5 className="mb-3">Marcas</h5>
           <div className="p-3 bg-white border rounded shadow-sm">
             {marcasDisponibles.map((brand) => (
-              <Form.Check
+              <Form.Check 
                 key={brand}
                 type="checkbox"
                 label={`${brand}`}
@@ -96,27 +94,16 @@ function ProductCategories() {
         {/* Nombres de Categorias */}
         <Col md={9}>
           <div className="mb-4">
-            <h2>{searchQuery ? `Resultados para: "${searchQuery}"` : categoria ? CATEGORIES.find(c => c.id === categoria)?.name : "Todos los productos"}
-            </h2>
-
+            <h2>{categoria ? CATEGORIES.find(c => c.id === categoria)?.name : "Todos los productos"}</h2>
           </div>
 
           <Row>
-            {productosFiltrados.length > 0 ? (
-
-              productosFiltrados.map((prod) => (
-                <Col sm={6} lg={4} key={prod.id} className="mb-4">
-                  <ProductCard product={prod} />
-                </Col>
-              ))
-            ) : (
-
-              <Col className="text-center py-5">
-                <h4 className="text-muted">No se encontraron productos "{searchQuery}"</h4>
+            {productosFiltrados.map((prod) => (
+              <Col sm={6} lg={4} key={prod.id} className="mb-4">
+                <ProductCard product={prod} />
               </Col>
-            )}
+            ))}
           </Row>
-
         </Col>
       </Row>
     </Container>

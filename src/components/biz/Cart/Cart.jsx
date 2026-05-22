@@ -2,15 +2,15 @@ import React, { useContext } from 'react'
 import { Link, useNavigate } from "react-router-dom";
 import { Container, Row, Col, Button, Card } from "react-bootstrap";
 import { Minus, Plus, Trash2, ShoppingBag, ArrowRight } from "lucide-react";
-import { cartContext } from '../Context/cartContext';
-import { formatPrice } from '../utils/formatPrice';
+import { cartContext } from '../../Context/CartContext/cartContext';
+import { formatPrice } from '../../utils/formatPrice';
 
 
 function Cart() {
     const navigate = useNavigate();
 
     //carrito real
-    const { cart, handleAddToCart, handleDecreaseQuantity, totalPrice,handleDeleteProduct } = useContext(cartContext)
+    const { cart, handleAddToCart, handleDecreaseQuantity, totalPrice, handleDeleteProduct } = useContext(cartContext)
     console.log(cart);
 
 
@@ -113,9 +113,9 @@ function Cart() {
 
                                                     )}
                                                 </div>
-                                                <Button 
-                                                onClick={()=> handleDeleteProduct(product.id)}
-                                                variant="link" className="text-secondary p-2" aria-label="Eliminar">
+                                                <Button
+                                                    onClick={() => handleDeleteProduct(product.id)}
+                                                    variant="link" className="text-secondary p-2" aria-label="Eliminar">
                                                     <Trash2 size={16} />
                                                 </Button>
                                             </div>
@@ -159,15 +159,21 @@ function Cart() {
                                     <span className="fw-semibold">Total</span>
                                     <span className="fs-3 fw-bold">{formatPrice(finalTotal)}</span>
                                 </div>
-                                <Button size="lg" variant="primary" className="w-100 mt-3 d-flex align-items-center justify-content-center gap-2 shadow-glow">
+                                <Button
+                                    as={Link}
+                                    to="/checkout"
+                                    size="lg"
+                                    variant="primary"
+                                    className="w-100 mt-3 d-flex align-items-center justify-content-center gap-2 shadow-glow">
                                     {/* {user ? "Continuar compra" : "Iniciar sesión y pagar"} */}
                                     <ArrowRight size={16} />
                                 </Button>
-                                <Link to={"/checkout"}>
-                                <Button to="/checkout" variant="link" size="sm" className="w-100 mt-2 text-secondary text-decoration-none">
+                                <Button
+                                    variant="link"
+                                    size="sm"
+                                    className="w-100 mt-2 text-secondary text-decoration-none">
                                     Seguir comprando
                                 </Button>
-                                </Link>
                             </Card.Body>
                         </Card>
                     </div>

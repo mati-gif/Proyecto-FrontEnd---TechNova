@@ -1,9 +1,9 @@
 import React, { useContext } from "react"; 
 import { useParams } from "react-router-dom";
-import { PRODUCTS } from "../../data/products";
+import { PRODUCTS } from "../../../data/products";
 import { Container, Row, Col, Button, Badge } from "react-bootstrap";
-import { ShoppingCart, Heart } from "lucide-react"; // ✔️ Corregido: Agregamos Heart aquí
-import { cartContext } from "../Context/cartContext"; 
+import { ShoppingCart, Heart } from "lucide-react"; 
+import { cartContext } from "../../Context/CartContext/cartContext"; 
 
 function SingleProduct() {
   const { slug } = useParams();
