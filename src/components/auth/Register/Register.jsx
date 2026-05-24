@@ -2,9 +2,10 @@
 import React, { useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { Container, Form, Button, Tabs, Tab } from "react-bootstrap";
-import { initialRegisterFormErrors } from "./Register.data"
+import { initialRegisterFormErrors } from "./Register.data.js"
 import { Eye, EyeOff } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { successToast, errorToast } from "../../shared/toast/toast.js";
 function Register({ onRegisterSuccess }) {
 
     const [email, setEmail] = useState("")
@@ -43,8 +44,20 @@ function Register({ onRegisterSuccess }) {
         }))
     }
 
+
+
     const handleRegister = (event) => {
         event.preventDefault();
+
+        if (name == "") {
+            nameInputRef.current.focus();
+            setErrors((prevErrors) => ({
+                ...prevErrors,
+                nameErrorDescription: "El nombre no puede estar vacio",
+                name: true
+            }))
+            return
+        }
 
         if (email == "") {
             emailInputRef.current.focus()
@@ -84,22 +97,38 @@ function Register({ onRegisterSuccess }) {
             return;
         }
 
-        if (name == "") {
-            nameInputRef.current.focus();
-            setErrors((prevErrors) => ({
-                ...prevErrors,
-                nameErrorDescription: "El nombre no puede estar vacio",
-                name: true
-            }))
-            return
-        }
-        setEmail("")
-        setPassword("")
-        setName("")
-        setErrors(initialRegisterFormErrors)
+        manageRegister(name, email, password);
+
         onRegisterSuccess()
+    }
 
+    const manageRegister = (name, email, password) => {
 
+        fetch("http://localhost:3000/register", {
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            },
+            method: "POST",
+            body: JSON.stringify({ name, email, password })
+        })
+            .then(async res => {
+                const body = await res.json()
+                if (!res.ok) throw body       // body.message esperado
+                return body
+            })
+            .then((res) => {
+                setEmail("")
+                setPassword("")
+                setName("")
+                setErrors(initialRegisterFormErrors)
+                successToast(res.message)
+                // navigate("/login")// cuando se maneje los roles que te direccione a otra pagina 
+            })
+            .catch((err) => {
+                console.log(err)
+                errorToast(`Ha ocurrido un error: ${err.message || JSON.stringify(err)}`)
+            })
     }
 
     const validateEmail = (email) => {

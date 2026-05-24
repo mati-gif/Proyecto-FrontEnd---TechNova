@@ -1,8 +1,10 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { Link, NavLink, Outlet } from "react-router-dom";
 import { Container, Nav } from "react-bootstrap";
 import { LayoutDashboard, Package, Users, ArrowLeft } from "lucide-react";
 import HeaderAdmin from './HeaderAdmin';
+import { AuthContext } from '../../Context/AuthContext/authContext';
+import UserHeader from '../UsuarioLayout/UserHeader';
 
 //estilos personalizados 
 const sidebarStyles = `
@@ -33,25 +35,36 @@ const sidebarStyles = `
   }
 `;
 function AdminLayout() {
-    const user = {
-        // role: "admin"
-        role: "superadmin"
+    const { token } = useContext(AuthContext);
 
+    // 2. Extraemos el rol de forma segura
+    let userRole = null;
+    if (token) {
+        try {
+            const payload = JSON.parse(atob(token.split(".")[1]));
+            userRole = payload.role; // Extrae "admin" o "superadmin"
+        } catch (error) {
+            console.error("Error decodificando token en AdminLayout", error);
+        }
     }
-    const isSuperadmin = user?.role === "superadmin";
+    const isSuperadmin = userRole === "superadmin";
+
+    console.log("el rol del usuario logueado es :",userRole);
+    
     const linkClass = ({ isActive }) =>
         `tn-sidebar-link ${isActive ? "active" : ""}`;
     return (
         <>
-        <style>{sidebarStyles}</style>
+            <style>{sidebarStyles}</style>
             <div className='d-flex flex-column min-vh-100'>
-                <HeaderAdmin />
+                {/* <HeaderAdmin /> */}
+                <UserHeader/>
                 <Container fluid className="py-4">
                     <div className="d-flex flex-wrap align-items-baseline gap-3 mb-4 px-2">
                         <h1 className="fw-bold mb-0" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
                             Panel de administración
                         </h1>
-                        <span className="badge bg-warning text-dark text-uppercase">{user?.role}</span>
+                        <span className="badge bg-warning text-dark text-uppercase">{userRole}</span>
                         <Link to="/" className="ms-auto small text-decoration-none text-secondary d-inline-flex align-items-center gap-1">
                             <ArrowLeft size={14} /> Volver a la tienda
                         </Link>
@@ -60,7 +73,7 @@ function AdminLayout() {
                     <div className="row g-4">
                         <aside className="col-lg-3 col-xl-2">
                             <Nav className="flex-column gap-1 sticky-top" style={{ top: 90 }}>
-                                <NavLink to="/admin/dashboard"  className={linkClass}>
+                                <NavLink to="/admin/dashboard" className={linkClass}>
                                     <LayoutDashboard size={14} className="me-2" /> Inicio
                                 </NavLink>
                                 <NavLink to="/admin/products" className={linkClass}>

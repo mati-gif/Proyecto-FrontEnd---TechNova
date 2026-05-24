@@ -2,8 +2,10 @@ import { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Container, Nav, Navbar, Form, Button, Dropdown, Offcanvas } from "react-bootstrap";
 import { Cpu, Search, ShoppingCart, User, LogOut, Package, ShieldCheck } from "lucide-react";
-import { cartContext } from '../../Context/cartContext';
+import { cartContext } from '../../Context/CartContext/cartContext';
+import { AuthContext } from "../../Context/AuthContext/authContext";
 import { CATEGORIES } from "../../../data/categories";
+import { errorToast, successToast } from "../../shared/toast/toast";
 
 function UserHeader() {
   const [search, setSearch] = useState("");
@@ -13,6 +15,37 @@ function UserHeader() {
 
   //carrito real
   const { cart, totalQuantity } = useContext(cartContext)
+
+  const { handleUserLogout, token } = useContext(AuthContext)
+
+
+  const user = {
+    userName: null,
+    userEmail: null,
+    userRole: null
+
+  }
+
+  // Solo intentamos decodificar el token SI existe
+  if (token) {
+    try {
+      const payload = JSON.parse(atob(token.split(".")[1]));
+      user.userRole = payload.role;
+      user.userEmail = payload.email;
+      user.userName = payload.name
+    } catch (error) {
+      console.error("Error al decodificar el token en MainLayout", error);
+    }
+  }
+
+  console.log(user.userEmail);
+  console.log(user.userName);
+  console.log(user.userRole);
+
+  
+
+
+
 
   console.log(cart);
   console.log(totalQuantity);
@@ -26,10 +59,11 @@ function UserHeader() {
     setSearch("");
   };
 
-  const user = {
-    name: "Mati",
-    email: "mati@email.com",
-    role: "user"
+
+
+  const handleLogOutUser = () => {
+    handleUserLogout()
+    successToast("Saliste de tu cuenta! 👋😊")
 
   }
   return (
@@ -106,25 +140,25 @@ function UserHeader() {
                 className="rounded-circle  text-white d-inline-flex align-items-center justify-content-center fw-semibold"
                 style={{ width: 30, height: 30, fontSize: 13, background: 'linear-gradient(135deg, #2b56f5, #5b8bff)' }}
               >
-                {user.name.charAt(0).toUpperCase()}
+                {user.userName.charAt(0).toUpperCase()}
               </span>
-              <span className="d-none d-sm-inline small">{user.name.split(" ")[0]}</span>
+              <span className="d-none d-sm-inline small">{user.userName.split(" ")[0]}</span>
             </Dropdown.Toggle>
             <Dropdown.Menu>
               <Dropdown.Header className="text-truncate" style={{ maxWidth: 220 }}>
-                {user.email}
+                {user.userEmail}
               </Dropdown.Header>
               <Dropdown.Divider />
               <Dropdown.Item as={Link} to="/history-orders">
                 <Package size={14} className="me-2" /> Mis pedidos
               </Dropdown.Item>
-              {(user.role === "admin" || user.role === "superadmin") && (
+              {(user.userRole === "admin" || user.userRole === "superadmin") && (
                 <Dropdown.Item as={Link} to="/admin/dashboard">
                   <ShieldCheck size={14} className="me-2" /> Panel admin
                 </Dropdown.Item>
               )}
               <Dropdown.Divider />
-              <Dropdown.Item className="text-danger">
+              <Dropdown.Item className="text-danger" onClick={handleLogOutUser}>
                 <LogOut size={14} className="me-2" />
                 Cerrar sesión
               </Dropdown.Item>
@@ -135,7 +169,7 @@ function UserHeader() {
           {/* CARRITO */}
           <Button
             as={Link}
-            to="/carrito"
+            to="/my-cart"
             variant="outline-secondary"
             className="position-relative d-flex align-items-center gap-1"
           >

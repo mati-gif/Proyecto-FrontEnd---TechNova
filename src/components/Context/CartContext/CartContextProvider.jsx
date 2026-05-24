@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { cartContext } from './cartContext'
+import { cartContext } from '../CartContext/cartContext'
 
 function CartContextProvider({ children }) {
 
@@ -49,21 +49,21 @@ function CartContextProvider({ children }) {
             setCart(updatedCart);
         } else {
             // Escenario B: Eliminar del carrito
-            
-            const productToRemove = cart.filter((p) => p.id != id )
+
+            const productToRemove = cart.filter((p) => p.id != id)
             setCart(productToRemove)
         }
     };
 
     const totalPrice = cart.reduce((acc, item) => {
-  return acc + (item.price * item.cantidad);
-}, 0);
+        return acc + (item.price * item.cantidad);
+    }, 0);
 
-const handleDeleteProduct = (id) => {
-    // Nos quedamos con todos los productos MENOS el que tiene ese ID
-    const updatedCart = cart.filter(item => item.id !== id);
-    setCart(updatedCart);
-};
+    const handleDeleteProduct = (id) => {
+        // Nos quedamos con todos los productos MENOS el que tiene ese ID
+        const updatedCart = cart.filter(item => item.id !== id);
+        setCart(updatedCart);
+    };
 
 
     useEffect(() => {
@@ -74,13 +74,14 @@ const handleDeleteProduct = (id) => {
 
 
     return (
-        <cartContext.Provider
-            value={{
-                cart, handleAddToCart, totalQuantity,handleDecreaseQuantity,totalPrice,handleDeleteProduct
-            }}
-        >
+
+        <cartContext.Provider value={{
+            cart, handleAddToCart, totalQuantity, handleDecreaseQuantity, totalPrice, handleDeleteProduct
+        }}>
             {children}
+
         </cartContext.Provider>
+        // <></>
     )
 }
 

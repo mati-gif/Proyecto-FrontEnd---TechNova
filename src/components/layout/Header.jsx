@@ -15,7 +15,7 @@ import {
     ShoppingCart,
     User
 } from "lucide-react";
-import { cartContext } from '../Context/cartContext';
+import { cartContext } from '../Context/CartContext/cartContext';
 import { CATEGORIES } from "../../data/categories";
 
 
@@ -29,9 +29,6 @@ function Header() {
 
     //carrito real
     const { cart, totalQuantity } = useContext(cartContext)
-
-    console.log(cart);
-    console.log(totalQuantity);
 
 
     const handleSearch = (e) => {
