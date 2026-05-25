@@ -12,6 +12,8 @@ import { useState } from 'react';
 // import Register from './components/auth/Register/Register';
 import Cart from './components/biz/Cart/Cart';
 import CartContextProvider from './components/Context/CartContext/CartContextProvider';
+import MyFavorites from './components/MyFavorites/MyFavorites';
+import FavoritesContextProvider from './components/Context/FavoritesContext/favoritesContextProvider';
 import HeaderAdmin from './components/layout/Admin/HeaderAdmin';
 import AdminLayout from './components/layout/Admin/AdminLayout';
 import AdminDashboard from './components/pages/AdminDashboard';
@@ -27,6 +29,7 @@ import ContactUs from './components/ContactUs/ContactUs';
 import Protected from './components/routes/protected/Protected';
 import NotFound from "./components/routes/notFound/NotFound";
 import { ToastContainer } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 
 
@@ -36,6 +39,7 @@ function App() {
     <>
       <Sonner position="top-right" richColors />
       <CartContextProvider>
+        <FavoritesContextProvider>
         <ToastContainer />
         <BrowserRouter>
           <Routes>
@@ -51,6 +55,7 @@ function App() {
             {/* rutas para el usuario con rol de usuario (usuario comun) despues de haberse logueado */}
             <Route element={<Protected allowedRoles={['user', 'admin', 'superadmin']} />}>
               <Route path='/history-orders' element={<Orders />} />
+              <Route path="/my-favorites" element={<MyFavorites />} />
               <Route path='/checkout' element={<CheckOut />} />
               <Route path='/payment' element={<Payment />} />
               <Route path='/success' element={<Success />} />
@@ -72,6 +77,7 @@ function App() {
 
           </Routes>
         </BrowserRouter>
+        </FavoritesContextProvider>
       </CartContextProvider>
     </>
   )

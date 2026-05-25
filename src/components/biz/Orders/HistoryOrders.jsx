@@ -38,7 +38,7 @@ function HistoryOrders() {
   return (
     <Container className="py-4 py-lg-5" style={{ maxWidth: 960 }}>
       <h1 className="fw-bold mb-1" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
-        Mis pedidos
+        Mis Pedidos
       </h1>
       <p className="text-secondary mb-4">Historial de tus compras en TechNova</p>
 
