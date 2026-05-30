@@ -48,7 +48,7 @@ function App() {
               <Route path='/product/:slug' element={<SingleProduct />} />
               <Route path='/contact-us' element={<ContactUs />} />
 
-            {/* rutas para el usuario con rol de usuario (usuario comun) despues de haberse logueado */}
+            {/* rutas para el usuario con rol de usuario (usuario comun),admin y superadmin despues de haberse logueado */}
             <Route element={<Protected allowedRoles={['user', 'admin', 'superadmin']} />}>
               <Route path='/history-orders' element={<Orders />} />
               <Route path='/checkout' element={<CheckOut />} />
