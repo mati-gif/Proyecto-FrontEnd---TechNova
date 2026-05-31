@@ -9,6 +9,7 @@ function AuthContextProvider({ children }) {
     const [token, setToken] = useState(tokenValue)
 
     const [user, setUser] = useState({
+        userId:null,
         userName: null,
         userEmail: null,
         userRole: null
@@ -26,6 +27,7 @@ function AuthContextProvider({ children }) {
         localStorage.removeItem("techNovaToken")
         setToken(null);
         setUser({
+            userId:null,
             userName: null,
             userEmail: null,
             userRole: null
@@ -41,6 +43,7 @@ function AuthContextProvider({ children }) {
             try {
                 const payload = JSON.parse(atob(token.split(".")[1]));
                 setUser({
+                    userId:payload.id,
                     userRole: payload.role,
                     userEmail: payload.email,
                     userName: payload.name
@@ -53,16 +56,17 @@ function AuthContextProvider({ children }) {
                 console.error("Error al decodificar el token", error);
                 handleUserLogout();
             }
-        // } else {
-        //     // Si el token cambió a null (logout), limpiamos el estado del usuario inmediatamente
+        } else {
+            // Si el token cambió a null (logout), limpiamos el estado del usuario inmediatamente
 
-        //     console.log("entro por el else");
+            console.log("entro por el else");
             
-        //     setUser({
-        //         userName: null,
-        //         userEmail: null,
-        //         userRole: null
-        //     });
+            setUser({
+                userId:null,
+                userName: null,
+                userEmail: null,
+                userRole: null
+            });
         }
     }, [token])
 

@@ -1,38 +1,19 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Card, Table, Button, Badge, Modal, Form } from "react-bootstrap";
 import { Trash2, KeyRound, Shield } from "lucide-react";
 import { z } from "zod";
+import { AuthContext } from "../Context/AuthContext/authContext";
 
 
 function AdminUsers() {
 
-    const users = [
-        {
-            name: "user",
-            role: "admin",
-            email:"admin@email.com"
-        },
-        {
-            name: "superadmin",
-            role: "superadmin",
-            email:"superadmin@email.com"
-        },
-        {
-            name: "matias",
-            role: "usuario",
-            email:"mati@email.com"
-        }
-    ]
-
-        const user = 
-
-        {   id:1,
-            name: "superadmin",
-            role: "superadmin"
-        }
-    
 
     const [refreshKey, setRefreshKey] = useState(0);
+    const {token,user} = useContext(AuthContext)
+    const [users,setUsers] = useState([])
+
+    console.log("usuario logueado",user);
+    
 
 
     const [toDelete, setToDelete] = useState(null);
@@ -67,6 +48,27 @@ function AdminUsers() {
 
     const roleVariant = (r) =>
         r === "superadmin" ? "warning" : r === "admin" ? "info" : "secondary";
+
+
+    useEffect(()=>{
+        const res = fetch("http://localhost:3000/user/all",{
+            method:"GET",
+            headers:{
+                "Content-type":"application/json",
+                "Authorization": `Bearer ${token}`
+            }
+            
+        })
+        .then(res => res.json())
+        .then((data) =>{
+            setUsers([...data])
+        })
+        .catch(error => console.log(error)//hacer mas robusto este catch
+        )
+    },[])
+
+    console.log(users);
+    
     return (
         <div>
             <div className="d-flex flex-wrap align-items-center gap-2 mb-3">
@@ -88,10 +90,10 @@ function AdminUsers() {
                     </thead>
                     <tbody>
                         {users.map((u) => {
-                            const isSelf = u.id === user?.id;
-                            const isSuper = u.role === "superadmin";
+                            const isSelf = u.id == user?.userId;
+                            const isSuper = u.role.name.toLowerCase() === "superadmin";
                             return (
-                                <tr >
+                                <tr key={u.id}>
                                     <td>
                                         <div className="d-flex align-items-center gap-2">
                                             <span className="rounded-circle bg-gradient-primary text-white d-inline-flex align-items-center justify-content-center fw-semibold"
@@ -106,9 +108,9 @@ function AdminUsers() {
                                     <td className="small">{u.email}</td>
                                     <td>
                                         <div className="d-flex align-items-center gap-2">
-                                            <Badge bg={roleVariant(u.role)} className="text-uppercase">{u.role}</Badge>
+                                            <Badge bg={roleVariant(u.role.name.toLowerCase())} className="text-uppercase">{u.role.name.toLowerCase()}</Badge>
                                             {!isSuper && !isSelf && (
-                                                <Form.Select size="sm" style={{ width: 130 }} value={u.role}
+                                                <Form.Select size="sm" style={{ width: 130 }} value={u.role.name.toLowerCase()}
                                                     onChange={(e) => handleRoleChange(u, e.target.value)}>
                                                     <option value="user">user</option>
                                                     <option value="admin">admin</option>
@@ -118,7 +120,7 @@ function AdminUsers() {
                                         </div>
                                     </td>
                                     <td className="text-secondary small">
-                                        {new Date(u.createdAt).toLocaleDateString("es-AR")}
+                                        {u.creationDate.split("T")[0]}
                                     </td>
                                     <td className="text-end">
                                         <Button size="sm" variant="outline-secondary" className="me-1"
@@ -138,15 +140,6 @@ function AdminUsers() {
                     </tbody>
                 </Table>
             </Card>
-
-            <div className="alert alert-info mt-3 small d-flex align-items-start gap-2">
-                <Shield size={16} className="flex-shrink-0 mt-1" />
-                <div>
-                    <strong>Demo:</strong> los usuarios y contraseñas se guardan únicamente en tu navegador (localStorage).
-                    Cuentas seed: <code>super@technova.com / super123</code>, <code>admin@technova.com / admin123</code>.
-                </div>
-            </div>
-
             {/* Delete modal */}
             <Modal show={!!toDelete} onHide={() => setToDelete(null)} centered>
                 <Modal.Header closeButton><Modal.Title>Eliminar usuario</Modal.Title></Modal.Header>
