@@ -1,16 +1,66 @@
 import { Link } from "react-router-dom";
 import { Container, Row, Col, Button, Badge } from "react-bootstrap";
 import { Truck, ShieldCheck, CreditCard, Zap, ArrowRight, Star } from "lucide-react";
-import { PRODUCTS } from "../../data/products";
-import { CATEGORIES } from "../../data/categories";
 import ProductCard from "../biz/ProductCard/ProductCard";
 import heroImage from "../../assets/hero-tech.jpg";
+import { AuthContext } from "../Context/AuthContext/authContext";
 
-import React, { useState } from 'react'
+
+import React, { useState,useEffect,useContext } from 'react'
 
 function Index() {
-    const featured = PRODUCTS.filter(p => p.isFeatured).slice(0, 4);
-    const newest = PRODUCTS.filter(p => p.isNew).slice(0, 4);
+
+    const [products,setProducts] = useState([])
+    const [categories,setCategories] = useState([])
+
+    const {token} = useContext(AuthContext)
+    console.log(token);
+    
+    
+        useEffect(() => {
+    
+            const res = fetch("http://localhost:3000/product/all", {
+                method: "GET",
+                headers: {
+                    "Content-type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                }
+            })
+                .then(res => res.json())
+                .then((data) => {
+                    console.log("productos del backend", data);
+    
+                    setProducts([...data])
+    
+                })
+                .catch(error => console.log(error))//hacer mas robusto este catch
+        }, [])
+
+
+        useEffect(() => {
+        
+                const res = fetch("http://localhost:3000/category/all", {
+                    method: "GET",
+                    headers: {
+                        "Content-type": "application/json",
+                        "Authorization": `Bearer ${token}`
+                    }
+                })
+                    .then(res => res.json())
+                    .then((data) => {
+                        console.log("categorias del backend", data);
+        
+                        setCategories([...data])
+        
+                    })
+                    .catch(error => console.log(error))//hacer mas robusto este catch
+            }, [])
+    
+        console.log(products);
+    const featured = products.filter(p => p.isFeatured).slice(0, 4);
+    const newest = products.filter(p => p.isNew).slice(0, 4);
+
+
     
     return (
         <>
@@ -105,7 +155,7 @@ function Index() {
                 <h2 className="mb-4">Categorías</h2>
 
                 <Row>
-                    {CATEGORIES.map(cat => (
+                    {categories.map(cat => (
                         <Col md={3} key={cat.id} className="mb-3" >
                             <Link
                                 to={`/catalog?category=${cat.id}`}

@@ -11,6 +11,9 @@ function MyFavorites() {
   const { favorites, handleDeleteFavorite } = useContext(favoritesContext);
   const { cart, handleAddToCart, handleDecreaseQuantity } = useContext(cartContext);
 
+  console.log(favorites);
+  
+
   return (
     <Container className="py-4 py-lg-5">
       <h1 className="fw-bold mb-1" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
@@ -66,7 +69,7 @@ function MyFavorites() {
                     <div className="p-2 bg-light d-flex align-items-center justify-content-center" style={{ height: "140px" }}>
                       <Card.Img
                         variant="top"
-                        src={product.image || "https://via.placeholder.com/150"}
+                        src={new URL(`../../assets/${product.image}`, import.meta.url).href || "https://via.placeholder.com/150"}
                         alt={product.name}
                         style={{ maxHeight: "100%", maxWidth: "100%", objectFit: "contain" }}
                       />

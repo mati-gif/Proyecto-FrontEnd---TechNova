@@ -1,19 +1,63 @@
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState, useContext } from 'react'
 import { Link } from "react-router-dom";
 import { Card, Button, Form, Table, Modal, Badge } from "react-bootstrap";
 import { Pencil, Trash2, Plus, Search } from "lucide-react";
 import { formatPrice } from '../utils/formatPrice';
-import { CATEGORIES } from "../../data/categories"
-import { PRODUCTS } from "../../data/products"
+// import { CATEGORIES } from "../../data/categories"
+import { AuthContext } from '../Context/AuthContext/authContext';
 
 function AdminProducts() {
 
+    
+    const { token } = useContext(AuthContext)
+    const [products,setProducts] = useState([])
+    const [categories,setCategories] = useState([])
 
+    useEffect(() => {
+
+        const res = fetch("http://localhost:3000/product/all", {
+            method: "GET",
+            headers: {
+                "Content-type": "application/json",
+                "Authorization": `Bearer ${token}`
+            }
+        })
+            .then(res => res.json())
+            .then((data) => {
+                console.log("productos del backend", data);
+
+                setProducts([...data])
+
+            })
+            .catch(error => console.log(error))//hacer mas robusto este catch
+    }, [])
+
+    useEffect(() => {
+
+        const res = fetch("http://localhost:3000/category/all", {
+            method: "GET",
+            headers: {
+                "Content-type": "application/json",
+                "Authorization": `Bearer ${token}`
+            }
+        })
+            .then(res => res.json())
+            .then((data) => {
+                console.log("categorias del backend", data);
+
+                setCategories([...data])
+
+            })
+            .catch(error => console.log(error))//hacer mas robusto este catch
+    }, [])
+
+    console.log(products);
+    
     return (
         <div>
             <div className="d-flex flex-wrap align-items-center gap-2 mb-3">
                 <h2 className="h4 fw-bold mb-0" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
-                    Productos <span className="text-secondary fs-6 fw-normal">({PRODUCTS.length})</span>
+                    Productos <span className="text-secondary fs-6 fw-normal">({products.length})</span>
                 </h2>
                 <Link to="/admin/products/new" className="btn btn-primary ms-auto d-inline-flex align-items-center gap-1">
                     <Plus size={16} /> Nuevo producto
@@ -45,7 +89,7 @@ function AdminProducts() {
                     </div>
                     <Form.Select style={{ maxWidth: 220 }}>
                         <option value="all">Todas las categorías</option>
-                        {CATEGORIES.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
+                        {categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
                     </Form.Select>
                 </Card.Body>
             </Card>
@@ -62,14 +106,14 @@ function AdminProducts() {
                         </tr>
                     </thead>
                     <tbody>
-                        {PRODUCTS.length === 0 && (
+                        {products.length === 0 && (
                             <tr><td colSpan={5} className="text-center text-secondary py-4">Sin resultados</td></tr>
                         )}
-                        {PRODUCTS.map((p) => (
+                        {products.map((p) => (
                             <tr key={p.id}>
                                 <td>
                                     <div className="d-flex align-items-center gap-2">
-                                        <img src={p.image} alt={p.name} className="rounded bg-light"
+                                        <img src={new URL(`../../assets/${p.image}`, import.meta.url).href} alt={p.name} className="rounded bg-light"
                                             style={{ width: 44, height: 44, objectFit: "cover" }} />
                                         <div>
                                             <div className="fw-semibold small">{p.name}</div>

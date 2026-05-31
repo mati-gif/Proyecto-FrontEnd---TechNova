@@ -60,7 +60,7 @@ function Cart() {
                                         to={`/product/${product.slug}`}
                                         className="flex-shrink-0">
                                         <img
-                                            src={product.image}
+                                            src={new URL(`../../../assets/${product.image}`, import.meta.url).href }
                                             alt={product.name}
                                             width={112}
                                             height={112}
