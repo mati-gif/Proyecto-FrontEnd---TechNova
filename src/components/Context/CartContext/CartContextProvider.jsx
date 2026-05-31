@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { cartContext } from '../CartContext/cartContext'
+import { successToast, errorToast } from '../../shared/toast/toast'
 
 function CartContextProvider({ children }) {
 
@@ -25,9 +26,11 @@ function CartContextProvider({ children }) {
                     : item
             );
             setCart(updatedCart);
+            successToast(`${product.name} — Se añadió otra unidad al carrito`);
         } else {
             // 3. Si es nuevo, lo agregamos con cantidad 1
             setCart([...cart, { ...product, cantidad: 1 }]);
+            successToast(`${product.name} agregado al carrito`);
         }
 
 
@@ -47,11 +50,13 @@ function CartContextProvider({ children }) {
                 item.id === id ? { ...item, cantidad: item.cantidad - 1 } : item
             );
             setCart(updatedCart);
+            successToast(`${product.name} — Cantidad reducida en el carrito`);
         } else {
             // Escenario B: Eliminar del carrito
 
             const productToRemove = cart.filter((p) => p.id != id)
             setCart(productToRemove)
+            errorToast(`${product.name} eliminado del carrito`);
         }
     };
 
@@ -61,8 +66,10 @@ function CartContextProvider({ children }) {
 
     const handleDeleteProduct = (id) => {
         // Nos quedamos con todos los productos MENOS el que tiene ese ID
+        const product = cart.find(item => item.id === id);
         const updatedCart = cart.filter(item => item.id !== id);
         setCart(updatedCart);
+        if (product) errorToast(`${product.name} eliminado del carrito`);
     };
 
 

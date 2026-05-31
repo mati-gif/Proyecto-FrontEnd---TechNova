@@ -3,13 +3,18 @@ import { Container, Row, Col, Button, Badge } from "react-bootstrap";
 import { Truck, ShieldCheck, CreditCard, Zap, ArrowRight, Star } from "lucide-react";
 import ProductCard from "../biz/ProductCard/ProductCard";
 import heroImage from "../../assets/hero-tech.jpg";
+import { AuthContext } from "../Context/AuthContext/authContext";
 
-import React, { useState } from 'react'
+
+import React, { useState,useEffect,useContext } from 'react'
 
 function Index() {
 
     const [products,setProducts] = useState([])
     const [categories,setCategories] = useState([])
+
+    const {token} = useContext(AuthContext)
+    console.log(token);
     
     
         useEffect(() => {

@@ -1,15 +1,22 @@
-import React, { useContext } from "react"; 
+import React, { useContext, useState } from "react"; 
+import "../../../App.css";
 import { useParams } from "react-router-dom";
 import { PRODUCTS } from "../../../data/products";
 import { Container, Row, Col, Button, Badge } from "react-bootstrap";
 import { ShoppingCart, Heart } from "lucide-react"; 
 import { cartContext } from "../../Context/CartContext/cartContext"; 
+import { favoritesContext } from "../../Context/FavoritesContext/favoritesContext";
 
 function SingleProduct() {
   const { slug } = useParams();
+
+  // Estado local para la animación de los iconos
+  const [isCartAnimating, setIsCartAnimating] = useState(false);
+  const [isFavAnimating, setIsFavAnimating] = useState(false);
   
-  // Contexto del carrito
+  // Contextos
   const { handleAddToCart } = useContext(cartContext);
+  const { favorites, handleToggleFavorite } = useContext(favoritesContext);
 
   const producto = PRODUCTS.find(p => p.slug === slug);
 
@@ -28,6 +35,18 @@ function SingleProduct() {
   const discount = producto.originalPrice
     ? Math.round(((producto.originalPrice - producto.price) / producto.originalPrice) * 100)
     : 0;
+
+  // Verificamos si este producto ya está guardado en favoritos
+  const isFavorite = favorites.some(fav => fav.id === producto.id);
+
+  // Función combinada para favorito + animación
+  const handleFavoriteClick = () => {
+    setIsFavAnimating(true);
+    handleToggleFavorite(producto);
+    setTimeout(() => {
+      setIsFavAnimating(false);
+    }, 600);
+  };
 
   return (
     <Container className="py-5">
@@ -51,6 +70,14 @@ function SingleProduct() {
                 <Badge bg="danger" className="fs-6 px-3 py-2 shadow-sm">-{discount}%</Badge>
               )}
             </div>
+
+            {/* Overlay para animaciones centradas (cart / fav) */}
+            {(isCartAnimating || isFavAnimating) && (
+              <div className="tn-action-overlay">
+                {isCartAnimating && <ShoppingCart className="action-icon cart-pop action-color" size={44} />}
+                {isFavAnimating && <Heart className="action-icon heart-pop action-color fav-color" size={52} />}
+              </div>
+            )}
 
             {/* Cartel de Sin Stock sobre la imagen */}
             {outOfStock && (
@@ -104,30 +131,36 @@ function SingleProduct() {
             </ul>
 
             {/* Botones */}
-            <div className="d-flex gap-3 align-items-center mt-5">
-              {/* Añadir al carrito */}
-              <div className="flex-grow-1">
-                <Button 
-                  variant="primary" 
-                  size="lg" 
-                  className="w-100 py-3 fw-bold shadow-sm d-flex align-items-center justify-content-center gap-2"
-                  disabled={outOfStock}
-                  onClick={() => handleAddToCart(producto)}
-                >
-                  <ShoppingCart size={20} /> 
-                  {outOfStock ? "Agotado" : "Añadir al carrito"}
-                </Button>
-              </div>
+            <div className="single-product-actions d-flex align-items-center gap-3 mt-5">
+              <Button 
+                variant="primary" 
+                size="lg" 
+                className="btn-add-cart py-3 px-4 fw-bold shadow-sm d-flex align-items-center justify-content-center gap-2"
+                disabled={outOfStock}
+                onClick={() => {
+                  handleAddToCart(producto)
+                  setIsCartAnimating(true)
+                  setTimeout(() => setIsCartAnimating(false), 400)
+                }}
+              >
+                <ShoppingCart className={isCartAnimating ? 'cart-pop' : ''} size={20} /> 
+                {outOfStock ? "Agotado" : "Agregar al carrito"}
+              </Button>
 
-              {/* Favoritos */}
-              {/* <Button
+              <Button
                 variant="outline-danger"
                 size="lg"
-                className="py-3 px-3 d-flex align-items-center justify-content-center shadow-sm"
-                onClick={() => console.log("Agregado a favoritos:", producto.id)}
+                className="btn-favorite py-3 px-4 d-flex align-items-center justify-content-center gap-2"
+                onClick={handleFavoriteClick}
               >
-                <Heart size={24} className="text-danger" />
-              </Button> */}
+                <Heart 
+                  size={24} 
+                  className="heart-pop" 
+                  stroke="currentColor"
+                  fill={isFavorite ? "currentColor" : "none"} 
+                />
+                Agregar a favoritos
+              </Button>
             </div>
 
           </div>
