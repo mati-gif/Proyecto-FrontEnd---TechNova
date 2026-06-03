@@ -3,6 +3,7 @@ import { Card, Table, Button, Badge, Modal, Form } from "react-bootstrap";
 import { Trash2, KeyRound, Shield } from "lucide-react";
 import { z } from "zod";
 import { AuthContext } from "../Context/AuthContext/authContext";
+import DeleteModal from "../shared/deleteModal/DeleteModal";
 
 
 function AdminUsers() {
@@ -13,6 +14,11 @@ function AdminUsers() {
     const [users,setUsers] = useState([])
 
     console.log("usuario logueado",user);
+
+
+    // Estados para el Modal de eliminación
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [userToDelete, setUserToDelete] = useState(null);
     
 
 
@@ -24,11 +30,7 @@ function AdminUsers() {
     const refresh = () => setRefreshKey((k) => k + 1);
     void refreshKey;
 
-    const handleDelete = () => {
-        if (!toDelete) return;
-        if (deleteUser(toDelete.id)) refresh();
-        setToDelete(null);
-    };
+
 
     const handleChangePassword = () => {
         if (!pwTarget) return;
@@ -50,6 +52,7 @@ function AdminUsers() {
         r === "superadmin" ? "warning" : r === "admin" ? "info" : "secondary";
 
 
+    //obtengo todos los usuarios activos 
     useEffect(()=>{
         const res = fetch("http://localhost:3000/user/all",{
             method:"GET",
@@ -68,6 +71,55 @@ function AdminUsers() {
     },[])
 
     console.log(users);
+
+    // Funciones para manejar el modal
+    const handleOpenDeleteModal = (user) => {
+        setUserToDelete(user);
+        setShowDeleteModal(true);
+    };
+
+    const handleCloseDeleteModal = () => {
+        setShowDeleteModal(false);
+        setUserToDelete(null);
+    };
+
+    const handleDelete = async () => {
+    if (!userToDelete) return;
+
+    try {
+        const response = await fetch(`http://localhost:3000/delete/user/${userToDelete.id}`, {
+            method: "PUT", 
+            headers: {
+                "Content-type": "application/json",
+                "Authorization": `Bearer ${token}`
+            }
+        });
+
+        // 1. Validar si la respuesta es exitosa
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || "Error al eliminar el usuario");
+        }
+
+        
+        // Filtrar el estado actual 
+        setUsers((prevUsers) => prevUsers.filter(u => u.id !== userToDelete.id));
+        
+        console.log("Usuario eliminado exitosamente");
+
+    } catch (error) {
+        console.error("Error al eliminar:", error);
+        errorToast(error.message);
+    } finally {
+        // Siempre cerramos el modal, pase lo que pase
+        handleCloseDeleteModal();
+    }
+};
+    console.log("usuario a borrar",userToDelete);
+    console.log("estado del modal",showDeleteModal);
+    console.log(users);
+
+    
     
     return (
         <div>
@@ -130,7 +182,7 @@ function AdminUsers() {
                                         <Button size="sm" variant="outline-danger"
                                             disabled={isSuper || isSelf}
                                             title={isSuper ? "No se puede eliminar superadmin" : isSelf ? "No podés eliminarte" : "Eliminar"}
-                                            onClick={() => setToDelete(u)}>
+                                            onClick={() => handleOpenDeleteModal(u)}>
                                             <Trash2 size={14} />
                                         </Button>
                                     </td>
@@ -141,16 +193,14 @@ function AdminUsers() {
                 </Table>
             </Card>
             {/* Delete modal */}
-            <Modal show={!!toDelete} onHide={() => setToDelete(null)} centered>
-                <Modal.Header closeButton><Modal.Title>Eliminar usuario</Modal.Title></Modal.Header>
-                <Modal.Body>
-                    ¿Eliminar a <strong>{toDelete?.name}</strong> ({toDelete?.email})? Sus pedidos quedarán sin propietario.
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="outline-secondary" onClick={() => setToDelete(null)}>Cancelar</Button>
-                    <Button variant="danger" onClick={handleDelete}>Eliminar</Button>
-                </Modal.Footer>
-            </Modal>
+            <DeleteModal 
+                show={showDeleteModal}
+                user={userToDelete}
+                onHide={handleCloseDeleteModal}
+                onDelete={handleDelete}
+                
+            />
+                
 
             {/* Password modal */}
             <Modal show={!!pwTarget} onHide={() => setPwTarget(null)} centered>
