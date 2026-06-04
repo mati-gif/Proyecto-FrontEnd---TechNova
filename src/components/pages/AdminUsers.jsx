@@ -5,7 +5,7 @@ import { z } from "zod";
 import { AuthContext } from "../Context/AuthContext/authContext";
 import DeleteModal from "../shared/deleteModal/DeleteModal";
 import ChangePasswordModal from "../shared/changePasswordModal/ChangePasswordModal";
-import { successToast,errorToast } from "../shared/toast/toast";
+import { successToast, errorToast } from "../shared/toast/toast";
 function AdminUsers() {
 
     const { token, user } = useContext(AuthContext)
@@ -24,41 +24,41 @@ function AdminUsers() {
 
 
 
-const handleRoleChange = async (userToUpdate, newRoleName) => {
+    const handleRoleChange = async (userToUpdate, newRoleName) => {
 
-    try {
-        const response = await fetch(`http://localhost:3000/change/role/${userToUpdate.id}`, { 
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`
-            },
-            body: JSON.stringify({ roleName: newRoleName })
-        });
+        try {
+            const response = await fetch(`http://localhost:3000/change/role/${userToUpdate.id}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
+                body: JSON.stringify({ roleName: newRoleName })
+            });
 
-        if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.message || "Error al actualizar el rol");
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || "Error al actualizar el rol");
+            }
+
+            // 2. Si todo sale bien, actualizamos el estado local de los usuarios
+            // Esto hace que el cambio sea instantáneo en la UI
+            setUsers((prevUsers) =>
+                prevUsers.map((u) =>
+                    u.id === userToUpdate.id
+                        ? { ...u, role: { ...u.role, name: newRoleName } }
+                        : u
+                )
+            );
+
+            successToast("Rol actualizado exitosamente");
+
+        } catch (error) {
+            console.error("Error al cambiar rol:", error);
+            errorToast(error.message);
+
         }
-
-        // 2. Si todo sale bien, actualizamos el estado local de los usuarios
-        // Esto hace que el cambio sea instantáneo en la UI
-        setUsers((prevUsers) =>
-            prevUsers.map((u) =>
-                u.id === userToUpdate.id 
-                    ? { ...u, role: { ...u.role, name: newRoleName } } 
-                    : u
-            )
-        );
-
-        successToast("Rol actualizado exitosamente");
-
-    } catch (error) {
-        console.error("Error al cambiar rol:", error);
-        errorToast(error.message);
-        
-    }
-};
+    };
 
 
     const roleVariant = (r) =>
@@ -79,8 +79,10 @@ const handleRoleChange = async (userToUpdate, newRoleName) => {
             .then((data) => {
                 setUsers([...data])
             })
-            .catch(error => console.log(error)//hacer mas robusto este catch
-            )
+            .catch((error) => {
+                errorToast(error.message);
+                console.log(error)
+            })
     }, [])
 
     console.log(users);
@@ -163,7 +165,7 @@ const handleRoleChange = async (userToUpdate, newRoleName) => {
             return;
         }
 
-        
+
 
         try {
             const response = await fetch(`http://localhost:3000/change/password/${userToChangePassword.id}`, {
@@ -172,7 +174,7 @@ const handleRoleChange = async (userToUpdate, newRoleName) => {
                     "Content-type": "application/json",
                     "Authorization": `Bearer ${token}`
                 },
-                body: JSON.stringify( {newPw} )
+                body: JSON.stringify({ newPw })
             });
 
             if (!response.ok) {
@@ -181,13 +183,13 @@ const handleRoleChange = async (userToUpdate, newRoleName) => {
             }
 
             const data = await response.json();
-            
+
             successToast(data.message || "Contraseña actualizada exitosamente");
             handleHidePasswordModal(); // Cierra el modal y limpia los estados
 
         } catch (error) {
             console.error("Error cambiando contraseña:", error);
-            setPwError(error.message); 
+            setPwError(error.message);
             errorToast(error.message); // También lo muestra en el toast
         }
 
@@ -277,7 +279,7 @@ const handleRoleChange = async (userToUpdate, newRoleName) => {
 
             />
 
-{/* Password modal */}
+            {/* Password modal */}
             <ChangePasswordModal
                 show={showPasswordModal}
                 onHide={handleHidePasswordModal}
@@ -289,8 +291,8 @@ const handleRoleChange = async (userToUpdate, newRoleName) => {
 
             />
 
-            
-            
+
+
         </div>
     )
 }
