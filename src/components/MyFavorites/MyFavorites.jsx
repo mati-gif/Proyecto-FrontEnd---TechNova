@@ -69,7 +69,7 @@ function MyFavorites() {
                     <div className="p-2 bg-light d-flex align-items-center justify-content-center" style={{ height: "140px" }}>
                       <Card.Img
                         variant="top"
-                        src={new URL(`../../assets/${product.image}`, import.meta.url).href || "https://via.placeholder.com/150"}
+                        src={product.image || "https://via.placeholder.com/150"}
                         alt={product.name}
                         style={{ maxHeight: "100%", maxWidth: "100%", objectFit: "contain" }}
                       />

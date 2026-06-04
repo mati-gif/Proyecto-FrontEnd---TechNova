@@ -29,7 +29,7 @@ function ProductCard({ product }) {
                                 <div className="position-relative">
                     <Card.Img
                         variant="top"
-                        src={new URL(`../../../assets/${product.image}`, import.meta.url).href}
+                        src={product.image}
                         className="tn-product-image"
                     />
 
