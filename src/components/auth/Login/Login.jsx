@@ -79,7 +79,6 @@ function Login({ onLogin }) {
         }
 
         manageLogin(email, password);
-        navigate("/")
     };
 
     const manageLogin = (email, password) => {
@@ -106,6 +105,8 @@ function Login({ onLogin }) {
                 setEmail("")
                 setPassword("")
                 setErrors(initialLoginFormErrors)
+                navigate("/")
+                
             })
             .catch((err) => {
                 errorToast(`Ha ocurrido un error: ${err.message || JSON.stringify(err)}`);
