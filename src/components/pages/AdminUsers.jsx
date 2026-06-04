@@ -4,75 +4,88 @@ import { Trash2, KeyRound, Shield } from "lucide-react";
 import { z } from "zod";
 import { AuthContext } from "../Context/AuthContext/authContext";
 import DeleteModal from "../shared/deleteModal/DeleteModal";
-
-
+import ChangePasswordModal from "../shared/changePasswordModal/ChangePasswordModal";
+import { successToast,errorToast } from "../shared/toast/toast";
 function AdminUsers() {
 
-
-    const [refreshKey, setRefreshKey] = useState(0);
-    const {token,user} = useContext(AuthContext)
-    const [users,setUsers] = useState([])
-
-    console.log("usuario logueado",user);
+    const { token, user } = useContext(AuthContext)
+    const [users, setUsers] = useState([])
 
 
     // Estados para el Modal de eliminación
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [userToDelete, setUserToDelete] = useState(null);
-    
 
-
-    const [toDelete, setToDelete] = useState(null);
-    const [pwTarget, setPwTarget] = useState(null);
+    //estados del modal de cambiar la contraseña
+    const [userToChangePassword, setUserToChangePassword] = useState(null)
+    const [showPasswordModal, setShowPasswordModal] = useState(false)
     const [newPw, setNewPw] = useState("");
     const [pwError, setPwError] = useState("");
 
-    const refresh = () => setRefreshKey((k) => k + 1);
-    void refreshKey;
 
 
+const handleRoleChange = async (userToUpdate, newRoleName) => {
 
-    const handleChangePassword = () => {
-        if (!pwTarget) return;
-        const parsed = passwordSchema.safeParse(newPw);
-        if (!parsed.success) {
-            setPwError(parsed.error.issues[0].message);
-            return;
+    try {
+        const response = await fetch(`http://localhost:3000/change/role/${userToUpdate.id}`, { 
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            },
+            body: JSON.stringify({ roleName: newRoleName })
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || "Error al actualizar el rol");
         }
-        if (changeUserPassword(pwTarget.id, parsed.data)) {
-            setPwTarget(null); setNewPw(""); setPwError("");
-        }
-    };
 
-    const handleRoleChange = (u, role) => {
-        if (changeUserRole(u.id, role)) refresh();
-    };
+        // 2. Si todo sale bien, actualizamos el estado local de los usuarios
+        // Esto hace que el cambio sea instantáneo en la UI
+        setUsers((prevUsers) =>
+            prevUsers.map((u) =>
+                u.id === userToUpdate.id 
+                    ? { ...u, role: { ...u.role, name: newRoleName } } 
+                    : u
+            )
+        );
+
+        successToast("Rol actualizado exitosamente");
+
+    } catch (error) {
+        console.error("Error al cambiar rol:", error);
+        errorToast(error.message);
+        
+    }
+};
+
 
     const roleVariant = (r) =>
         r === "superadmin" ? "warning" : r === "admin" ? "info" : "secondary";
 
 
     //obtengo todos los usuarios activos 
-    useEffect(()=>{
-        const res = fetch("http://localhost:3000/user/all",{
-            method:"GET",
-            headers:{
-                "Content-type":"application/json",
+    useEffect(() => {
+        const res = fetch("http://localhost:3000/user/all", {
+            method: "GET",
+            headers: {
+                "Content-type": "application/json",
                 "Authorization": `Bearer ${token}`
             }
-            
+
         })
-        .then(res => res.json())
-        .then((data) =>{
-            setUsers([...data])
-        })
-        .catch(error => console.log(error)//hacer mas robusto este catch
-        )
-    },[])
+            .then(res => res.json())
+            .then((data) => {
+                setUsers([...data])
+            })
+            .catch(error => console.log(error)//hacer mas robusto este catch
+            )
+    }, [])
 
     console.log(users);
 
-    // Funciones para manejar el modal
+    // Funciones para manejar el modal de eliminacion
     const handleOpenDeleteModal = (user) => {
         setUserToDelete(user);
         setShowDeleteModal(true);
@@ -83,49 +96,112 @@ function AdminUsers() {
         setUserToDelete(null);
     };
 
+    //funciones para manejar el modal de cambiar la contraseña
+    const handleOpenPasswordModal = (user) => {
+        setUserToChangePassword(user)
+        setShowPasswordModal(true)
+
+    }
+
+    const handleHidePasswordModal = () => {
+        setUserToChangePassword(null)
+        setShowPasswordModal(false)
+        setNewPw(""); // Limpiamos el input al cerrar
+        setPwError("");
+    }
+
+    const changePassword = (event) => {
+
+        setNewPw(event.target.value)
+        setPwError("");
+    }
+
     const handleDelete = async () => {
-    if (!userToDelete) return;
+        if (!userToDelete) return;
 
-    try {
-        const response = await fetch(`http://localhost:3000/delete/user/${userToDelete.id}`, {
-            method: "PUT", 
-            headers: {
-                "Content-type": "application/json",
-                "Authorization": `Bearer ${token}`
+        try {
+            const response = await fetch(`http://localhost:3000/delete/user/${userToDelete.id}`, {
+                method: "PUT",
+                headers: {
+                    "Content-type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                }
+            });
+
+            // 1. Validar si la respuesta es exitosa
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || "Error al eliminar el usuario");
             }
-        });
+            const data = await response.json();
+            // Filtrar el estado actual 
+            setUsers((prevUsers) => prevUsers.filter(u => u.id !== userToDelete.id));
 
-        // 1. Validar si la respuesta es exitosa
-        if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.message || "Error al eliminar el usuario");
+            console.log("Usuario eliminado exitosamente");
+            successToast(data.message || "Usuario eliminado exitosamente");
+
+        } catch (error) {
+            console.error("Error al eliminar:", error);
+            errorToast(error.message);
+        } finally {
+            // Siempre cerramos el modal, pase lo que pase
+            handleCloseDeleteModal();
+        }
+    };
+
+
+    const handleChangePassword = async (event) => {
+
+        event.preventDefault()
+        if (!newPw) {
+            setPwError("La contraseña no puede estar vacía");
+            return;
+        }
+
+        if (newPw.length < 7) {
+            setPwError("La contraseña debe tener un mínimo de 7 caracteres");
+            return;
         }
 
         
-        // Filtrar el estado actual 
-        setUsers((prevUsers) => prevUsers.filter(u => u.id !== userToDelete.id));
-        
-        console.log("Usuario eliminado exitosamente");
 
-    } catch (error) {
-        console.error("Error al eliminar:", error);
-        errorToast(error.message);
-    } finally {
-        // Siempre cerramos el modal, pase lo que pase
-        handleCloseDeleteModal();
-    }
-};
-    console.log("usuario a borrar",userToDelete);
-    console.log("estado del modal",showDeleteModal);
-    console.log(users);
+        try {
+            const response = await fetch(`http://localhost:3000/change/password/${userToChangePassword.id}`, {
+                method: "PUT",
+                headers: {
+                    "Content-type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
+                body: JSON.stringify( {newPw} )
+            });
 
-    
-    
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || "Error al actualizar la contraseña");
+            }
+
+            const data = await response.json();
+            
+            successToast(data.message || "Contraseña actualizada exitosamente");
+            handleHidePasswordModal(); // Cierra el modal y limpia los estados
+
+        } catch (error) {
+            console.error("Error cambiando contraseña:", error);
+            setPwError(error.message); 
+            errorToast(error.message); // También lo muestra en el toast
+        }
+
+
+    };
+
+
+    console.log("Nueva contraseña: ", newPw);
+
     return (
         <div>
             <div className="d-flex flex-wrap align-items-center gap-2 mb-3">
                 <h2 className="h4 fw-bold mb-0" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
-                    Usuarios <span className="text-secondary fs-6 fw-normal">(3)</span>
+                    Usuarios <span className="text-secondary fs-6 fw-normal">({users.length})</span>
                 </h2>
             </div>
 
@@ -149,7 +225,7 @@ function AdminUsers() {
                                     <td>
                                         <div className="d-flex align-items-center gap-2">
                                             <span className="rounded-circle bg-gradient-primary text-white d-inline-flex align-items-center justify-content-center fw-semibold"
-                                                style={{ width: 32, height: 32, fontSize: 13,background: 'linear-gradient(135deg, #2b56f5, #5b8bff)' }}>
+                                                style={{ width: 32, height: 32, fontSize: 13, background: 'linear-gradient(135deg, #2b56f5, #5b8bff)' }}>
                                                 {u.name.charAt(0).toUpperCase()}
                                             </span>
                                             <div>
@@ -176,7 +252,7 @@ function AdminUsers() {
                                     </td>
                                     <td className="text-end">
                                         <Button size="sm" variant="outline-secondary" className="me-1"
-                                            onClick={() => { setPwTarget(u); setNewPw(""); setPwError(""); }}>
+                                            onClick={() => handleOpenPasswordModal(u)}>
                                             <KeyRound size={14} className="me-1" /> Contraseña
                                         </Button>
                                         <Button size="sm" variant="outline-danger"
@@ -193,33 +269,28 @@ function AdminUsers() {
                 </Table>
             </Card>
             {/* Delete modal */}
-            <DeleteModal 
+            <DeleteModal
                 show={showDeleteModal}
                 user={userToDelete}
                 onHide={handleCloseDeleteModal}
                 onDelete={handleDelete}
-                
-            />
-                
 
-            {/* Password modal */}
-            <Modal show={!!pwTarget} onHide={() => setPwTarget(null)} centered>
-                <Modal.Header closeButton><Modal.Title>Cambiar contraseña</Modal.Title></Modal.Header>
-                <Modal.Body>
-                    <p className="small text-secondary">Usuario: <strong>{pwTarget?.email}</strong></p>
-                    <Form.Group>
-                        <Form.Label>Nueva contraseña</Form.Label>
-                        <Form.Control type="password" value={newPw}
-                            onChange={(e) => { setNewPw(e.target.value); setPwError(""); }}
-                            isInvalid={!!pwError} placeholder="Mínimo 6 caracteres" autoFocus />
-                        <Form.Control.Feedback type="invalid">{pwError}</Form.Control.Feedback>
-                    </Form.Group>
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="outline-secondary" onClick={() => setPwTarget(null)}>Cancelar</Button>
-                    <Button variant="primary" onClick={handleChangePassword}>Actualizar</Button>
-                </Modal.Footer>
-            </Modal>
+            />
+
+{/* Password modal */}
+            <ChangePasswordModal
+                show={showPasswordModal}
+                onHide={handleHidePasswordModal}
+                user={userToChangePassword}
+                changePassword={changePassword}
+                newPass={newPw}
+                error={pwError}
+                onSubmit={handleChangePassword}
+
+            />
+
+            
+            
         </div>
     )
 }
