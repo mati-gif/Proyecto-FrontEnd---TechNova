@@ -5,7 +5,7 @@ import { Pencil, Trash2, Plus, Search } from "lucide-react";
 import { formatPrice } from '../utils/formatPrice';
 // import { CATEGORIES } from "../../data/categories"
 import { AuthContext } from '../Context/AuthContext/authContext';
-import { errorToast,successToast } from '../shared/toast/toast';
+import { errorToast, successToast } from '../shared/toast/toast';
 import DeleteProductModal from '../shared/DeleteProductModal/DeleteProductModal';
 
 function AdminProducts() {
@@ -107,7 +107,17 @@ function AdminProducts() {
             handleCloseDeleteModal();
         }
     };
-    
+
+    const getImageSrc = (image) => {
+        return image.startsWith("http")
+            ? image
+            : new URL(
+                `../../assets/${image}`,
+                import.meta.url
+            ).href;
+    }
+
+
 
     return (
         <div>
@@ -169,7 +179,7 @@ function AdminProducts() {
                             <tr key={p.id}>
                                 <td>
                                     <div className="d-flex align-items-center gap-2">
-                                        <img src={new URL(`../../assets/${p.image}`, import.meta.url).href} alt={p.name} className="rounded bg-light"
+                                        <img src={getImageSrc(p.image)} alt={p.name} className="rounded bg-light"
                                             style={{ width: 44, height: 44, objectFit: "cover" }} />
                                         <div>
                                             <div className="fw-semibold small">{p.name}</div>
@@ -188,8 +198,8 @@ function AdminProducts() {
                                     <Link to={`/admin/products/${p.id}/edit`} className="btn btn-sm btn-outline-secondary me-1">
                                         <Pencil size={14} />
                                     </Link>
-                                    <Button variant="outline-danger" size="sm" 
-                                    onClick={() => handleOpenDeleteModal(p)}
+                                    <Button variant="outline-danger" size="sm"
+                                        onClick={() => handleOpenDeleteModal(p)}
                                     >
                                         <Trash2 size={14} />
                                     </Button>
@@ -200,7 +210,7 @@ function AdminProducts() {
                 </Table>
             </Card>
 
-            <DeleteProductModal 
+            <DeleteProductModal
                 onHide={handleCloseDeleteModal}
                 show={showDeleteModal}
                 product={productToDelete}
