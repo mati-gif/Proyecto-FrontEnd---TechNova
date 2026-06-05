@@ -72,6 +72,11 @@ function CartContextProvider({ children }) {
         if (product) errorToast(`${product.name} eliminado del carrito`);
     };
 
+      //  constantes de envío 
+    const shippingThreshold = 500000; // Monto para envío gratis
+    const shippingCost = totalPrice >= shippingThreshold ? 0 : 5000;
+    const finalTotal = totalPrice + shippingCost;
+
 
     useEffect(() => {
 
@@ -83,7 +88,8 @@ function CartContextProvider({ children }) {
     return (
 
         <cartContext.Provider value={{
-            cart, handleAddToCart, totalQuantity, handleDecreaseQuantity, totalPrice, handleDeleteProduct
+            cart, handleAddToCart, totalQuantity, handleDecreaseQuantity, totalPrice, handleDeleteProduct,
+            shippingThreshold,shippingCost,finalTotal
         }}>
             {children}
 

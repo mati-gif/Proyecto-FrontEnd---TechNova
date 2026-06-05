@@ -58,12 +58,17 @@ function ProductCategories() {
   const [searchParams, setSearchParams] = useSearchParams();
   const categoria = searchParams.get("category");
   const marcaActiva = searchParams.get("brand");
+  const searchQuery = searchParams.get("q");
 
-  // Filtrado de Categoría + Marca
+  // Filtrado de Categoría + Marca + Busqueda
   const productosFiltrados = products.filter((p) => {
     const matchCategoria = categoria ? Number(p.categoryId) === Number(categoria) : true;
     const matchMarca = marcaActiva ? p.brand === marcaActiva : true;
-    return matchCategoria && matchMarca;
+    const matchSearch = searchQuery
+      ? p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      p.description.toLowerCase().includes(searchQuery.toLowerCase())
+      : true;
+    return matchCategoria && matchMarca && matchSearch;;
   });
   
 
@@ -105,9 +110,6 @@ function ProductCategories() {
               </span>
             </ListGroup.Item>
 
-            {/* {categories.map((cat) => {
-
-            })} */}
             {categories && categories.length > 0 && categories.map((cat) => {
                   // Contar cuántos productos hay en esta categoría
               const count = products.filter(p => Number(p.categoryId) === Number(cat.id)).length;
@@ -147,7 +149,9 @@ function ProductCategories() {
         {/* Nombres de Categorias */}
         <Col md={9}>
           <div className="mb-4">
-            <h2>{categoria ? categories.find(c => Number(c.id) === Number(categoria))?.name : "Todos los productos"}</h2>
+            <h2>{searchQuery
+                ? `Resultados para "${searchQuery}"`
+                :categoria ? categories.find(c => Number(c.id) === Number(categoria))?.name : "Todos los productos"}</h2>
           </div>
 
           <Row>

@@ -4,21 +4,19 @@ import { Container, Row, Col, Button, Card } from "react-bootstrap";
 import { Minus, Plus, Trash2, ShoppingBag, ArrowRight } from "lucide-react";
 import { cartContext } from '../../Context/CartContext/cartContext';
 import { formatPrice } from '../../utils/formatPrice';
+import { AuthContext } from '../../Context/AuthContext/authContext';
 
 
 function Cart() {
     const navigate = useNavigate();
 
     //carrito real
-    const { cart, handleAddToCart, handleDecreaseQuantity, totalPrice, handleDeleteProduct } = useContext(cartContext)
+    const { shippingThreshold,shippingCost,finalTotal,cart, handleAddToCart, handleDecreaseQuantity, totalPrice, handleDeleteProduct } = useContext(cartContext)
     console.log(cart);
 
+    const {user} = useContext(AuthContext)
 
 
-    //  constantes de envío 
-    const shippingThreshold = 500000; // Monto para envío gratis
-    const shippingCost = totalPrice >= shippingThreshold ? 0 : 5000;
-    const finalTotal = totalPrice + shippingCost;
 
     if (!cart || cart.length === 0) {
         return (
@@ -60,7 +58,7 @@ function Cart() {
                                         to={`/product/${product.slug}`}
                                         className="flex-shrink-0">
                                         <img
-                                            src={new URL(`../../../assets/${product.image}`, import.meta.url).href }
+                                            src={product.image }
                                             alt={product.name}
                                             width={112}
                                             height={112}
@@ -165,10 +163,12 @@ function Cart() {
                                     size="lg"
                                     variant="primary"
                                     className="w-100 mt-3 d-flex align-items-center justify-content-center gap-2 shadow-glow">
-                                    {/* {user ? "Continuar compra" : "Iniciar sesión y pagar"} */}
+                                    {user ? "Continuar compra" : "Iniciar sesión y pagar"}
                                     <ArrowRight size={16} />
                                 </Button>
                                 <Button
+                                    as={Link}
+                                    to="/"
                                     variant="link"
                                     size="sm"
                                     className="w-100 mt-2 text-secondary text-decoration-none">

@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState,useEffect } from "react";
 import "../../../App.css";
 import { useParams } from "react-router-dom";
 // import { PRODUCTS } from "../../../data/products";
@@ -24,18 +24,48 @@ function SingleProduct() {
   const { handleAddToCart } = useContext(cartContext);
   const { favorites, handleToggleFavorite } = useContext(favoritesContext);
 
-  const producto = products.find(p => p.slug === slug);
+
+
+
+  useEffect(() => {
+
+    const res = fetch("http://localhost:3000/product/all", {
+      method: "GET",
+      headers: {
+        "Content-type": "application/json",
+      }
+
+    })
+      .then(res => res.json())
+      .then((data) => {
+        console.log("productos del backend", data);
+
+        setProducts([...data])
+        console.log(data);
+        
+      })
+      .catch(error => console.log(error))
+  }, [])
+
+    const producto = products.find(p => p.slug === slug);
 
   console.log("Estos son los products", producto);
 
 
-  if (!producto) {
-    return (
+if (products.length === 0) {
+  return (
+      <Container className="py-5 text-center">
+        <h2 className="text-muted">Cargando...</h2>
+      </Container>
+    );
+}
+if (!producto) {
+  return (
       <Container className="py-5 text-center">
         <h2 className="text-muted">Producto no encontrado</h2>
       </Container>
     );
-  }
+}
 
   // Validación de Stock 
   const outOfStock = producto.stock <= 0;
@@ -56,25 +86,6 @@ function SingleProduct() {
       setIsFavAnimating(false);
     }, 600);
   };
-
-  useEffect(() => {
-
-    const res = fetch("http://localhost:3000/product/all", {
-      method: "GET",
-      headers: {
-        "Content-type": "application/json",
-      }
-
-    })
-      .then(res => res.json())
-      .then((data) => {
-        console.log("productos del backend", data);
-
-        setProducts([...data])
-
-      })
-      .catch(error => console.log(error))
-  }, [])
   return (
     <Container className="py-5">
       <Row className="align-items-center g-5">
