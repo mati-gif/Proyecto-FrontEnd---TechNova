@@ -1,24 +1,33 @@
-import React, { useContext, useState } from "react"; 
+import React, { useContext, useState } from "react";
 import "../../../App.css";
 import { useParams } from "react-router-dom";
-import { PRODUCTS } from "../../../data/products";
+// import { PRODUCTS } from "../../../data/products";
 import { Container, Row, Col, Button, Badge } from "react-bootstrap";
-import { ShoppingCart, Heart } from "lucide-react"; 
-import { cartContext } from "../../Context/CartContext/cartContext"; 
+import { ShoppingCart, Heart } from "lucide-react";
+import { cartContext } from "../../Context/CartContext/cartContext";
 import { favoritesContext } from "../../Context/FavoritesContext/favoritesContext";
 
 function SingleProduct() {
   const { slug } = useParams();
 
+  console.log(slug);
+
+  const [products, setProducts] = useState([])
+
+  console.log(products);
+
   // Estado local para la animación de los iconos
   const [isCartAnimating, setIsCartAnimating] = useState(false);
   const [isFavAnimating, setIsFavAnimating] = useState(false);
-  
+
   // Contextos
   const { handleAddToCart } = useContext(cartContext);
   const { favorites, handleToggleFavorite } = useContext(favoritesContext);
 
-  const producto = PRODUCTS.find(p => p.slug === slug);
+  const producto = products.find(p => p.slug === slug);
+
+  console.log("Estos son los products", producto);
+
 
   if (!producto) {
     return (
@@ -48,19 +57,37 @@ function SingleProduct() {
     }, 600);
   };
 
+  useEffect(() => {
+
+    const res = fetch("http://localhost:3000/product/all", {
+      method: "GET",
+      headers: {
+        "Content-type": "application/json",
+      }
+
+    })
+      .then(res => res.json())
+      .then((data) => {
+        console.log("productos del backend", data);
+
+        setProducts([...data])
+
+      })
+      .catch(error => console.log(error))
+  }, [])
   return (
     <Container className="py-5">
       <Row className="align-items-center g-5">
         {/* Columna de la imagen */}
         <Col md={6}>
           <div className="shadow-sm rounded overflow-hidden bg-light p-3 d-flex justify-content-center align-items-center position-relative" style={{ minHeight: "450px" }}>
-            <img 
-              src={producto.image} 
+            <img
+              src={producto.image}
               alt={producto.name}
-              className="img-fluid" 
+              className="img-fluid"
               style={{ maxHeight: "450px", objectFit: "contain" }}
             />
-            
+
             {/* Nuevo o Descuento sobre la imagen */}
             <div className="position-absolute top-0 start-0 p-3 d-flex flex-column gap-2">
               {producto.isNew && (
@@ -93,7 +120,7 @@ function SingleProduct() {
           <div className="ps-md-4">
             <span className="text-uppercase text-muted fw-bold small tracking-wider">{producto.brand}</span>
             <h1 className="display-5 fw-bold text-dark mt-1 mb-3">{producto.name}</h1>
-            
+
             <div className="mb-4 d-flex align-items-center gap-2">
               <Badge bg="warning" text="dark" className="px-2 py-1 fs-6">
                 ★ {producto.rating}
@@ -117,9 +144,9 @@ function SingleProduct() {
             <h5 className="fw-semibold text-secondary mb-3">Características principales</h5>
             <ul className="list-unstyled d-flex flex-column gap-2 mb-5">
               {producto.description
-                .split(/[,.]/) 
-                .map(item => item.trim()) 
-                .filter(item => item.length > 0) 
+                .split(/[,.]/)
+                .map(item => item.trim())
+                .filter(item => item.length > 0)
                 .map((item, index) => (
                   <li key={index} className="d-flex align-items-start text-muted" style={{ fontSize: "1.05rem" }}>
                     <span className="text-success me-2 fw-bold">✓</span>
@@ -132,9 +159,9 @@ function SingleProduct() {
 
             {/* Botones */}
             <div className="single-product-actions d-flex align-items-center gap-3 mt-5">
-              <Button 
-                variant="primary" 
-                size="lg" 
+              <Button
+                variant="primary"
+                size="lg"
                 className="btn-add-cart py-3 px-4 fw-bold shadow-sm d-flex align-items-center justify-content-center gap-2"
                 disabled={outOfStock}
                 onClick={() => {
@@ -143,7 +170,7 @@ function SingleProduct() {
                   setTimeout(() => setIsCartAnimating(false), 400)
                 }}
               >
-                <ShoppingCart className={isCartAnimating ? 'cart-pop' : ''} size={20} /> 
+                <ShoppingCart className={isCartAnimating ? 'cart-pop' : ''} size={20} />
                 {outOfStock ? "Agotado" : "Agregar al carrito"}
               </Button>
 
@@ -153,11 +180,11 @@ function SingleProduct() {
                 className="btn-favorite py-3 px-4 d-flex align-items-center justify-content-center gap-2"
                 onClick={handleFavoriteClick}
               >
-                <Heart 
-                  size={24} 
-                  className="heart-pop" 
+                <Heart
+                  size={24}
+                  className="heart-pop"
                   stroke="currentColor"
-                  fill={isFavorite ? "currentColor" : "none"} 
+                  fill={isFavorite ? "currentColor" : "none"}
                 />
                 Agregar a favoritos
               </Button>

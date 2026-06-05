@@ -20,7 +20,7 @@ function ProductCard({ product }) {
         ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
         : 0;        
         
-        
+    
     return (
         <Card className="h-100 tn-card-hover">
 
@@ -29,7 +29,7 @@ function ProductCard({ product }) {
                                 <div className="position-relative">
                     <Card.Img
                         variant="top"
-                        src={new URL(`../../../assets/${product.image}`, import.meta.url).href}
+                        src={product.image}
                         className="tn-product-image"
                     />
 

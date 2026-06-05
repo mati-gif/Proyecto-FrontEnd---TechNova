@@ -1,17 +1,20 @@
-import { useState, useContext } from "react";
+import { useState, useContext,useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Container, Nav, Navbar, Form, Button, Dropdown, Offcanvas } from "react-bootstrap";
 import { Cpu, Search, ShoppingCart, User, LogOut, Package, ShieldCheck, Heart } from "lucide-react";
 import { cartContext } from '../../Context/CartContext/cartContext';
 import { AuthContext } from "../../Context/AuthContext/authContext";
 import { favoritesContext } from '../../Context/FavoritesContext/favoritesContext.js';
-import { CATEGORIES } from "../../../data/categories";
+// import { CATEGORIES } from "../../../data/categories";
 import { errorToast, successToast } from "../../shared/toast/toast";
 
 function UserHeader() {
   const [search, setSearch] = useState("");
   const navigate = useNavigate();
   const [showMobile, setShowMobile] = useState(false);
+
+    const [categories, setCategories] = useState([])
+  
 
   // Carrito real
   const { cart, totalQuantity } = useContext(cartContext);
@@ -38,6 +41,27 @@ function UserHeader() {
     successToast("Saliste de tu cuenta! 👋😊" );
   };
 
+  useEffect(() => {
+            
+                    const res = fetch("http://localhost:3000/category/all", {
+                        method: "GET",
+                        headers: {
+                            "Content-type": "application/json",
+                        }
+                    })
+                        .then(res => res.json())
+                        .then((data) => {
+                            console.log("categorias del backend", data);
+            
+                            setCategories([...data])
+            
+                        })
+                        .catch((error) => {
+                            console.log(error)
+                            errorToast(error.message);
+                        })
+                }, [])
+
   return (
     <header className="tn-header">
       <Container className="d-flex align-items-center" style={{ height: 70 }}>
@@ -60,7 +84,7 @@ function UserHeader() {
 
         {/* CATEGORÍAS DESKTOP */}
         <Nav className="d-none d-lg-flex ms-4">
-          {CATEGORIES.map((cat) => (
+          {categories.map((cat) => (
             <Nav.Link
               key={cat.id}
               as={Link}
@@ -192,7 +216,7 @@ function UserHeader() {
           <Offcanvas.Body>
             <h6 className="mb-3">Categorías</h6>
             <Nav className="flex-column">
-              {CATEGORIES.map((cat) => (
+              {categories.map((cat) => (
                 <Nav.Link
                   key={cat.id}
                   as={Link}
