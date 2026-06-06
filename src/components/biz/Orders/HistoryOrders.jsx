@@ -1,40 +1,49 @@
-import React,{useContext} from 'react'
+import React, { useContext } from 'react'
 import { Link } from "react-router-dom";
 import { Container, Card, Badge, Button, Accordion } from "react-bootstrap";
 import { Package, ShoppingBag, MapPin, CreditCard } from "lucide-react";
 import { formatPrice } from "../../utils/formatPrice";
 import { cartContext } from '../../Context/CartContext/cartContext';
+import { AuthContext } from '../../Context/AuthContext/authContext';
 function HistoryOrders() {
 
-  const orders = [{
-    id:1,
-    status:"entregado",
-    items:[
-      {
-        productId:2,
-        imagen:"",
-        name:"Monitor",
-        price:500,
-        quantity:2,
-        fullname:"Melba morel",
-        email:"m.morel@email.com",
-        street:"rosario",
-        city:"rosario",
-        state:"Santa fe ",
-        phone:"123456",
-        brand:"string",
-        total:12000,
-        paymentLast4:"456789"
+  const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
 
+  const { user, token } = useContext(AuthContext);
 
-      }
-    ]
-  }]
-
-  const {cart,totalPrice} = useContext(cartContext)
+  const { cart, totalPrice } = useContext(cartContext)
 
   console.log(totalPrice);
-  
+  useEffect(() => {
+
+    fetch(
+      `http://localhost:3000/order/user/${user.userId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    )
+      .then(res => res.json())
+      .then(data => {
+
+        setOrders(data.orders);
+
+      })
+      .catch(error => {
+
+        console.log(error);
+        errorToast(error.message);
+
+      })
+      .finally(() => {
+
+        setLoading(false);
+
+      });
+
+  }, []);
   return (
     <Container className="py-4 py-lg-5" style={{ maxWidth: 960 }}>
       <h1 className="fw-bold mb-1" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
@@ -42,7 +51,7 @@ function HistoryOrders() {
       </h1>
       <p className="text-secondary mb-4">Historial de tus compras en TechNova</p>
 
-      {cart.length === 0 ? (
+      {orders.length === 0 ? (
         <Card className="border text-center p-5">
           <div className="rounded-circle bg-light d-inline-flex align-items-center justify-content-center mx-auto mb-3"
             style={{ width: 72, height: 72 }}>
@@ -56,8 +65,8 @@ function HistoryOrders() {
         </Card>
       ) : (
         <Accordion defaultActiveKey="0" alwaysOpen={false}>
-          {orders.map((o, idx) => (
-            <Accordion.Item eventKey={String(idx)} key={o.id} className="mb-2">
+          {o.products.map((product)=> (
+            <Accordion.Item eventKey={String(idx)} key={product.id} className="mb-2">
               <Accordion.Header>
                 <div className="d-flex flex-wrap align-items-center gap-3 w-100 pe-3">
                   <span className="tn-step-icon"><Package size={16} /></span>

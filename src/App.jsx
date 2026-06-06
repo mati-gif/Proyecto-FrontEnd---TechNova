@@ -30,6 +30,7 @@ import Protected from './components/routes/protected/Protected';
 import NotFound from "./components/routes/notFound/NotFound";
 import { ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
+import ShippingAddresContextProvider from './components/Context/ShippingAddressContext/ShippingAddresContextProvider';
 
 
 
@@ -40,6 +41,7 @@ function App() {
       <Sonner position="top-right" richColors />
       <CartContextProvider>
         <FavoritesContextProvider>
+          <ShippingAddresContextProvider>
         <ToastContainer />
         <BrowserRouter>
           <Routes>
@@ -77,6 +79,7 @@ function App() {
 
           </Routes>
         </BrowserRouter>
+        </ShippingAddresContextProvider>
         </FavoritesContextProvider>
       </CartContextProvider>
     </>

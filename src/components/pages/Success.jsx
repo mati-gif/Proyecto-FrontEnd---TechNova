@@ -1,12 +1,12 @@
-import React,{ useEffect } from "react";
+import React, { useEffect } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { Container, Button, Card } from "react-bootstrap";
 import { CheckCircle2, Package, ArrowRight } from "lucide-react";
 
 function Success() {
-    // const [params] = useSearchParams();
-    // const orderId = params.get("order") ?? "TN-XXXXX";
-    const orderId = "TN-XXXXX";
+    const [params] = useSearchParams();
+
+    const orderId = params.get("order") ?? "TN-XXXXX";
 
     return (
         <Container className="py-5 text-center" style={{ maxWidth: 640 }}>
@@ -57,11 +57,11 @@ function Success() {
             </Card>
 
             <div className="d-flex flex-column flex-sm-row gap-2 justify-content-center">
-                <Button as={Link } to="/catalogo" size="lg" variant="primary" className="d-inline-flex align-items-center justify-content-center gap-2">
+                <Button as={Link} to="/catalogo" size="lg" variant="primary" className="d-inline-flex align-items-center justify-content-center gap-2">
                     Seguir comprando
                     <ArrowRight size={16} />
                 </Button>
-                <Button as={Link } to="/" size="lg" variant="outline-secondary">
+                <Button as={Link} to="/" size="lg" variant="outline-secondary">
                     Volver al inicio
                 </Button>
             </div>

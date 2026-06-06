@@ -9,6 +9,7 @@ import { cartContext } from "../Context/CartContext/cartContext";
 import { AuthContext } from "../Context/AuthContext/authContext";
 import { errorToast, successToast } from "../shared/toast/toast";
 import ShippingAddressModal from "../shared/shippingAddressModal/ShippingAddressModal";
+import { ShippingAddressContext } from "../Context/ShippingAddressContext/shippingAddressContext";
 
 function CheckOut() {
     const [errors, setErrors] = useState(false)
@@ -16,6 +17,8 @@ function CheckOut() {
 
     const { shippingThreshold, shippingCost, finalTotal, cart, totalPrice } = useContext(cartContext)
     const { user, token } = useContext(AuthContext)
+
+    const {handleSaveShippingAddres}= useContext(ShippingAddressContext)
 
     const [form, setForm] = useState({
         fullName: "",
@@ -104,7 +107,7 @@ function CheckOut() {
         });
 
         setShowAddresses(false);
-
+        handleSaveShippingAddres(selectedAddress)
         successToast("Dirección seleccionada correctamente");
         navigate("/payment")
 
@@ -292,7 +295,7 @@ function CheckOut() {
                 return res.json();
             })
             .then(data => {
-
+                handleSaveShippingAddres(data.newAddress)
                 successToast(data.message);
                 navigate("/payment")
             })
@@ -481,7 +484,8 @@ function CheckOut() {
                                             <span className="text-secondary">Envío</span>
                                             <span>
                                                 {shippingCost === 0 ?
-                                                    <span className="text-success">Gratis</span> : formatPrice(shippingCost)}
+                                                    <span className="text-success">Gratis</span> : formatPrice(shippingCost)
+                                                }
                                             </span>
                                         </div>
                                         {shippingCost > 0 && (
