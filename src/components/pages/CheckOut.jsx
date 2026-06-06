@@ -1,20 +1,21 @@
 import React, { useState, useContext } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Container, Row, Col, Form, Button, Card } from "react-bootstrap";
-import { MapPin, ArrowRight, Check } from "lucide-react";
+import { MapPin, ArrowRight, Check, BookmarkCheck } from "lucide-react";
 import { z } from "zod";
 import { toast } from "sonner";
 import { formatPrice } from "../utils/formatPrice";
 import { cartContext } from "../Context/CartContext/cartContext";
 import { AuthContext } from "../Context/AuthContext/authContext";
 import { errorToast, successToast } from "../shared/toast/toast";
+import ShippingAddressModal from "../shared/shippingAddressModal/ShippingAddressModal";
 
 function CheckOut() {
     const [errors, setErrors] = useState(false)
     const navigate = useNavigate()
 
     const { shippingThreshold, shippingCost, finalTotal, cart, totalPrice } = useContext(cartContext)
-    const { user ,token} = useContext(AuthContext)
+    const { user, token } = useContext(AuthContext)
 
     const [form, setForm] = useState({
         fullName: "",
@@ -25,6 +26,186 @@ function CheckOut() {
         phone: ""
     });
 
+    //Estados para manejar las direcciones y el modal:
+    const [showAddresses, setShowAddresses] = useState(false);
+    const [search, setSearch] = useState("");
+    const [selectedId, setSelectedId] = useState(null);
+    const [activeAddresses, setActiveAddresses] = useState([]);
+    const [inactiveAddresses, setInactiveAddresses] = useState([]);
+    const [selectedAddress, setSelectedAddress] = useState(null);
+
+    //Estado de carga 
+    const [loadingAddresses, setLoadingAddresses] = useState(false);
+
+    const handleOpenModal = async () => {
+    setShowAddresses(true);
+    setLoadingAddresses(true);
+        try {
+
+            const response = await fetch(
+                `http://localhost:3000/shippingAddress/user/${user.userId}`, {
+                method: "GET",
+                headers: {
+                    "Content-type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                }
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || "Error al obtener las direcciones")
+            }
+
+            const data = await response.json();
+
+            console.log(data.addresses);
+
+
+            const active = data.addresses.filter(a => a.active);
+            const inactive = data.addresses.filter(a => !a.active);
+
+            setActiveAddresses(active);
+            setInactiveAddresses(inactive);
+
+            setShowAddresses(true);
+
+        } catch (error) {
+            errorToast(error.message);
+        } finally {
+            setLoadingAddresses(false);
+        }
+    }
+
+    const handleCloseModal = () => {
+        setShowAddresses(false)
+        setSelectedId(null);
+        setSelectedAddress(null);
+        setSearch("");
+    }
+
+    const handleSelect = (address) => {
+        setSelectedId(address.id);
+        setSelectedAddress(address);
+    };
+
+    const handleConfirmSelection = () => {
+
+        if (!selectedAddress) {
+            return;
+        }
+
+        setForm({
+            fullName: selectedAddress.fullName,
+            address: selectedAddress.address,
+            city: selectedAddress.city,
+            province: selectedAddress.province,
+            zipCode: selectedAddress.zipCode,
+            phone: selectedAddress.phone
+        });
+
+        setShowAddresses(false);
+
+        successToast("Dirección seleccionada correctamente");
+        navigate("/payment")
+
+    };
+
+    const handleDesactivate = async (addressId) => {
+
+        try {
+                console.log(addressId);
+                
+            const response = await fetch(
+                `http://localhost:3000/shippingAddress/desactivate/${addressId}`, {
+                method: "PUT",
+                headers: {
+                    "Content-type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                }
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message);
+            }
+
+            console.log(activeAddresses);
+
+            const address = activeAddresses.find(a => a.id === addressId);
+            if (!address) return;
+            setActiveAddresses(prev =>
+                prev.filter(a => a.id !== addressId)
+            );
+
+            setInactiveAddresses(prev =>
+                [...prev, { ...address, active: false }]
+            );
+
+            const successMessage = await response.json()
+            successToast(successMessage.message)
+
+        } catch (error) {
+            errorToast(error.message);
+        }
+    };
+
+
+    const handleActivate = async (addressId) => {
+
+        if (activeAddresses.length >= 3) {
+            errorToast("Solo podés tener 3 direcciones activas");
+            return;
+        }
+
+        try {
+
+            const response = await fetch(
+                `http://localhost:3000/shippingAddress/activate/${addressId}`,
+                {
+                    method: "PUT",
+                    headers: {
+                        "Content-type": "application/json",
+                        "Authorization": `Bearer ${token}`
+                    }
+                }
+            );
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message);
+            }
+
+            const address = inactiveAddresses.find(a => a.id === addressId);
+
+            setInactiveAddresses(prev =>
+                prev.filter(a => a.id !== addressId)
+            );
+
+            setActiveAddresses(prev =>
+                [...prev, { ...address, active: true }]
+            );
+
+            const successMessage = await response.json()
+            successToast(successMessage.message)
+
+        } catch (error) {
+            errorToast(error.message);
+        }
+    };
+
+
+    const filteredInactiveAddresses = inactiveAddresses.filter(addr =>
+        addr.address.toLowerCase().includes(search.toLowerCase()) ||
+        addr.city.toLowerCase().includes(search.toLowerCase()) ||
+        addr.province.toLowerCase().includes(search.toLowerCase())
+    );
+
+    const handleSearchChange = (value) => {
+        setSearch(value);
+    }
+
+
+    //------------------------ OOOOOOOOOO ------------------------------------//
     const validateErrors = () => {
 
         const newErrors = {}
@@ -61,7 +242,7 @@ function CheckOut() {
     };
 
     const handleFormChange = (event) => {
-        
+
         //hago destructuring con los atributos del input para que sean variables
         const { name, value } = event.target
         setForm({
@@ -92,7 +273,7 @@ function CheckOut() {
 
     }
 
-    const handleCreate = (datosParaEnviar) => {
+    const handleCreate =  (datosParaEnviar) => {
 
         fetch(`http://localhost:3000/shippingAddress/create/${user.userId}`, {
             headers: {
@@ -102,9 +283,11 @@ function CheckOut() {
             method: "POST",
             body: JSON.stringify(datosParaEnviar)
         })
-            .then(res => {
+            .then(async res => {
+
                 if (!res.ok) {
-                    throw new Error("Error al crear la direccion de envio");
+                    const error = await res.json();
+                    throw new Error(error.message);
                 }
                 return res.json();
             })
@@ -118,7 +301,6 @@ function CheckOut() {
                 errorToast(error.message);
             });
     }
-console.log(user);
 
     return (
         <Container className="py-4 py-lg-5">
@@ -135,11 +317,21 @@ console.log(user);
                         >
                             <Card className="border mb-4">
                                 <Card.Body className="p-4">
-                                    <div className="d-flex align-items-center gap-2 mb-4">
-                                        <span className="tn-step-icon"><MapPin size={16} /></span>
-                                        <h2 className="fs-5 fw-bold mb-0" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
-                                            Dirección de envío
-                                        </h2>
+                                    <div className="d-flex align-items-center justify-content-between mb-4 gap-2 flex-wrap">
+                                        <div className="d-flex align-items-center gap-2">
+                                            <span className="tn-step-icon"><MapPin size={16} /></span>
+                                            <h2 className="fs-5 fw-bold mb-0" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+                                                Dirección de envío
+                                            </h2>
+                                        </div>
+                                        <Button
+                                            variant="outline-primary"
+                                            size="sm"
+                                            onClick={handleOpenModal}
+                                            className="d-flex align-items-center gap-2"
+                                        >
+                                            <BookmarkCheck size={16} /> Direcciones guardadas
+                                        </Button>
                                     </div>
                                     <Row className="g-3">
                                         <Col xs={12}>
@@ -234,6 +426,23 @@ console.log(user);
                         </Form>
                     </Col>
 
+                    <ShippingAddressModal
+                        showAddresses={showAddresses}
+                        onHide={handleCloseModal}
+                        activeAddresses={activeAddresses}
+                        inactiveAddresses={inactiveAddresses}
+                        selectedAddress={selectedAddress}
+                        selectedId={selectedId}
+                        search={search}
+                        onSearchChange={handleSearchChange}
+                        filteredInactiveAddresses={filteredInactiveAddresses}
+                        handleSelect={handleSelect}
+                        handleDesactivate={handleDesactivate}
+                        handleActivate={handleActivate}
+                        handleConfirmSelection={handleConfirmSelection}
+                        loadingAddresses={loadingAddresses}
+
+                    />
                     <Col lg={4}>
                         <div className="position-sticky" style={{ top: 90 }}>
                             <Card className="border">
