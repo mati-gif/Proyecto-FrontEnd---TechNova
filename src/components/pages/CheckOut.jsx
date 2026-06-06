@@ -94,7 +94,7 @@ function CheckOut() {
 
     const handleCreate = (datosParaEnviar) => {
 
-        fetch(`http://localhost:3000/shippingAddress/create/${user.id}`, {
+        fetch(`http://localhost:3000/shippingAddress/create/${user.userId}`, {
             headers: {
                 "Content-Type": "application/json",
                 "Authorization": `Bearer ${token}`
@@ -118,6 +118,7 @@ function CheckOut() {
                 errorToast(error.message);
             });
     }
+console.log(user);
 
     return (
         <Container className="py-4 py-lg-5">

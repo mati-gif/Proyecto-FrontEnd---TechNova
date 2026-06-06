@@ -1,12 +1,52 @@
-import { useState } from "react";
+import { useState, useEffect, useContext } from "react";
 import { Navigate, useNavigate, Link } from "react-router-dom";
 import { Container, Row, Col, Form, Button, Card, Spinner, Alert } from "react-bootstrap";
 import { Lock, CreditCard, ArrowLeft } from "lucide-react";
 import { z } from "zod";
 import { toast } from "sonner";
 import { formatPrice } from "../utils/formatPrice";
+import { cartContext } from "../Context/CartContext/cartContext";
+import { AuthContext } from "../Context/AuthContext/authContext";
 
 function Payment() {
+
+    const [errors, setErrors] = useState(false)
+    const navigate = useNavigate()
+
+    const { shippingThreshold, shippingCost, finalTotal, cart, totalPrice } = useContext(cartContext)
+    const { user, token } = useContext(AuthContext)
+
+    const [address,setAddress]=useState([])
+
+    const [form, setForm] = useState({
+        fullName: "",
+        address: "",
+        city: "",
+        province: "",
+        zipCode: "",
+        phone: ""
+    });
+
+    useEffect(() => {
+        fetch(`http://localhost:3000/shippingAddress/user/${user.userId}`, {
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            },
+            method: "GET",
+        })
+            .then(res => res.json())
+            .then((data) => {
+                console.log("categorias del backend", data);
+
+                setCategories([...data])
+
+            })
+            .catch((error) => {
+                console.log(error)
+                errorToast(error.message);
+            })
+    }, [])
     return (
         <Container className="py-4 py-lg-5">
             <div style={{ maxWidth: 1100, margin: "0 auto" }}>
@@ -116,14 +156,6 @@ function Payment() {
                                             </Form.Group>
                                         </Col>
                                     </Row>
-
-                                    <Alert variant="light" className="mt-4 d-flex align-items-start gap-2 small text-secondary border">
-                                        <Lock size={16} className="flex-shrink-0 mt-1" />
-                                        <span>
-                                            Esta es una <strong>demo</strong>. No ingreses datos reales de tarjeta. Podés usar
-                                            cualquier número de 16 dígitos, ej. <code>4242 4242 4242 4242</code>, vencimiento <code>12/30</code> y CVC <code>123</code>.
-                                        </span>
-                                    </Alert>
                                 </Card.Body>
                             </Card>
 
