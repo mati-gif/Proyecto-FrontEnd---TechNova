@@ -15,29 +15,15 @@ function UserHeader() {
 
   // Carrito real
   const { cart, totalQuantity } = useContext(cartContext);
+  const { handleUserLogout, token,user } = useContext(AuthContext)
+
+  console.log(user);
+  console.log(cart);
+  console.log(totalQuantity);
 
   // 3. Consumimos los favoritos reales globales
   const { favorites } = useContext(favoritesContext);
 
-  const { handleUserLogout, token } = useContext(AuthContext);
-
-  const user = {
-    userName: null,
-    userEmail: null,
-    userRole: null
-  };
-
-  // Solo intentamos decodificar el token SI existe
-  if (token) {
-    try {
-      const payload = JSON.parse(atob(token.split(".")[1]));
-      user.userRole = payload.role;
-      user.userEmail = payload.email;
-      user.userName = payload.name;
-    } catch (error) {
-      console.error("Error al decodificar el token en MainLayout", error);
-    }
-  }
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -49,7 +35,7 @@ function UserHeader() {
 
   const handleLogOutUser = () => {
     handleUserLogout();
-    successToast("Saliste de tu cuenta!");
+    successToast("Saliste de tu cuenta! 👋😊" );
   };
 
   return (

@@ -11,6 +11,9 @@ function MyFavorites() {
   const { favorites, handleDeleteFavorite } = useContext(favoritesContext);
   const { cart, handleAddToCart, handleDecreaseQuantity } = useContext(cartContext);
 
+  console.log(favorites);
+  
+
   return (
     <Container className="py-4 py-lg-5">
       <h1 className="fw-bold mb-1" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>

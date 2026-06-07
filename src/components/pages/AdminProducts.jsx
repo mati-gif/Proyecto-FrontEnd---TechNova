@@ -1,19 +1,129 @@
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState, useContext } from 'react'
 import { Link } from "react-router-dom";
 import { Card, Button, Form, Table, Modal, Badge } from "react-bootstrap";
 import { Pencil, Trash2, Plus, Search } from "lucide-react";
 import { formatPrice } from '../utils/formatPrice';
-import { CATEGORIES } from "../../data/categories"
-import { PRODUCTS } from "../../data/products"
+// import { CATEGORIES } from "../../data/categories"
+import { AuthContext } from '../Context/AuthContext/authContext';
+import { errorToast, successToast } from '../shared/toast/toast';
+import DeleteProductModal from '../shared/DeleteProductModal/DeleteProductModal';
 
 function AdminProducts() {
+
+
+    const { token } = useContext(AuthContext)
+    const [products, setProducts] = useState([])
+    const [categories, setCategories] = useState([])
+
+    // Estados para el Modal de eliminación
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [productToDelete, setProductToDelete] = useState(null);
+
+    useEffect(() => {
+
+        const res = fetch("http://localhost:3000/product/all", {
+            method: "GET",
+            headers: {
+                "Content-type": "application/json",
+                "Authorization": `Bearer ${token}`
+            }
+        })
+            .then(res => res.json())
+            .then((data) => {
+                console.log("productos del backend", data);
+
+                setProducts([...data])
+
+            })
+            .catch(error => console.log(error))//hacer mas robusto este catch
+    }, [])
+
+    useEffect(() => {
+
+        const res = fetch("http://localhost:3000/category/all", {
+            method: "GET",
+            headers: {
+                "Content-type": "application/json",
+                "Authorization": `Bearer ${token}`
+            }
+        })
+            .then(res => res.json())
+            .then((data) => {
+                console.log("categorias del backend", data);
+
+                setCategories([...data])
+
+            })
+            .catch((error) => {
+                console.log(error)
+                errorToast(error.message);
+            })
+    }, [])
+
+    // Funciones para manejar el modal de eliminacion
+    const handleOpenDeleteModal = (product) => {
+        setProductToDelete(product);
+        setShowDeleteModal(true);
+    };
+
+    const handleCloseDeleteModal = () => {
+        setShowDeleteModal(false);
+        setProductToDelete(null);
+    };
+
+    console.log(products);
+
+    console.log("Producto a eliminar ", productToDelete);
+
+    const handleDelete = async () => {
+        if (!productToDelete) return;
+
+        try {
+            const response = await fetch(`http://localhost:3000/delete/${productToDelete.id}`, {
+                method: "PUT",
+                headers: {
+                    "Content-type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                }
+            });
+
+            // 1. Validar si la respuesta es exitosa
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || "Error al eliminar el usuario");
+            }
+            const data = await response.json();
+            // Filtrar el estado actual 
+            setProducts((prevProducts) => prevProducts.filter(p => p.id !== productToDelete.id));
+
+            console.log("Usuario eliminado exitosamente");
+            successToast(data.message || "Usuario eliminado exitosamente");
+
+        } catch (error) {
+            console.error("Error al eliminar:", error);
+            errorToast(error.message);
+        } finally {
+            // Siempre cerramos el modal, pase lo que pase
+            handleCloseDeleteModal();
+        }
+    };
+
+    const getImageSrc = (image) => {
+        return image.startsWith("http")
+            ? image
+            : new URL(
+                `../../assets/${image}`,
+                import.meta.url
+            ).href;
+    }
+
 
 
     return (
         <div>
             <div className="d-flex flex-wrap align-items-center gap-2 mb-3">
                 <h2 className="h4 fw-bold mb-0" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
-                    Productos <span className="text-secondary fs-6 fw-normal">({PRODUCTS.length})</span>
+                    Productos <span className="text-secondary fs-6 fw-normal">({products.length})</span>
                 </h2>
                 <Link to="/admin/products/new" className="btn btn-primary ms-auto d-inline-flex align-items-center gap-1">
                     <Plus size={16} /> Nuevo producto
@@ -45,7 +155,7 @@ function AdminProducts() {
                     </div>
                     <Form.Select style={{ maxWidth: 220 }}>
                         <option value="all">Todas las categorías</option>
-                        {CATEGORIES.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
+                        {categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
                     </Form.Select>
                 </Card.Body>
             </Card>
@@ -62,14 +172,14 @@ function AdminProducts() {
                         </tr>
                     </thead>
                     <tbody>
-                        {PRODUCTS.length === 0 && (
+                        {products.length === 0 && (
                             <tr><td colSpan={5} className="text-center text-secondary py-4">Sin resultados</td></tr>
                         )}
-                        {PRODUCTS.map((p) => (
+                        {products.map((p) => (
                             <tr key={p.id}>
                                 <td>
                                     <div className="d-flex align-items-center gap-2">
-                                        <img src={p.image} alt={p.name} className="rounded bg-light"
+                                        <img src={getImageSrc(p.image)} alt={p.name} className="rounded bg-light"
                                             style={{ width: 44, height: 44, objectFit: "cover" }} />
                                         <div>
                                             <div className="fw-semibold small">{p.name}</div>
@@ -77,7 +187,7 @@ function AdminProducts() {
                                         </div>
                                     </div>
                                 </td>
-                                <td><Badge bg="light" text="dark" className="text-capitalize">{p.category}</Badge></td>
+                                <td><Badge bg="light" text="dark" className="text-capitalize">{p.subcategory}</Badge></td>
                                 <td className="text-end fw-semibold">{formatPrice(p.price)}</td>
                                 <td className="text-center">
                                     <span className={`fw-semibold ${p.stock === 0 ? "text-danger" : p.stock <= 5 ? "text-warning" : ""}`}>
@@ -88,7 +198,9 @@ function AdminProducts() {
                                     <Link to={`/admin/products/${p.id}/edit`} className="btn btn-sm btn-outline-secondary me-1">
                                         <Pencil size={14} />
                                     </Link>
-                                    <Button variant="outline-danger" size="sm" >
+                                    <Button variant="outline-danger" size="sm"
+                                        onClick={() => handleOpenDeleteModal(p)}
+                                    >
                                         <Trash2 size={14} />
                                     </Button>
                                 </td>
@@ -98,20 +210,12 @@ function AdminProducts() {
                 </Table>
             </Card>
 
-            <Modal centered>
-                <Modal.Header closeButton>
-                    <Modal.Title>Eliminar producto</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    ¿Seguro que querés eliminar <strong>{ }</strong>? Esta acción no se puede deshacer.
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="outline-secondary" >Cancelar</Button>
-                    <Button variant="danger" >
-                        Eliminar
-                    </Button>
-                </Modal.Footer>
-            </Modal>
+            <DeleteProductModal
+                onHide={handleCloseDeleteModal}
+                show={showDeleteModal}
+                product={productToDelete}
+                onDelete={handleDelete}
+            />
         </div>
     )
 }

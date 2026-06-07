@@ -1,22 +1,25 @@
-import React from 'react'
+import React,{useContext,useState,useEffect} from 'react'
 import { Link } from "react-router-dom";
 import { Card, Row, Col } from "react-bootstrap";
 import { Package, Users, ShoppingBag, DollarSign } from "lucide-react";
 import { formatPrice } from '../utils/formatPrice';
-import { PRODUCTS } from "../../data/products"
+// import { PRODUCTS } from "../../data/products"
+import { AuthContext } from '../Context/AuthContext/authContext';
 function AdminDashboard() {
 
-    const user = {
-        role: "admin"
-        // role: "superadmin"
 
-    }
-    const isSuperadmin = user?.role === "superadmin";
-    const lowStock = PRODUCTS.filter((p) => p.stock <= 5).length;
+
+    const {user,token} = useContext(AuthContext)
+    const [products,setProducts] = useState([])
+    const [users,setUsers] = useState([])
+console.log(users);
+
+    const isSuperadmin = user?.userRole === "superadmin";
+    const lowStock = products.filter((p) => p.stock <= 5).length;
     const stats = [
         {
             label: "Productos",
-            value: PRODUCTS.length,
+            value: products.length,
             icon: Package, 
             color: "#2b56f5",
             to: "/admin/products"
@@ -35,12 +38,50 @@ function AdminDashboard() {
         },
         ...(isSuperadmin ? [{
             label: "Usuarios",
-            value: 100,
+            value: users.length,
             icon: Users,
             color: "#7d3df0",
             to: "/admin/users"
         }] : []),
     ];
+
+        
+    
+        useEffect(() => {
+    
+            const res = fetch("http://localhost:3000/product/all", {
+                method: "GET",
+                headers: {
+                    "Content-type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                }
+            })
+                .then(res => res.json())
+                .then((data) => {
+                    console.log("productos del backend", data);
+    
+                    setProducts([...data])
+    
+                })
+                .catch(error => console.log(error))//hacer mas robusto este catch
+        }, [])
+
+            useEffect(()=>{
+                const res = fetch("http://localhost:3000/user/all",{
+                    method:"GET",
+                    headers:{
+                        "Content-type":"application/json",
+                        "Authorization": `Bearer ${token}`
+                    }
+                    
+                })
+                .then(res => res.json())
+                .then((data) =>{
+                    setUsers([...data])
+                })
+                .catch(error => console.log(error)//hacer mas robusto este catch
+                )
+            },[])
     return (
         <div>
             <Row className="g-3 mb-4">

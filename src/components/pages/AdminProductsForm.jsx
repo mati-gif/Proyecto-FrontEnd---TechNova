@@ -1,25 +1,36 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { Card, Form, Row, Col, Button } from "react-bootstrap";
 import { ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
-import { PRODUCTS } from "../../data/products";
+// import { PRODUCTS } from "../../data/products";
+import { AuthContext } from "../Context/AuthContext/authContext";
+import { errorToast, successToast } from "../shared/toast/toast";
 
 function AdminProductsForm() {
+
+    const { token } = useContext(AuthContext)
 
     const { id } = useParams();
     console.log(id);
 
-    const [isEditing,setIsEditing] = useState(false)
+    const [isEditing, setIsEditing] = useState(false)
+    const [errors, setErrors] = useState({})
+    const [product, setProduct] = useState(null)
+    const [categories, setCategories] = useState([])
+
+    const navigate = useNavigate()
 
     const [form, setForm] = useState({
         name: "",
         brand: "",
+        slug: "",
         description: "",
-        price: "",
-        stock: "",
+        price: 0,
+        stock: 0,
         image: "",
-        category: "",
+        rating: 0,
+        categoryId: "",
         subcategory: "",
         features: "",
         isFeatured: false,
@@ -27,39 +38,44 @@ function AdminProductsForm() {
     });
 
     useEffect(() => {
-        if (id) {
+        if (!product) return;
+        setIsEditing(true)
+        console.log("producto recibido:", product);
+        console.log("features:", product.features);
+        setForm({
+            name: product.name,
+            brand: product.brand,
+            slug: product.slug,
+            description: product.description,
+            price: product.price,
+            stock: product.stock,
+            image: product.image,
+            categoryId: product.categoryId,
+            subcategory: product.subcategory,
+            features: product.features?.join("\n") || "",
+            isFeatured: product.isFeatured,
+            isNew: product.isNew
+        });
+    }, [product])
 
-            const productFound = PRODUCTS.find((p) => p.id === Number(id))
 
-            
-            if (productFound) {
-                setIsEditing(true)
-                setForm({
-                    name: productFound.name,
-                    brand: productFound.brand,
-                    description: productFound.description,
-                    price: productFound.price,
-                    stock: productFound.stock,
-                    image: productFound.image,
-                    category: productFound.category,
-                    subcategory: productFound.subcategory,
-
-                    // array => string
-                    features: productFound.features.join("\n"),
-
-                    isFeatured: productFound.isFeatured,
-                    isNew: productFound.isNew
-                });
-
-                
+    useEffect(() => {
+        if (!id) return;
+        const res = fetch(`http://localhost:3000/product/${id}`, {
+            method: "GET",
+            headers: {
+                "Content-type": "application/json",
             }
-        }
-        
-    },[id])
+        })
+            .then(res => res.json())
+            .then((data) => {
+                console.log("producto del backend", data);
 
+                setProduct(data)
 
-
-    const [errors, setErrors] = useState({})
+            })
+            .catch(error => console.log(error))
+    }, [id])
 
 
     const handleFormChange = (event) => {
@@ -88,8 +104,11 @@ function AdminProductsForm() {
         if (form.description.trim() === "") {
             newErrors.description = "La descripción es obligatoria";
         }
-        if (form.price <= 0) {
-            newErrors.price = "El precio debe ser mayor a 0";
+        if (form.features.trim() === "") {
+            newErrors.features = "Las características no pueden estar vacías";
+        }
+        if (form.price < 0) {
+            newErrors.price = "El precio debe ser mayor  0";
         }
 
         if (form.stock < 0) {
@@ -101,6 +120,7 @@ function AdminProductsForm() {
         }
 
         setErrors(newErrors)
+        return Object.keys(newErrors).length === 0;
     }
 
     const handleSubmit = (event) => {
@@ -110,14 +130,144 @@ function AdminProductsForm() {
         const isValid = validateErrors();
 
         if (!isValid) {
-            toast.error("Hay errores en el formulario")
+            errorToast("Hay errores en el formulario")
             return;
         }
+        // Generamos un slug simple a partir del nombre antes de enviar
+        const slugFormateado = form.name.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-');
 
+
+        const datosParaEnviar = {
+            ...form,
+            slug: slugFormateado,
+            // Convertimos features de Texto a un Array separando por cada enter (\n)
+            features: form.features.split("\n").filter(f => f.trim() !== ""),
+            categoryId: Number(form.categoryId),
+            stock: Number(form.stock)
+        };
+
+        if (isEditing) {
+            handleUpdate(datosParaEnviar);
+        } else {
+            handleCreate(datosParaEnviar);
+        }
         console.log(form);
+        console.log("Aca veo el stock que viaja al be", datosParaEnviar.stock);
 
-        toast.success("Producto creado")
+
     }
+
+    const getImageSrc = (image) => {
+        if (!image) return null;
+        return image.startsWith("http")
+            ? image
+            : new URL(
+                `../../assets/${image}`,
+                import.meta.url
+            ).href;
+    }
+
+    const handleCreate = (datosParaEnviar) => {
+        console.log("Aca veo el stock que viaja al be", datosParaEnviar.stock);
+
+        fetch("http://localhost:3000/create", {
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            },
+            method: "POST",
+            body: JSON.stringify(datosParaEnviar)
+        })
+            .then(res => {
+                if (!res.ok) {
+                    // Si el backend responde con error (400, 500, etc) disparamos el catch
+                    throw new Error("Error al procesar la petición en el servidor");
+                }
+                return res.json();
+            })
+            .then((data) => {
+
+                // o solo el ID (si era totalmente nuevo). Controlamos ambos casos:
+
+                setProducts(prevProducts => {
+                    if (typeof data === "object" && data !== null) {
+                        // Caso backend 200 (actualizó stock y devolvió el objeto producto completo)
+                        // Reemplazamos el viejo o simplemente actualizamos la lista
+                        return [data, ...prevProducts.filter(p => p.id !== data.id)];
+                    } else {
+                        // Caso backend 201 (devolvió solo el ID numérico)
+                        const nuevoProductoConId = {
+                            ...datosParaEnviar,
+                            id: data // data es el ID enviado por el backend
+                        };
+                        return [nuevoProductoConId, ...prevProducts];
+                    }
+                });
+
+
+                successToast(data.message);
+                navigate("/admin/products", { replace: true });
+            })
+            .catch((error) => {
+                console.log(error.message);
+
+                errorToast(error.message)
+            })
+    }
+
+    useEffect(() => {
+
+        const res = fetch("http://localhost:3000/category/all", {
+            method: "GET",
+            headers: {
+                "Content-type": "application/json",
+                "Authorization": `Bearer ${token}`
+            }
+        })
+            .then(res => res.json())
+            .then((data) => {
+                console.log("categorias del backend", data);
+
+                setCategories([...data])
+
+            })
+            .catch((error) => {
+                console.log(error)
+                errorToast(error.message);
+            })
+    }, [])
+
+const handleUpdate = (datosParaEnviar) => {
+
+    fetch(`http://localhost:3000/update/${id}`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify(datosParaEnviar)
+    })
+        .then(res => {
+            if (!res.ok) {
+                throw new Error("Error al actualizar el producto");
+            }
+            return res.json();
+        })
+        .then(data => {
+
+            successToast(data.message);
+
+            navigate("/admin/products", {
+                replace: true
+            });
+
+        })
+        .catch(error => {
+            console.log(error);
+            errorToast(error.message);
+        });
+};
+
     return (
         <div>
 
@@ -223,8 +373,14 @@ function AdminProductsForm() {
                                         <Form.Label>Características (una por línea)</Form.Label>
                                         <Form.Control as="textarea" rows={4}
                                             value={form.features}
+                                            name="features"
                                             onChange={handleFormChange}
-                                            placeholder={"Ej: Bluetooth 5.3\nBatería 30h\nIPX5"} />
+                                            placeholder={"Ej: Bluetooth 5.3\nBatería 30h\nIPX5"}
+                                            isInvalid={!!errors.price}
+                                        />
+                                        <Form.Control.Feedback type="invalid">
+                                            {errors.features}
+                                        </Form.Control.Feedback>
                                     </Col>
 
                                 </Row>
@@ -297,13 +453,12 @@ function AdminProductsForm() {
                                     <Form.Label>Categoría</Form.Label>
 
                                     <Form.Select
-                                        name="category"
-                                        value={form.category}
+                                        name="categoryId"
+                                        value={form.categoryId}
                                         onChange={handleFormChange}
                                     >
-                                        <option value="perifericos">Periféricos</option>
-                                        <option value="audio">Audio</option>
-                                        <option value="monitores">Monitores</option>
+                                        <option value="all">Todas las categorías</option>
+                                        {categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
                                     </Form.Select>
 
                                 </Form.Group>
@@ -317,8 +472,17 @@ function AdminProductsForm() {
                                         value={form.subcategory}
                                         onChange={handleFormChange}
                                     >
+                                        <option value="all">Todas las categorias</option>
                                         <option value="mouses">Mouses</option>
                                         <option value="teclados">Teclados</option>
+                                        <option value="monitores">Monitores</option>
+                                        <option value="auriculares">Auriculares</option>
+                                        <option value="auriculares-gaming">Auriculares Gaming</option>
+                                        <option value="laptops">Laptops</option>
+                                        <option value="webcams">Webcams</option>
+                                        <option value="microfonos">Microfonos</option>
+                                        <option value="almacenamiento">Almacenamiento</option>
+                                        <option value="wearables">Wearables</option>
                                     </Form.Select>
 
                                 </Form.Group>
@@ -362,7 +526,7 @@ function AdminProductsForm() {
                                 </h3>
 
                                 <img
-                                    src={form.image || "/placeholder.svg"}
+                                    src={getImageSrc(form.image)}
                                     alt="preview"
                                     className="rounded w-100 bg-light"
                                     style={{
