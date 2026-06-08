@@ -60,22 +60,19 @@ function ProductCategories() {
   const marcaActiva = searchParams.get("brand");
   const searchQuery = searchParams.get("q");
 
-  console.log(categoria);
   
   // Filtrado de Categoría + Marca + Busqueda
   const productosFiltrados = products.filter((p) => {
     const matchCategoria = categoria ? Number(p.categoryId) === Number(categoria) : true;
+
     const matchMarca = marcaActiva ? p.brand === marcaActiva : true;
     const matchSearch = searchQuery
       ? p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       p.description.toLowerCase().includes(searchQuery.toLowerCase())
       : true;
 
-      console.log(matchCategoria);
-      
     return matchCategoria && matchMarca && matchSearch;;
   });
-  
 
 
   // // Marcas de los productos según la categoría seleccionada
@@ -88,7 +85,7 @@ function ProductCategories() {
   // Función para cambiar la marca sin borrar la categoría
   const handleMarcaClick = (brand) => {
     if (brand === marcaActiva) {
-      searchParams.delete("brand"); 
+      searchParams.delete("brand");
     } else {
       searchParams.set("brand", brand);
     }
@@ -103,10 +100,10 @@ console.log(window.location.href);
           {/* Filtro Categorias */}
           <h5 className="mb-3">Categorías</h5>
           <ListGroup variant="flush" className="mb-4 shadow-sm rounded">
-            <ListGroup.Item 
-              action 
-              as={Link} 
-              to="/catalog" 
+            <ListGroup.Item
+              action
+              as={Link}
+              to="/catalog"
               active={!categoria}
               className="d-flex justify-content-between align-items-center"
             >
@@ -120,7 +117,7 @@ console.log(window.location.href);
                   // Contar cuántos productos hay en esta categoría
               const count = products.filter(p => Number(p.categoryId) === Number(cat.id)).length;
               return (
-                <ListGroup.Item 
+                <ListGroup.Item
                   key={cat.id}
                   action as={Link} to={`/catalog?category=${cat.id}`}
                   active={categoria === cat.id}
@@ -139,7 +136,7 @@ console.log(window.location.href);
           <h5 className="mb-3">Marcas</h5>
           <div className="p-3 bg-white border rounded shadow-sm">
             {marcasDisponibles.map((brand) => (
-              <Form.Check 
+              <Form.Check
                 key={brand}
                 type="checkbox"
                 label={`${brand}`}
