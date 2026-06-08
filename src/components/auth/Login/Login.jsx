@@ -61,20 +61,12 @@ function Login({ onLogin }) {
 
         if (password === "") {
             passwordInputRef.current.focus();
-            setErrors((prevErrors) => ({
-                ...prevErrors,
-                passwordErrorDescription: "La contraseña es requerida",
-                password: true
-            }));
+            errorToast("La contraseña es requerida");
             return;
         }
-        if (password.includes(' ')) {
+        if (password.includes(" ")) {
             passwordInputRef.current.focus();
-            setErrors((prevErrors) => ({
-                ...prevErrors,
-                passwordErrorDescription: "La contraseña no puede contener espacios",
-                password: true
-            }));
+            errorToast("La contraseña no puede contener espacios");
             return;
         }
 
@@ -95,6 +87,9 @@ function Login({ onLogin }) {
                 console.log("El cuerpo del body es: ", body);
                 if (!res.ok) {
                     throw body;
+                    errorToast(res.message)
+                    console.log(res.message);
+
                 }
                 return body;
             })
@@ -106,7 +101,7 @@ function Login({ onLogin }) {
                 setPassword("")
                 setErrors(initialLoginFormErrors)
                 navigate("/")
-                
+
             })
             .catch((err) => {
                 errorToast(`Ha ocurrido un error: ${err.message || JSON.stringify(err)}`);
@@ -191,7 +186,7 @@ function Login({ onLogin }) {
                                                     placeholder="Ingresar contraseña"
                                                     onChange={handlePasswordChange}
                                                     ref={passwordInputRef}
-                                                    isInvalid={!!errors.password}
+                                                    // isInvalid={!!errors.password}
                                                     style={{ paddingRight: "45px" }}
                                                 />
 
@@ -199,7 +194,7 @@ function Login({ onLogin }) {
                                                     onClick={handleShowPassword}
                                                     style={{
                                                         position: "absolute",
-                                                        right: 10,
+                                                        right: 30,
                                                         top: "50%",
                                                         transform: "translateY(-50%)",
                                                         cursor: "pointer",
@@ -210,7 +205,7 @@ function Login({ onLogin }) {
                                                     {showPassword ? <Eye size={18} /> : <EyeOff size={18} />}
                                                 </span>
                                                 <Form.Control.Feedback type="invalid">
-                                                    {errors.password && errors.passwordErrorDescription}
+                                                    {/* {errors.password && errors.passwordErrorDescription} */}
                                                 </Form.Control.Feedback>
                                             </div>
 

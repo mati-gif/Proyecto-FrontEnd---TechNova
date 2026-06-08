@@ -30,6 +30,8 @@ import Protected from './components/routes/protected/Protected';
 import NotFound from "./components/routes/notFound/NotFound";
 import { ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
+import ShippingAddresContextProvider from './components/Context/ShippingAddressContext/ShippingAddresContextProvider';
+import HistoryOrders from './components/biz/Orders/HistoryOrders';
 
 
 
@@ -40,6 +42,7 @@ function App() {
       <Sonner position="top-right" richColors />
       <CartContextProvider>
         <FavoritesContextProvider>
+          <ShippingAddresContextProvider>
         <ToastContainer />
         <BrowserRouter>
           <Routes>
@@ -54,7 +57,7 @@ function App() {
 
             {/* rutas para el usuario con rol de usuario (usuario comun),admin y superadmin despues de haberse logueado */}
             <Route element={<Protected allowedRoles={['user', 'admin', 'superadmin']} />}>
-              <Route path='/history-orders' element={<Orders />} />
+              <Route path='/history-orders' element={<HistoryOrders />} />
               <Route path="/my-favorites" element={<MyFavorites />} />
               <Route path='/checkout' element={<CheckOut />} />
               <Route path='/payment' element={<Payment />} />
@@ -77,6 +80,7 @@ function App() {
 
           </Routes>
         </BrowserRouter>
+        </ShippingAddresContextProvider>
         </FavoritesContextProvider>
       </CartContextProvider>
     </>

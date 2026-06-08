@@ -1,33 +1,83 @@
-import React from "react";
+import React,{useContext,useState,useEffect} from "react";
 import { useSearchParams, Link } from "react-router-dom";
 import { Container, Row, Col, ListGroup, Badge, Form } from "react-bootstrap";
-import { PRODUCTS } from "../../../data/products";
-import { CATEGORIES } from "../../../data/categories";
 import ProductCard from "../ProductCard/ProductCard";
+import { AuthContext } from "../../Context/AuthContext/authContext";
 import "../../../App";
 
+
+
+
 function ProductCategories() {
+    const [products,setProducts] = useState([])
+    const [categories, setCategories] = useState([])
+    const {user,token} = useContext(AuthContext)
+
+
+
+    useEffect(() => {
+      
+              const res = fetch("http://localhost:3000/product/all", {
+                  method: "GET",
+                  headers: {
+                      "Content-type": "application/json",
+                  }
+              })
+                  .then(res => res.json())
+                  .then((data) => {
+                      console.log("productos del backend", data);
+      
+                      setProducts([...data])
+      
+                  })
+                  .catch(error => console.log(error))
+          }, [])
+
+          useEffect(() => {
+          
+                  const res = fetch("http://localhost:3000/category/all", {
+                      method: "GET",
+                      headers: {
+                          "Content-type": "application/json",
+                      }
+                  })
+                      .then(res => res.json())
+                      .then((data) => {
+                          console.log("categorias del backend", data);
+          
+                          setCategories([...data])
+          
+                      })
+                      .catch((error) => {
+                          console.log(error)
+                          errorToast(error.message);
+                      })
+              }, [])
+
+
   const [searchParams, setSearchParams] = useSearchParams();
   const categoria = searchParams.get("category");
   const marcaActiva = searchParams.get("brand");
   const searchQuery = searchParams.get("q");
 
-  // Filtrado de Categoría + Marca + Búsqueda
-  const productosFiltrados = PRODUCTS.filter((p) => {
-    const matchCategoria = categoria ? p.category === categoria : true;
+
+  // Filtrado de Categoría + Marca + Busqueda
+  const productosFiltrados = products.filter((p) => {
+    const matchCategoria = categoria ? Number(p.categoryId) === Number(categoria) : true;
+
     const matchMarca = marcaActiva ? p.brand === marcaActiva : true;
     const matchSearch = searchQuery
       ? p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       p.description.toLowerCase().includes(searchQuery.toLowerCase())
       : true;
-    return matchCategoria && matchMarca && matchSearch;
+    return matchCategoria && matchMarca && matchSearch;;
   });
-
-  // Marcas de los productos según la categoría seleccionada
-  const productosParaMarcas = categoria
-    ? PRODUCTS.filter(p => p.category === categoria)
-    : PRODUCTS;
-
+  
+  // // Marcas de los productos según la categoría seleccionada
+  const productosParaMarcas = categoria 
+    ? products.filter(p => Number(p.categoryId) === Number(categoria)) 
+    : products;
+    
   const marcasDisponibles = [...new Set(productosParaMarcas.map(p => p.brand))];
 
   // Función para cambiar la marca sin borrar la categoría
@@ -39,6 +89,7 @@ function ProductCategories() {
     }
     setSearchParams(searchParams);
   };
+
 
   return (
     <Container className="py-5">
@@ -56,13 +107,13 @@ function ProductCategories() {
             >
               Todos los productos
               <span className="category-counter">
-                {PRODUCTS.length}
+                {products.length} 
               </span>
             </ListGroup.Item>
 
-            {CATEGORIES.map((cat) => {
-              // Contar cuántos productos hay en esta categoría
-              const count = PRODUCTS.filter(p => p.category === cat.id).length;
+            {categories && categories.length > 0 && categories.map((cat) => {
+                  // Contar cuántos productos hay en esta categoría
+              const count = products.filter(p => Number(p.categoryId) === Number(cat.id)).length;
               return (
                 <ListGroup.Item
                   key={cat.id}
@@ -76,7 +127,7 @@ function ProductCategories() {
                   </span>
                 </ListGroup.Item>
               );
-            })}
+})}
           </ListGroup>
 
           {/* Filtro Marcas */}
@@ -99,13 +150,9 @@ function ProductCategories() {
         {/* Nombres de Categorias */}
         <Col md={9}>
           <div className="mb-4">
-            <h2>
-              {searchQuery
+            <h2>{searchQuery
                 ? `Resultados para "${searchQuery}"`
-                : categoria
-                  ? CATEGORIES.find(c => c.id === categoria)?.name
-                  : "Todos los productos"}
-            </h2>
+                :categoria ? categories.find(c => Number(c.id) === Number(categoria))?.name : "Todos los productos"}</h2>
           </div>
 
           <Row>

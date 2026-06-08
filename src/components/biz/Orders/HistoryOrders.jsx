@@ -1,39 +1,59 @@
-import React,{useContext} from 'react'
+import React, { useContext ,useState,useEffect} from 'react'
 import { Link } from "react-router-dom";
-import { Container, Card, Badge, Button, Accordion } from "react-bootstrap";
+import { Container, Card, Badge, Button, Accordion,Spinner } from "react-bootstrap";
 import { Package, ShoppingBag, MapPin, CreditCard } from "lucide-react";
 import { formatPrice } from "../../utils/formatPrice";
 import { cartContext } from '../../Context/CartContext/cartContext';
+import { AuthContext } from '../../Context/AuthContext/authContext';
 function HistoryOrders() {
 
-  const orders = [{
-    id:1,
-    status:"entregado",
-    items:[
-      {
-        productId:2,
-        imagen:"",
-        name:"Monitor",
-        price:500,
-        quantity:2,
-        fullname:"Melba morel",
-        email:"m.morel@email.com",
-        street:"rosario",
-        city:"rosario",
-        state:"Santa fe ",
-        phone:"123456",
-        brand:"string",
-        total:12000,
-        paymentLast4:"456789"
+  const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
 
+  const { user, token } = useContext(AuthContext);
 
-      }
-    ]
-  }]
-
-  const {cart,totalPrice} = useContext(cartContext)
+  const { cart, totalPrice } = useContext(cartContext)
 
   console.log(totalPrice);
+  useEffect(() => {
+
+    fetch(
+      `http://localhost:3000/order/history/${user.userId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    )
+      .then(res => res.json())
+      .then(data => {
+
+        setOrders(data.orders);
+
+      })
+      .catch(error => {
+
+        console.log(error);
+        errorToast(error.message);
+
+      })
+      .finally(() => {
+
+        setLoading(false);
+
+      });
+
+  }, []);
+
+  if (loading) {
+    return (
+      <Container className="py-5 text-center">
+        <Spinner />
+      </Container>
+    );
+  }
+
+  console.log(orders);
   
   return (
     <Container className="py-4 py-lg-5" style={{ maxWidth: 960 }}>
@@ -42,7 +62,7 @@ function HistoryOrders() {
       </h1>
       <p className="text-secondary mb-4">Historial de tus compras en TechNova</p>
 
-      {cart.length === 0 ? (
+      {orders.length === 0 ? (
         <Card className="border text-center p-5">
           <div className="rounded-circle bg-light d-inline-flex align-items-center justify-content-center mx-auto mb-3"
             style={{ width: 72, height: 72 }}>
@@ -56,34 +76,40 @@ function HistoryOrders() {
         </Card>
       ) : (
         <Accordion defaultActiveKey="0" alwaysOpen={false}>
-          {orders.map((o, idx) => (
+          {orders.map((o,idx)=> (
             <Accordion.Item eventKey={String(idx)} key={o.id} className="mb-2">
               <Accordion.Header>
                 <div className="d-flex flex-wrap align-items-center gap-3 w-100 pe-3">
                   <span className="tn-step-icon"><Package size={16} /></span>
                   <div className="me-auto">
-                    <div className="fw-semibold font-monospace">{o.id}</div>
+                    <div className="fw-semibold font-monospace">{o.orderCode}</div>
                     <div className="text-secondary small">
-                      {new Date(o.createdAt).toLocaleString("es-AR")}
+                      {o.creationDate}
                     </div>
                   </div>
-                  <Badge bg={o.status === "entregado" ? "success" : o.status === "enviado" ? "info" : "primary"}
+                  <Badge bg={
+                      o.status === "COMPLETADA"
+                        ? "success"
+                        : o.status === "PENDIENTE"
+                        ? "info"
+                        : "warning"
+                    }
                     className="text-uppercase">{o.status}</Badge>
-                  <span className="fw-bold fs-5">{formatPrice(totalPrice)}</span>
+                  <span className="fw-bold fs-5">{formatPrice(o.totalPrice)}</span>
                 </div>
               </Accordion.Header>
               <Accordion.Body>
                 <div className="d-flex flex-column gap-3 mb-3">
-                  {cart.map((it) => (
-                    <div key={it.id} className="d-flex gap-3 align-items-center">
-                      <img src={it.image} alt={it.name} className="rounded bg-light"
+                  {o.products.map((product) => (
+                    <div key={product.id} className="d-flex gap-3 align-items-center">
+                      <img src={product.image} alt={product.name} className="rounded bg-light"
                         style={{ width: 64, height: 64, objectFit: "cover" }} />
                       <div className="flex-grow-1">
-                        <div className="text-uppercase text-secondary" style={{ fontSize: 11 }}>{it.brand}</div>
-                        <div className="fw-semibold">{it.name}</div>
-                        <div className="text-secondary small">x{it.cantidad} · {formatPrice(it.price)} c/u</div>
+                        <div className="text-uppercase text-secondary" style={{ fontSize: 11 }}>{product.brand}</div>
+                        <div className="fw-semibold">{product.name}</div>
+                        <div className="text-secondary small">x{product.orderProduct.quantity} c/u</div>
                       </div>
-                      <div className="fw-bold">{formatPrice(it.price * it.cantidad)}</div>
+                      <div className="fw-bold">{formatPrice(product.orderProduct.priceAtPurchase)}</div>
                     </div>
                   ))}
                 </div>
@@ -92,20 +118,21 @@ function HistoryOrders() {
                   <div className="col-md-6">
                     <div className="d-flex align-items-center gap-2 mb-2 fw-semibold"><MapPin size={14} /> Envío</div>
                     <div className="text-secondary">
-                      {o.fullName}<br />
-                      {o.street}<br />
-                      {o.city}, {o.state} ({o.zip})<br />
-                      Tel: {o.phone}
+                      {o.shippingAddress?.fullName}<br />
+                      {o.shippingAddress?.address}<br />
+                      {o.shippingAddress?.city}, {o.shippingAddress?.province} ({o.shippingAddress?.zipCode})<br />
+                      Tel: {o.shippingAddress?.phone}
                     </div>
                   </div>
                   <div className="col-md-6">
                     <div className="d-flex align-items-center gap-2 mb-2 fw-semibold"><CreditCard size={14} /> Pago</div>
-                    <div className="text-secondary">Tarjeta terminada en •••• {o.paymentLast4}</div>
+                    <div className="text-secondary">Tarjeta terminada en •••• {o.lastFourDigits}</div>
                     <hr />
                     <div className="d-flex justify-content-between"><span className="text-secondary">Subtotal</span><span>{formatPrice(o.subtotal)}</span></div>
-                    <div className="d-flex justify-content-between"><span className="text-secondary">IVA</span><span>{formatPrice(o.tax)}</span></div>
-                    <div className="d-flex justify-content-between"><span className="text-secondary">Envío</span><span>{o.shipping === 0 ? "Gratis" : formatPrice(o.shipping)}</span></div>
-                    <div className="d-flex justify-content-between fw-bold mt-1"><span>Total</span><span>{formatPrice(o.total)}</span></div>
+                    <div className="d-flex justify-content-between"><span className="text-secondary">Envío</span><span>{o.shippingCost === 0
+                          ? "Gratis"
+                          : formatPrice(o.shippingCost)}</span></div>
+                    <div className="d-flex justify-content-between fw-bold mt-1"><span>Total</span><span>{formatPrice(o.totalPrice)}</span></div>
                   </div>
                 </div>
               </Accordion.Body>

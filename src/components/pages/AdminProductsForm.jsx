@@ -157,16 +157,6 @@ function AdminProductsForm() {
 
     }
 
-    const getImageSrc = (image) => {
-        if (!image) return null;
-        return image.startsWith("http")
-            ? image
-            : new URL(
-                `../../assets/${image}`,
-                import.meta.url
-            ).href;
-    }
-
     const handleCreate = (datosParaEnviar) => {
         console.log("Aca veo el stock que viaja al be", datosParaEnviar.stock);
 
@@ -526,7 +516,7 @@ const handleUpdate = (datosParaEnviar) => {
                                 </h3>
 
                                 <img
-                                    src={getImageSrc(form.image)}
+                                    src={form.image}
                                     alt="preview"
                                     className="rounded w-100 bg-light"
                                     style={{
