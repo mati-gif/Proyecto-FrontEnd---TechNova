@@ -108,14 +108,6 @@ function AdminProducts() {
         }
     };
 
-    const getImageSrc = (image) => {
-        return image.startsWith("http")
-            ? image
-            : new URL(
-                `../../assets/${image}`,
-                import.meta.url
-            ).href;
-    }
 
 
 
@@ -179,7 +171,7 @@ function AdminProducts() {
                             <tr key={p.id}>
                                 <td>
                                     <div className="d-flex align-items-center gap-2">
-                                        <img src={getImageSrc(p.image)} alt={p.name} className="rounded bg-light"
+                                        <img src={p.image} alt={p.name} className="rounded bg-light"
                                             style={{ width: 44, height: 44, objectFit: "cover" }} />
                                         <div>
                                             <div className="fw-semibold small">{p.name}</div>

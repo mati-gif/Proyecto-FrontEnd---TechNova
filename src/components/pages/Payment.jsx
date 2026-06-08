@@ -40,15 +40,38 @@ function Payment() {
         const newErrors = {}
         if (form.cardNumber.trim() === "") {
             newErrors.cardNumber = "El numero de tarjeta no puede estar vacio"
+        } else if (form.cardNumber.replace(/\s/g, "").length !== 16) {
+            newErrors.cardNumber = "La tarjeta debe tener 16 dígitos";
         }
         if (form.cardName.trim() === "") {
             newErrors.cardName = "el nombre no puede estar vacio";
         }
         if (form.expiry.trim() === "") {
             newErrors.expiry = "La fecha de vencimiento es obligatoria";
+
+        } else {
+            const expiryDate = new Date(
+                Number(`20${year}`),
+                Number(month)
+            );
+
+            const today = new Date();
+
+            if (
+                Number(month) < 1 ||
+                Number(month) > 12
+            ) {
+                newErrors.expiry = "Mes inválido";
+            }
+
+            if (expiryDate < today) {
+                newErrors.expiry = "La tarjeta está vencida";
+            }
         }
         if (form.cvc.trim() === "") {
             newErrors.cvc = "Los tres numeros detras de la tarjeta no pueden estar vacíos";
+        } else if (form.cvc.length < 3) {
+            newErrors.cvc = "CVC inválido";
         }
 
         setErrors(newErrors)
@@ -61,9 +84,55 @@ function Payment() {
 
         //hago destructuring con los atributos del input para que sean variables
         const { name, value } = event.target
+
+        let formattedValue = value;
+
+        if (name === "cardNumber") {
+
+            console.log("entro en este if",value);
+            
+            // elimina todo lo que no sea número
+            const digits = value.replace(/\D/g, "");
+
+            console.log(digits);
+            
+            // máximo 16 números
+            const limited = digits.slice(0, 16);
+
+            console.log(formattedValue);
+            
+            // agrega espacio cada 4 números
+            formattedValue = limited.replace(
+                /(\d{4})(?=\d)/g,
+                "$1 "
+            );
+        }
+
+        if (name === "expiry") {
+            // solo números
+            const digits = value.replace(/\D/g, "");
+
+            // MMYY
+            const limited = digits.slice(0, 4);
+
+            if (limited.length >= 3) {
+                formattedValue =
+                    limited.slice(0, 2) +
+                    "/" +
+                    limited.slice(2);
+            } else {
+                formattedValue = limited;
+            }
+        }
+
+        if (name === "cvc") {
+            const digits = value.replace(/\D/g, "");
+            formattedValue = digits.slice(0, 3);
+        }
+
         setForm({
             ...form,
-            [name]: value
+            [name]: formattedValue
         })
 
     }
@@ -101,7 +170,7 @@ function Payment() {
                 subtotal: totalPrice,
                 shippingCost,
                 totalPrice: finalTotal,
-                iva:21,
+                iva: 21,
                 paymentMethod: "CreditCard",
                 lastFourDigits: datosParaEnviar.cardNumber.slice(-4),
             };

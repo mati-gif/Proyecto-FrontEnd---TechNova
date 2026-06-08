@@ -516,7 +516,7 @@ const handleUpdate = (datosParaEnviar) => {
                                 </h3>
 
                                 <img
-                                    src={getImageSrc(form.image)}
+                                    src={form.image}
                                     alt="preview"
                                     className="rounded w-100 bg-light"
                                     style={{
