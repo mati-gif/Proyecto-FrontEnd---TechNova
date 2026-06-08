@@ -1,5 +1,4 @@
-import React, { useContext } from 'react'
-import { useState } from "react";
+import React, { useContext, useState, useEffect } from 'react'
 import { Link, useNavigate } from "react-router-dom";
 import {
     Container,
@@ -16,7 +15,7 @@ import {
     User
 } from "lucide-react";
 import { cartContext } from '../Context/CartContext/cartContext';
-import { CATEGORIES } from "../../data/categories";
+// import { CATEGORIES } from "../../data/categories";
 
 
 
@@ -30,6 +29,8 @@ function Header() {
     //carrito real
     const { cart, totalQuantity } = useContext(cartContext)
 
+    const [categories, setCategories] = useState([])
+
 
     const handleSearch = (e) => {
         e.preventDefault();
@@ -38,6 +39,27 @@ function Header() {
         }
         setSearch("");
     };
+
+    useEffect(() => {
+
+        const res = fetch("http://localhost:3000/category/all", {
+            method: "GET",
+            headers: {
+                "Content-type": "application/json",
+            }
+        })
+            .then(res => res.json())
+            .then((data) => {
+                console.log("categorias del backend", data);
+
+                setCategories([...data])
+
+            })
+            .catch((error) => {
+                console.log(error)
+                errorToast(error.message);
+            })
+    }, [])
     return (
         <header className="tn-header">
             <Container className="d-flex align-items-center" style={{ height: 70 }}>
@@ -61,7 +83,7 @@ function Header() {
 
                 {/* CATEGORÍAS DESKTOP */}
                 <Nav className="d-none d-lg-flex ms-4">
-                    {CATEGORIES.map((cat) => (
+                    {categories.map((cat) => (
                         <Nav.Link
                             key={cat.id}
                             as={Link}
@@ -166,7 +188,7 @@ function Header() {
                         <h6 className="mb-3">Categorías</h6>
 
                         <Nav className="flex-column">
-                            {CATEGORIES.map((cat) => (
+                            {categories.map((cat) => (
                                 <Nav.Link
                                     key={cat.id}
                                     as={Link}

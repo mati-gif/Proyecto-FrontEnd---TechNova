@@ -50,34 +50,41 @@ function Payment() {
             newErrors.expiry = "La fecha de vencimiento es obligatoria";
 
         } else {
-            const expiryDate = new Date(
-                Number(`20${year}`),
-                Number(month)
-            );
 
-            const today = new Date();
+            const [month, year] = form.expiry.split("/");
 
-            if (
-                Number(month) < 1 ||
-                Number(month) > 12
-            ) {
-                newErrors.expiry = "Mes inválido";
+            if (!month || !year) {
+                newErrors.expiry = "Formato inválido (MM/AA)";
+            } else {
+                const expiryDate = new Date(
+                    Number(`20${year}`),
+                    Number(month),
+                    0 // último día del mes
+                );
+
+                const today = new Date();
+
+                if (
+                    Number(month) < 1 ||
+                    Number(month) > 12
+                ) {
+                    newErrors.expiry = "Mes inválido";
+                }
+
+                if (expiryDate < today) {
+                    newErrors.expiry = "La tarjeta está vencida";
+                }
+            }
+            if (form.cvc.trim() === "") {
+                newErrors.cvc = "Los tres numeros detras de la tarjeta no pueden estar vacíos";
+            } else if (form.cvc.length < 3) {
+                newErrors.cvc = "CVC inválido";
             }
 
-            if (expiryDate < today) {
-                newErrors.expiry = "La tarjeta está vencida";
-            }
+            setErrors(newErrors)
+            return Object.keys(newErrors).length === 0;
         }
-        if (form.cvc.trim() === "") {
-            newErrors.cvc = "Los tres numeros detras de la tarjeta no pueden estar vacíos";
-        } else if (form.cvc.length < 3) {
-            newErrors.cvc = "CVC inválido";
-        }
-
-        setErrors(newErrors)
-        return Object.keys(newErrors).length === 0;
     }
-
 
 
     const handleFormChange = (event) => {
@@ -89,18 +96,18 @@ function Payment() {
 
         if (name === "cardNumber") {
 
-            console.log("entro en este if",value);
-            
+            console.log("entro en este if", value);
+
             // elimina todo lo que no sea número
             const digits = value.replace(/\D/g, "");
 
             console.log(digits);
-            
+
             // máximo 16 números
             const limited = digits.slice(0, 16);
 
             console.log(formattedValue);
-            
+
             // agrega espacio cada 4 números
             formattedValue = limited.replace(
                 /(\d{4})(?=\d)/g,

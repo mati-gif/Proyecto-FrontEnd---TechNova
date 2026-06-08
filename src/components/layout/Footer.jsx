@@ -1,9 +1,32 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link } from "react-router-dom";
 import { Container, Row, Col } from "react-bootstrap";
 import { FaInstagram, FaTwitter } from "react-icons/fa";
 import 'bootstrap-icons/font/bootstrap-icons.css';
 function Footer() {
+    const [categories, setCategories] = useState([])
+
+    useEffect(() => {
+
+        const res = fetch("http://localhost:3000/category/all", {
+            method: "GET",
+            headers: {
+                "Content-type": "application/json",
+            }
+        })
+            .then(res => res.json())
+            .then((data) => {
+                console.log("categorias del backend", data);
+
+                setCategories([...data])
+
+            })
+            .catch((error) => {
+                console.log(error)
+                errorToast(error.message);
+            })
+    }, [])
+
     return (
         <footer className="border-top bg-light pt-5 pb-3">
             <Container>
@@ -23,7 +46,7 @@ function Footer() {
                                 style={{ height: "40px", width: "auto", borderRadius: "6px" }}
                                 className="me-2"
                             />
-        
+
                             <span className="fw-bold fs-4">
                                 Tech<span className="text-primary">Nova</span>
                             </span>
@@ -63,32 +86,18 @@ function Footer() {
                     {/* TIENDA */}
                     <Col xs={6} md={3}>
                         <h6 className="fw-semibold mb-3">Tienda</h6>
+                        {categories.map((c) => {
+                            return (
+                                <ul className="list-unstyled small">
+                                    <li className="mb-2" key={c.id}>
+                                        <Link to={`/catalog?category=${c.id}`} className="text-secondary text-decoration-none">
+                                            <i className="bi bi-bag"></i> <span>{c.name}</span>
+                                        </Link>
+                                    </li>
+                                </ul>
+                            )
+                        })}
 
-                        <ul className="list-unstyled small">
-                            <li className="mb-2">
-                                <Link to="/catalog" className="text-secondary text-decoration-none">
-                                    <i className="bi bi-bag"></i> <span>Catálogo</span>
-                                </Link>
-                            </li>
-
-                            <li className="mb-2">
-                                <Link to="/catalog?category=monitores" className="text-secondary text-decoration-none">
-                                    <i className="bi bi-display"></i> <span>Monitores</span>
-                                </Link>
-                            </li>
-
-                            <li className="mb-2">
-                                <Link to="/catalog?category=audio" className="text-secondary text-decoration-none">
-                                    <i className="bi bi-mic-fill"></i> <span>Audio</span>
-                                </Link>
-                            </li>
-
-                            <li className="mb-2">
-                                <Link to="/catalog?category=computadoras" className="text-secondary text-decoration-none">
-                                    <i className="bi bi-laptop"></i> <span>Computadoras</span>
-                                </Link>
-                            </li>
-                        </ul>
                     </Col>
 
                     {/* SOPORTE */}

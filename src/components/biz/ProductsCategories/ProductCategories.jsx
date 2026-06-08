@@ -60,7 +60,7 @@ function ProductCategories() {
   const marcaActiva = searchParams.get("brand");
   const searchQuery = searchParams.get("q");
 
-
+  
   // Filtrado de Categoría + Marca + Busqueda
   const productosFiltrados = products.filter((p) => {
     const matchCategoria = categoria ? Number(p.categoryId) === Number(categoria) : true;
@@ -70,9 +70,11 @@ function ProductCategories() {
       ? p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       p.description.toLowerCase().includes(searchQuery.toLowerCase())
       : true;
+
     return matchCategoria && matchMarca && matchSearch;;
   });
-  
+
+
   // // Marcas de los productos según la categoría seleccionada
   const productosParaMarcas = categoria 
     ? products.filter(p => Number(p.categoryId) === Number(categoria)) 
@@ -90,7 +92,7 @@ function ProductCategories() {
     setSearchParams(searchParams);
   };
 
-
+console.log(window.location.href);
   return (
     <Container className="py-5">
       <Row>
