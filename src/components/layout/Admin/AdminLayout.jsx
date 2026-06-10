@@ -1,7 +1,7 @@
 import React, { useContext } from 'react'
 import { Link, NavLink, Outlet } from "react-router-dom";
 import { Container, Nav } from "react-bootstrap";
-import { LayoutDashboard, Package, Users, ArrowLeft } from "lucide-react";
+import { LayoutDashboard, Package, Users, ArrowLeft, Mail } from "lucide-react";
 import HeaderAdmin from './HeaderAdmin';
 import { AuthContext } from '../../Context/AuthContext/authContext';
 import UserHeader from '../UsuarioLayout/UserHeader';
@@ -78,6 +78,9 @@ function AdminLayout() {
                                 </NavLink>
                                 <NavLink to="/admin/products" className={linkClass}>
                                     <Package size={14} className="me-2" /> Productos
+                                </NavLink>
+                                <NavLink to="/admin/contact-us/all" className={linkClass}>
+                                    <Mail size={14} className="me-2" /> Consultas
                                 </NavLink>
                                 {isSuperadmin && (
                                     <NavLink to="/admin/users" className={linkClass}>

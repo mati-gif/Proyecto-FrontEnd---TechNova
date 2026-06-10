@@ -20,6 +20,7 @@ import AdminDashboard from './components/pages/AdminDashboard';
 import AdminProducts from './components/pages/AdminProducts';
 import AdminProductsForm from './components/pages/AdminProductsForm';
 import AdminUsers from './components/pages/AdminUsers';
+import AdminContactGroups from './components/pages/AdminContactGroups';
 import UserLayout from './components/layout/UsuarioLayout/UserLayout';
 import Orders from './components/biz/Orders/HistoryOrders';
 import CheckOut from './components/pages/CheckOut';
@@ -74,6 +75,7 @@ function App() {
               <Route path='/admin/products/new' element={<AdminProductsForm />} />
               <Route path='/admin/products/:id/edit' element={<AdminProductsForm />} />
               <Route path='/admin/users' element={<AdminUsers />} />
+              <Route path='/admin/contact-us/all' element={<AdminContactGroups />} />
             </Route>
           </Route>
             <Route path="*" element={<NotFound />} />
