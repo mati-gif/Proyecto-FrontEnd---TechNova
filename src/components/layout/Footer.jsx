@@ -88,8 +88,8 @@ function Footer() {
                         <h6 className="fw-semibold mb-3">Tienda</h6>
                         {categories.map((c) => {
                             return (
-                                <ul className="list-unstyled small">
-                                    <li className="mb-2" key={c.id}>
+                                <ul className="list-unstyled small" key={c.id}>
+                                    <li className="mb-2" >
                                         <Link to={`/catalog?category=${c.id}`} className="text-secondary text-decoration-none">
                                             <i className="bi bi-bag"></i> <span>{c.name}</span>
                                         </Link>
@@ -106,7 +106,7 @@ function Footer() {
 
                         <ul className="list-unstyled small">
                             <li className="mb-2">
-                                <i className="bi bi-box2-heart"></i> <span className="text-secondary">Envío gratis en compras superiores a $100.000</span>
+                                <i className="bi bi-box2-heart"></i> <span className="text-secondary">Envío gratis en compras superiores a $500.000</span>
                             </li>
 
                             <li className="mb-2">

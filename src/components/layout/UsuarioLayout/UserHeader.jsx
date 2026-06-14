@@ -5,7 +5,6 @@ import { Cpu, Search, ShoppingCart, User, LogOut, Package, ShieldCheck, Heart } 
 import { cartContext } from '../../Context/CartContext/cartContext';
 import { AuthContext } from "../../Context/AuthContext/authContext";
 import { favoritesContext } from '../../Context/FavoritesContext/favoritesContext.js';
-// import { CATEGORIES } from "../../../data/categories";
 import { errorToast, successToast } from "../../shared/toast/toast";
 
 function UserHeader() {

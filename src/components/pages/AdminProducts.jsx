@@ -19,6 +19,9 @@ function AdminProducts() {
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [productToDelete, setProductToDelete] = useState(null);
 
+    const [searchTerm, setSearchTerm] = useState("");
+    const [selectedCategory, setSelectedCategory] = useState("all");
+
     useEffect(() => {
 
         const res = fetch("http://localhost:3000/product/all", {
@@ -108,7 +111,25 @@ function AdminProducts() {
         }
     };
 
+    const filteredProducts = useMemo(() => {
 
+        return products.filter(product => {
+
+            // Buscar por nombre o marca
+            const matchesSearch =
+                product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                product.brand.toLowerCase().includes(searchTerm.toLowerCase());
+
+            // Filtrar por categoría
+            const matchesCategory =
+                selectedCategory === "all" ||
+                product.categoryId === Number(selectedCategory);
+
+            return matchesSearch && matchesCategory;
+
+        });
+
+    }, [products, searchTerm, selectedCategory]);
 
 
     return (
@@ -137,7 +158,8 @@ function AdminProducts() {
                             }}
                         />
                         <Form.Control placeholder="Buscar por nombre o marca..."
-                            // value={query} onChange={(e) => setQuery(e.target.value)}
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
                             style={{
                                 paddingLeft: '2.4rem',
                                 background: 'rgba(15, 23, 42, 0.04)',
@@ -145,7 +167,10 @@ function AdminProducts() {
                             }}
                         />
                     </div>
-                    <Form.Select style={{ maxWidth: 220 }}>
+                    <Form.Select style={{ maxWidth: 220 }}
+                        value={selectedCategory}
+                        onChange={(e) => setSelectedCategory(e.target.value)}
+                    >
                         <option value="all">Todas las categorías</option>
                         {categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
                     </Form.Select>
@@ -164,10 +189,10 @@ function AdminProducts() {
                         </tr>
                     </thead>
                     <tbody>
-                        {products.length === 0 && (
+                        {filteredProducts.length === 0 && (
                             <tr><td colSpan={5} className="text-center text-secondary py-4">Sin resultados</td></tr>
                         )}
-                        {products.map((p) => (
+                        {filteredProducts.map((p) => (
                             <tr key={p.id}>
                                 <td>
                                     <div className="d-flex align-items-center gap-2">

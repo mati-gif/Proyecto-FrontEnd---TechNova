@@ -49,8 +49,8 @@ function AdminLayout() {
     }
     const isSuperadmin = userRole === "superadmin";
 
-    console.log("el rol del usuario logueado es :",userRole);
-    
+    console.log("el rol del usuario logueado es :", userRole);
+
     const linkClass = ({ isActive }) =>
         `tn-sidebar-link ${isActive ? "active" : ""}`;
     return (
@@ -58,7 +58,7 @@ function AdminLayout() {
             <style>{sidebarStyles}</style>
             <div className='d-flex flex-column min-vh-100'>
                 {/* <HeaderAdmin /> */}
-                <UserHeader/>
+                <UserHeader />
                 <Container fluid className="py-4">
                     <div className="d-flex flex-wrap align-items-baseline gap-3 mb-4 px-2">
                         <h1 className="fw-bold mb-0" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
