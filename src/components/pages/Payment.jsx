@@ -17,7 +17,6 @@ function Payment() {
 
     const { shippingThreshold, shippingCost, finalTotal, cart, totalPrice } = useContext(cartContext)
     const { user, token } = useContext(AuthContext)
-    console.log(cart);
 
     const [address, setAddress] = useState([])
 
@@ -25,7 +24,6 @@ function Payment() {
 
     const [processing, setProcessing] = useState(false);
 
-    console.log(shippingAddress);
 
     const [form, setForm] = useState({
         cardNumber: "",
@@ -96,12 +94,8 @@ function Payment() {
 
         if (name === "cardNumber") {
 
-            console.log("entro en este if", value);
-
             // elimina todo lo que no sea número
             const digits = value.replace(/\D/g, "");
-
-            console.log(digits);
 
             // máximo 16 números
             const limited = digits.slice(0, 16);
@@ -159,8 +153,6 @@ function Payment() {
         };
 
         handleCreateOrder(datosParaEnviar)
-        console.log(form);
-        console.log("Datos para enviar ", datosParaEnviar);
 
 
     }
@@ -182,8 +174,6 @@ function Payment() {
                 lastFourDigits: datosParaEnviar.cardNumber.slice(-4),
             };
 
-            console.log("Orden a crear:", orderData);
-
             const response = await fetch(
                 "http://localhost:3000/order/create",
                 {
@@ -204,7 +194,6 @@ function Payment() {
 
             successToast(data.message);
 
-            console.log("Orden creada:", data.order);
 
             const orderId = data.order.id;
 
@@ -235,7 +224,6 @@ function Payment() {
                     throw new Error(orderProductResult.message);
                 }
 
-                console.log("OrderProduct creado:", orderProductResult);
             }
 
             navigate(

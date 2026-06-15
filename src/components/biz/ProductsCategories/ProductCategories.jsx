@@ -25,7 +25,6 @@ function ProductCategories() {
               })
                   .then(res => res.json())
                   .then((data) => {
-                      console.log("productos del backend", data);
       
                       setProducts([...data])
       
@@ -42,9 +41,7 @@ function ProductCategories() {
                       }
                   })
                       .then(res => res.json())
-                      .then((data) => {
-                          console.log("categorias del backend", data);
-          
+                      .then((data) => {          
                           setCategories([...data])
           
                       })
@@ -68,7 +65,7 @@ function ProductCategories() {
     const matchMarca = marcaActiva ? p.brand === marcaActiva : true;
     const matchSearch = searchQuery
       ? p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      p.description.toLowerCase().includes(searchQuery.toLowerCase())
+      p.brand.toLowerCase().includes(searchQuery.toLowerCase()) 
       : true;
 
     return matchCategoria && matchMarca && matchSearch;;
@@ -92,7 +89,7 @@ function ProductCategories() {
     setSearchParams(searchParams);
   };
 
-console.log(window.location.href);
+
   return (
     <Container className="py-5">
       <Row>

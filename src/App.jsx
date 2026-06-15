@@ -14,7 +14,6 @@ import Cart from './components/biz/Cart/Cart';
 import CartContextProvider from './components/Context/CartContext/CartContextProvider';
 import MyFavorites from './components/MyFavorites/MyFavorites';
 import FavoritesContextProvider from './components/Context/FavoritesContext/favoritesContextProvider';
-import HeaderAdmin from './components/layout/Admin/HeaderAdmin';
 import AdminLayout from './components/layout/Admin/AdminLayout';
 import AdminDashboard from './components/pages/AdminDashboard';
 import AdminProducts from './components/pages/AdminProducts';

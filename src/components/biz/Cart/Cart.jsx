@@ -12,7 +12,6 @@ function Cart() {
 
     //carrito real
     const { shippingThreshold,shippingCost,finalTotal,cart, handleAddToCart, handleDecreaseQuantity, totalPrice, handleDeleteProduct } = useContext(cartContext)
-    console.log(cart);
 
     const {user} = useContext(AuthContext)
 
@@ -96,7 +95,9 @@ function Cart() {
                                                 <button aria-label="Aumentar" variant="link"
                                                     onClick={() => handleAddToCart(product)}
                                                     className="text-dark p-0"
-                                                    style={{ width: '34px', height: '34px', textDecoration: 'none', background: 'transparent', border: 'none' }}>
+                                                    style={{ width: '34px', height: '34px', textDecoration: 'none', background: 'transparent', border: 'none' }}
+                                                    disabled={product.cantidad >= product.stock}
+                                                >
                                                     <Plus size={14} />
                                                 </button>
                                             </div>

@@ -10,11 +10,7 @@ import { favoritesContext } from "../../Context/FavoritesContext/favoritesContex
 function SingleProduct() {
   const { slug } = useParams();
 
-  console.log(slug);
-
   const [products, setProducts] = useState([])
-
-  console.log(products);
 
   // Estado local para la animación de los iconos
   const [isCartAnimating, setIsCartAnimating] = useState(false);
@@ -38,8 +34,6 @@ function SingleProduct() {
     })
       .then(res => res.json())
       .then((data) => {
-        console.log("productos del backend", data);
-
         setProducts([...data])
         console.log(data);
         
@@ -48,8 +42,6 @@ function SingleProduct() {
   }, [])
 
     const producto = products.find(p => p.slug === slug);
-
-  console.log("Estos son los products", producto);
 
 
 if (products.length === 0) {

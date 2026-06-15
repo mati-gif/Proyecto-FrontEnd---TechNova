@@ -14,9 +14,6 @@ function Index() {
     const [categories,setCategories] = useState([])
 
     const {token} = useContext(AuthContext)
-    console.log(token);
-    
-    
         useEffect(() => {
     
             const res = fetch("http://localhost:3000/product/all", {
@@ -28,8 +25,7 @@ function Index() {
             })
                 .then(res => res.json())
                 .then((data) => {
-                    console.log("productos del backend", data);
-    
+                    
                     setProducts([...data])
     
                 })
@@ -48,7 +44,6 @@ function Index() {
                 })
                     .then(res => res.json())
                     .then((data) => {
-                        console.log("categorias del backend", data);
         
                         setCategories([...data])
         
@@ -56,7 +51,7 @@ function Index() {
                     .catch(error => console.log(error))//hacer mas robusto este catch
             }, [])
     
-        console.log(products);
+        
     const featured = products.filter(p => p.isFeatured).slice(0, 4);
     const newest = products.filter(p => p.isNew).slice(0, 4);
 

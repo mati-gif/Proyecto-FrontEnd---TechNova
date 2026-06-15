@@ -1,21 +1,8 @@
 import React, { useContext, useState, useEffect } from 'react'
 import { Link, useNavigate } from "react-router-dom";
-import {
-    Container,
-    Nav,
-    Form,
-    Button,
-    Offcanvas
-} from "react-bootstrap";
-
-import {
-    Cpu,
-    Search,
-    ShoppingCart,
-    User
-} from "lucide-react";
+import {Container,Nav,Form,Button,Offcanvas} from "react-bootstrap";
+import {Cpu,Search,ShoppingCart,User} from "lucide-react";
 import { cartContext } from '../Context/CartContext/cartContext';
-// import { CATEGORIES } from "../../data/categories";
 
 
 
@@ -50,8 +37,6 @@ function Header() {
         })
             .then(res => res.json())
             .then((data) => {
-                console.log("categorias del backend", data);
-
                 setCategories([...data])
 
             })

@@ -16,8 +16,6 @@ function Footer() {
         })
             .then(res => res.json())
             .then((data) => {
-                console.log("categorias del backend", data);
-
                 setCategories([...data])
 
             })

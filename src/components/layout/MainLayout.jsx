@@ -8,7 +8,6 @@ import UserHeader from './UsuarioLayout/UserHeader';
 function MainLayout() {
 
     const {token} = useContext(AuthContext)
-    // console.log(token.role);
 
 // Creamos la variable userRole inicialmente vacía
     let userRole = null;

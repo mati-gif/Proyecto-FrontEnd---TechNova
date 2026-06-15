@@ -123,7 +123,7 @@ function Register({ onRegisterSuccess }) {
                 setName("")
                 setErrors(initialRegisterFormErrors)
                 successToast(res.message)
-                // navigate("/login")// cuando se maneje los roles que te direccione a otra pagina 
+                
             })
             .catch((err) => {
                 console.log(err)

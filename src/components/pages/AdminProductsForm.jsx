@@ -3,7 +3,6 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { Card, Form, Row, Col, Button } from "react-bootstrap";
 import { ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
-// import { PRODUCTS } from "../../data/products";
 import { AuthContext } from "../Context/AuthContext/authContext";
 import { errorToast, successToast } from "../shared/toast/toast";
 
@@ -12,12 +11,12 @@ function AdminProductsForm() {
     const { token } = useContext(AuthContext)
 
     const { id } = useParams();
-    console.log(id);
 
     const [isEditing, setIsEditing] = useState(false)
     const [errors, setErrors] = useState({})
     const [product, setProduct] = useState(null)
     const [categories, setCategories] = useState([])
+    const [products, setProducts] = useState([]);
 
     const navigate = useNavigate()
 
@@ -40,8 +39,7 @@ function AdminProductsForm() {
     useEffect(() => {
         if (!product) return;
         setIsEditing(true)
-        console.log("producto recibido:", product);
-        console.log("features:", product.features);
+
         setForm({
             name: product.name,
             brand: product.brand,
@@ -69,8 +67,6 @@ function AdminProductsForm() {
         })
             .then(res => res.json())
             .then((data) => {
-                console.log("producto del backend", data);
-
                 setProduct(data)
 
             })
@@ -151,14 +147,11 @@ function AdminProductsForm() {
         } else {
             handleCreate(datosParaEnviar);
         }
-        console.log(form);
-        console.log("Aca veo el stock que viaja al be", datosParaEnviar.stock);
 
 
     }
 
-    const handleCreate = (datosParaEnviar) => {
-        console.log("Aca veo el stock que viaja al be", datosParaEnviar.stock);
+    const handleCreate =  (datosParaEnviar) => {
 
         fetch("http://localhost:3000/create", {
             headers: {
@@ -168,32 +161,16 @@ function AdminProductsForm() {
             method: "POST",
             body: JSON.stringify(datosParaEnviar)
         })
-            .then(res => {
+            .then(async (res) => {
+                const data = await res.json();
+
                 if (!res.ok) {
-                    // Si el backend responde con error (400, 500, etc) disparamos el catch
-                    throw new Error("Error al procesar la petición en el servidor");
+                    throw new Error(data.message);
                 }
-                return res.json();
+
+                return data;
             })
             .then((data) => {
-
-                // o solo el ID (si era totalmente nuevo). Controlamos ambos casos:
-
-                setProducts(prevProducts => {
-                    if (typeof data === "object" && data !== null) {
-                        // Caso backend 200 (actualizó stock y devolvió el objeto producto completo)
-                        // Reemplazamos el viejo o simplemente actualizamos la lista
-                        return [data, ...prevProducts.filter(p => p.id !== data.id)];
-                    } else {
-                        // Caso backend 201 (devolvió solo el ID numérico)
-                        const nuevoProductoConId = {
-                            ...datosParaEnviar,
-                            id: data // data es el ID enviado por el backend
-                        };
-                        return [nuevoProductoConId, ...prevProducts];
-                    }
-                });
-
 
                 successToast(data.message);
                 navigate("/admin/products", { replace: true });
@@ -216,8 +193,6 @@ function AdminProductsForm() {
         })
             .then(res => res.json())
             .then((data) => {
-                console.log("categorias del backend", data);
-
                 setCategories([...data])
 
             })
@@ -227,36 +202,38 @@ function AdminProductsForm() {
             })
     }, [])
 
-const handleUpdate = (datosParaEnviar) => {
+    const handleUpdate = (datosParaEnviar) => {
 
-    fetch(`http://localhost:3000/update/${id}`, {
-        method: "PUT",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
-        },
-        body: JSON.stringify(datosParaEnviar)
-    })
-        .then(res => {
-            if (!res.ok) {
-                throw new Error("Error al actualizar el producto");
-            }
-            return res.json();
+        fetch(`http://localhost:3000/update/${id}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            },
+            body: JSON.stringify(datosParaEnviar)
         })
-        .then(data => {
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error("Error al actualizar el producto");
+                }
+                return res.json();
+            })
+            .then(data => {
 
-            successToast(data.message);
+                successToast(data.message);
 
-            navigate("/admin/products", {
-                replace: true
+                navigate("/admin/products", {
+                    replace: true
+                });
+
+            })
+            .catch(error => {
+                console.log(error);
+                errorToast(error.message);
             });
+    };
 
-        })
-        .catch(error => {
-            console.log(error);
-            errorToast(error.message);
-        });
-};
+
 
     return (
         <div>
@@ -515,15 +492,17 @@ const handleUpdate = (datosParaEnviar) => {
                                     Vista previa
                                 </h3>
 
-                                <img
-                                    src={form.image}
-                                    alt="preview"
-                                    className="rounded w-100 bg-light"
-                                    style={{
-                                        aspectRatio: "1/1",
-                                        objectFit: "cover"
-                                    }}
-                                />
+                                {form.image && (
+                                    <img
+                                        src={form.image}
+                                        alt="preview"
+                                        className="rounded w-100 bg-light"
+                                        style={{
+                                            aspectRatio: "1/1",
+                                            objectFit: "cover"
+                                        }}
+                                    />
+                                )}
 
                             </Card.Body>
                         </Card>

@@ -2,7 +2,6 @@ import React, { useContext } from 'react'
 import { Link, NavLink, Outlet } from "react-router-dom";
 import { Container, Nav } from "react-bootstrap";
 import { LayoutDashboard, Package, Users, ArrowLeft, Mail } from "lucide-react";
-import HeaderAdmin from './HeaderAdmin';
 import { AuthContext } from '../../Context/AuthContext/authContext';
 import UserHeader from '../UsuarioLayout/UserHeader';
 
@@ -48,8 +47,6 @@ function AdminLayout() {
         }
     }
     const isSuperadmin = userRole === "superadmin";
-
-    console.log("el rol del usuario logueado es :", userRole);
 
     const linkClass = ({ isActive }) =>
         `tn-sidebar-link ${isActive ? "active" : ""}`;

@@ -33,7 +33,6 @@ function AdminProducts() {
         })
             .then(res => res.json())
             .then((data) => {
-                console.log("productos del backend", data);
 
                 setProducts([...data])
 
@@ -52,8 +51,7 @@ function AdminProducts() {
         })
             .then(res => res.json())
             .then((data) => {
-                console.log("categorias del backend", data);
-
+                
                 setCategories([...data])
 
             })
@@ -74,9 +72,6 @@ function AdminProducts() {
         setProductToDelete(null);
     };
 
-    console.log(products);
-
-    console.log("Producto a eliminar ", productToDelete);
 
     const handleDelete = async () => {
         if (!productToDelete) return;
@@ -99,7 +94,6 @@ function AdminProducts() {
             // Filtrar el estado actual 
             setProducts((prevProducts) => prevProducts.filter(p => p.id !== productToDelete.id));
 
-            console.log("Usuario eliminado exitosamente");
             successToast(data.message || "Usuario eliminado exitosamente");
 
         } catch (error) {

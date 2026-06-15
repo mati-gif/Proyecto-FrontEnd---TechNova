@@ -14,8 +14,6 @@ function AuthContextProvider({ children }) {
         userEmail: null,
         userRole: null
     })
-
-    console.log(user,"informacion del usuario");
     
 
     const handleUserLogin = (token) => {
@@ -37,7 +35,6 @@ function AuthContextProvider({ children }) {
     
     useEffect(() => {
 
-        console.log(token);
         
         if (token) {
             try {
@@ -48,8 +45,6 @@ function AuthContextProvider({ children }) {
                     userEmail: payload.email,
                     userName: payload.name
                 });
-
-                console.log("se ejecuto el try del useEffect");
                 
                 
             } catch (error) {

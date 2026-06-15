@@ -61,8 +61,6 @@ function CheckOut() {
 
             const data = await response.json();
 
-            console.log(data.addresses);
-
 
             const active = data.addresses.filter(a => a.active);
             const inactive = data.addresses.filter(a => !a.active);
@@ -132,7 +130,6 @@ function CheckOut() {
                 throw new Error(errorData.message);
             }
 
-            console.log(activeAddresses);
 
             const address = activeAddresses.find(a => a.id === addressId);
             if (!address) return;
@@ -270,8 +267,6 @@ function CheckOut() {
         };
 
         handleCreate(datosParaEnviar)
-        console.log(form);
-        console.log("Datos para enviar ", datosParaEnviar);
 
 
     }

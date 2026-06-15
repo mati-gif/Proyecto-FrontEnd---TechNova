@@ -14,7 +14,6 @@ function HistoryOrders() {
 
   const { cart, totalPrice } = useContext(cartContext)
 
-  console.log(totalPrice);
   useEffect(() => {
 
     fetch(
@@ -52,8 +51,6 @@ function HistoryOrders() {
       </Container>
     );
   }
-
-  console.log(orders);
   
   return (
     <Container className="py-4 py-lg-5" style={{ maxWidth: 960 }}>

@@ -10,8 +10,6 @@ function MyFavorites() {
   // Consumimos los contextos globales
   const { favorites, handleDeleteFavorite } = useContext(favoritesContext);
   const { cart, handleAddToCart, handleDecreaseQuantity } = useContext(cartContext);
-
-  console.log(favorites);
   
 
   return (

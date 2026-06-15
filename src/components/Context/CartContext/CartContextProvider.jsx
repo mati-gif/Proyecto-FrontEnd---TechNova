@@ -15,26 +15,38 @@ function CartContextProvider({ children }) {
         }
     })
 
-    const handleAddToCart = (product) => {
+const handleAddToCart = (product) => {
 
-        const existProduct = cart.some((p) => p.id === product.id)
-        if (existProduct) {
-            // 2. Si ya existe, mapeamos el carrito y aumentamos la cantidad del que coincide
-            const updatedCart = cart.map(item =>
-                item.id === product.id
-                    ? { ...item, cantidad: (item.cantidad || 1) + 1 }
-                    : item
-            );
-            setCart(updatedCart);
-            successToast(`${product.name} — Se añadió otra unidad al carrito`);
-        } else {
-            // 3. Si es nuevo, lo agregamos con cantidad 1
-            setCart([...cart, { ...product, cantidad: 1 }]);
-            successToast(`${product.name} agregado al carrito`);
+    const productInCart = cart.find(p => p.id === product.id);
+
+    if (productInCart) {
+
+        // Verificamos stock
+        if (productInCart.cantidad >= productInCart.stock) {
+            errorToast(`No hay más stock disponible de ${product.name}`);
+            return;
         }
 
+        const updatedCart = cart.map(item =>
+            item.id === product.id
+                ? { ...item, cantidad: item.cantidad + 1 }
+                : item
+        );
 
+        setCart(updatedCart);
+        successToast(`${product.name} — Se añadió otra unidad al carrito`);
+
+    } else {
+
+        if (product.stock <= 0) {
+            errorToast(`${product.name} sin stock disponible`);
+            return;
+        }
+
+        setCart([...cart, { ...product, cantidad: 1 }]);
+        successToast(`${product.name} agregado al carrito`);
     }
+}
     // Esta función calcula el total de unidades sumando todas las "cantidad"
     const totalQuantity = cart.reduce((total, item) => {
         return total + (item.cantidad || 1);

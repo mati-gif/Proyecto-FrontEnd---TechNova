@@ -85,8 +85,6 @@ function AdminUsers() {
             })
     }, [])
 
-    console.log(users);
-
     // Funciones para manejar el modal de eliminacion
     const handleOpenDeleteModal = (user) => {
         setUserToDelete(user);
@@ -139,7 +137,6 @@ function AdminUsers() {
             // Filtrar el estado actual 
             setUsers((prevUsers) => prevUsers.filter(u => u.id !== userToDelete.id));
 
-            console.log("Usuario eliminado exitosamente");
             successToast(data.message || "Usuario eliminado exitosamente");
 
         } catch (error) {
@@ -156,12 +153,18 @@ function AdminUsers() {
 
         event.preventDefault()
         if (!newPw) {
-            setPwError("La contraseña no puede estar vacía");
+            const message = "La contraseña no puede estar vacía";
+
+            setPwError(message);
+            errorToast(message);
             return;
         }
 
         if (newPw.length < 7) {
-            setPwError("La contraseña debe tener un mínimo de 7 caracteres");
+            const message = "La contraseña debe tener un mínimo de 7 caracteres";
+
+            setPwError(message);
+            errorToast(message);
             return;
         }
 
@@ -196,8 +199,6 @@ function AdminUsers() {
 
     };
 
-
-    console.log("Nueva contraseña: ", newPw);
 
     return (
         <div>

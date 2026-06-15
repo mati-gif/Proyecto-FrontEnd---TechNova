@@ -131,14 +131,12 @@ function AdminDashboard() {
         })
             .then(res => res.json())
             .then((data) => {
-                console.log("pedidos del backend", data);
 
                 setOrders([...data.orders])
 
             })
             .catch(error => console.log(error))
     }, [])
-    console.log(orders);
     
 
     return (

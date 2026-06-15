@@ -19,9 +19,6 @@ function UserHeader() {
   const { cart, totalQuantity } = useContext(cartContext);
   const { handleUserLogout, token,user } = useContext(AuthContext)
 
-  console.log(user);
-  console.log(cart);
-  console.log(totalQuantity);
 
   // 3. Consumimos los favoritos reales globales
   const { favorites } = useContext(favoritesContext);
@@ -50,8 +47,7 @@ function UserHeader() {
                     })
                         .then(res => res.json())
                         .then((data) => {
-                            console.log("categorias del backend", data);
-            
+                            
                             setCategories([...data])
             
                         })
