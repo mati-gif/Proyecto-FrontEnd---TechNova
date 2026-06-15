@@ -1,119 +1,89 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import Index from './components/pages'
+import './index.css'
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { Toaster as Sonner } from "sonner";
+import MainLayout from './components/layout/MainLayout';
+import Login from './components/auth/Login/Login';
+import ProductCategories from './components/biz/ProductsCategories/ProductCategories';
+// import ProductCard from './components/ProductCard/ProductCard';
+import SingleProduct from './components/biz/SingleProduct/SingleProduct';
+
+import { useState } from 'react';
+// import Register from './components/auth/Register/Register';
+import Cart from './components/biz/Cart/Cart';
+import CartContextProvider from './components/Context/CartContext/CartContextProvider';
+import MyFavorites from './components/MyFavorites/MyFavorites';
+import FavoritesContextProvider from './components/Context/FavoritesContext/favoritesContextProvider';
+import AdminLayout from './components/layout/Admin/AdminLayout';
+import AdminDashboard from './components/pages/AdminDashboard';
+import AdminProducts from './components/pages/AdminProducts';
+import AdminProductsForm from './components/pages/AdminProductsForm';
+import AdminUsers from './components/pages/AdminUsers';
+import AdminContactGroups from './components/pages/AdminContactGroups';
+import UserLayout from './components/layout/UsuarioLayout/UserLayout';
+import Orders from './components/biz/Orders/HistoryOrders';
+import CheckOut from './components/pages/CheckOut';
+import Payment from './components/pages/Payment';
+import Success from './components/pages/Success';
+import ContactUs from './components/ContactUs/ContactUs';
+import Protected from './components/routes/protected/Protected';
+import NotFound from "./components/routes/notFound/NotFound";
+import { ToastContainer } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
+import ShippingAddresContextProvider from './components/Context/ShippingAddressContext/ShippingAddresContextProvider';
+import HistoryOrders from './components/biz/Orders/HistoryOrders';
+
+
 
 function App() {
-  const [count, setCount] = useState(0)
 
   return (
     <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+      <Sonner position="top-right" richColors />
+      <CartContextProvider>
+        <FavoritesContextProvider>
+          <ShippingAddresContextProvider>
+        <ToastContainer />
+        <BrowserRouter>
+          <Routes>
+            {/* rutas para el usuario sin logguear */}
+            <Route element={<MainLayout />}>
+              <Route path="/" element={<Index />} />
+              <Route path="/my-cart" element={<Cart />} />
+              <Route path='/login' element={<Login />} />
+              <Route path='/catalog' element={<ProductCategories />} />
+              <Route path='/product/:slug' element={<SingleProduct />} />
+              <Route path='/contact-us' element={<ContactUs />} />
 
-      <div className="ticks"></div>
+            {/* rutas para el usuario con rol de usuario (usuario comun),admin y superadmin despues de haberse logueado */}
+            <Route element={<Protected allowedRoles={['user', 'admin', 'superadmin']} />}>
+              <Route path='/history-orders' element={<HistoryOrders />} />
+              <Route path="/my-favorites" element={<MyFavorites />} />
+              <Route path='/checkout' element={<CheckOut />} />
+              <Route path='/payment' element={<Payment />} />
+              <Route path='/success' element={<Success />} />
+            </Route>
+            </Route>
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+            
+            {/* rutas para el usuario con role de admin y superadmin despues de haberse loggueado */}
+          <Route element={<Protected allowedRoles={[ 'admin', 'superadmin']} />}>
+            <Route element={<AdminLayout />}>
+              <Route path='/admin/dashboard' element={<AdminDashboard />} />
+              <Route path='/admin/products' element={<AdminProducts />} />
+              <Route path='/admin/products/new' element={<AdminProductsForm />} />
+              <Route path='/admin/products/:id/edit' element={<AdminProductsForm />} />
+              <Route path='/admin/users' element={<AdminUsers />} />
+              <Route path='/admin/contact-us/all' element={<AdminContactGroups />} />
+            </Route>
+          </Route>
+            <Route path="*" element={<NotFound />} />
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
+          </Routes>
+        </BrowserRouter>
+        </ShippingAddresContextProvider>
+        </FavoritesContextProvider>
+      </CartContextProvider>
     </>
   )
 }
