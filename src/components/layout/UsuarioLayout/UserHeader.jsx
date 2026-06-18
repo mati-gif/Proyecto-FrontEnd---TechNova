@@ -1,10 +1,27 @@
-import { useState, useContext,useEffect } from "react";
+import { useState, useContext, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Container, Nav, Navbar, Form, Button, Dropdown, Offcanvas } from "react-bootstrap";
-import { Cpu, Search, ShoppingCart, User, LogOut, Package, ShieldCheck, Heart } from "lucide-react";
-import { cartContext } from '../../Context/CartContext/cartContext';
+import {
+  Container,
+  Nav,
+  Navbar,
+  Form,
+  Button,
+  Dropdown,
+  Offcanvas,
+} from "react-bootstrap";
+import {
+  Cpu,
+  Search,
+  ShoppingCart,
+  User,
+  LogOut,
+  Package,
+  ShieldCheck,
+  Heart,
+} from "lucide-react";
+import { cartContext } from "../../Context/CartContext/cartContext";
 import { AuthContext } from "../../Context/AuthContext/authContext";
-import { favoritesContext } from '../../Context/FavoritesContext/favoritesContext.js';
+import { favoritesContext } from "../../Context/FavoritesContext/favoritesContext.js";
 import { errorToast, successToast } from "../../shared/toast/toast";
 
 function UserHeader() {
@@ -12,17 +29,14 @@ function UserHeader() {
   const navigate = useNavigate();
   const [showMobile, setShowMobile] = useState(false);
 
-    const [categories, setCategories] = useState([])
-  
+  const [categories, setCategories] = useState([]);
 
   // Carrito real
   const { cart, totalQuantity } = useContext(cartContext);
-  const { handleUserLogout, token,user } = useContext(AuthContext)
-
+  const { handleUserLogout, token, user } = useContext(AuthContext);
 
   // 3. Consumimos los favoritos reales globales
   const { favorites } = useContext(favoritesContext);
-
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -34,33 +48,29 @@ function UserHeader() {
 
   const handleLogOutUser = () => {
     handleUserLogout();
-    successToast("Saliste de tu cuenta! 👋😊" );
+    successToast("Saliste de tu cuenta! 👋😊");
   };
 
   useEffect(() => {
-            
-                    const res = fetch("http://localhost:3000/category/all", {
-                        method: "GET",
-                        headers: {
-                            "Content-type": "application/json",
-                        }
-                    })
-                        .then(res => res.json())
-                        .then((data) => {
-                            
-                            setCategories([...data])
-            
-                        })
-                        .catch((error) => {
-                            console.log(error)
-                            errorToast(error.message);
-                        })
-                }, [])
+    const res = fetch("http://localhost:3000/category/all", {
+      method: "GET",
+      headers: {
+        "Content-type": "application/json",
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setCategories([...data]);
+      })
+      .catch((error) => {
+        console.log(error);
+        errorToast(error.message);
+      });
+  }, []);
 
   return (
     <header className="tn-header">
       <Container className="d-flex align-items-center" style={{ height: 70 }}>
-
         {/* LOGO */}
         <Link
           to="/"
@@ -104,7 +114,7 @@ function UserHeader() {
                 position: "absolute",
                 left: 10,
                 top: "50%",
-                transform: "translateY(-50%)"
+                transform: "translateY(-50%)",
               }}
             />
             <Form.Control
@@ -118,7 +128,6 @@ function UserHeader() {
 
         {/* ACCIONES */}
         <div className="d-flex align-items-center gap-2 ms-auto ms-md-2">
-          
           {/* USER DROPDOWN */}
           <Dropdown align="end">
             <Dropdown.Toggle
@@ -127,30 +136,44 @@ function UserHeader() {
             >
               <span
                 className="rounded-circle text-white d-inline-flex align-items-center justify-content-center fw-semibold"
-                style={{ width: 30, height: 30, fontSize: 13, background: 'linear-gradient(135deg, #2b56f5, #5b8bff)' }}
+                style={{
+                  width: 30,
+                  height: 30,
+                  fontSize: 13,
+                  background: "linear-gradient(135deg, #2b56f5, #5b8bff)",
+                }}
               >
-                {user.userName ? user.userName.charAt(0).toUpperCase() : <User size={14} />}
+                {user.userName ? (
+                  user.userName.charAt(0).toUpperCase()
+                ) : (
+                  <User size={14} />
+                )}
               </span>
               <span className="d-none d-sm-inline small">
                 {user.userName ? user.userName.split(" ")[0] : "Cuenta"}
               </span>
             </Dropdown.Toggle>
             <Dropdown.Menu>
-              <Dropdown.Header className="text-truncate" style={{ maxWidth: 220 }}>
+              <Dropdown.Header
+                className="text-truncate"
+                style={{ maxWidth: 220 }}
+              >
                 {user.userEmail || "Invitado"}
               </Dropdown.Header>
               <Dropdown.Divider />
-              
+
               <Dropdown.Item as={Link} to="/history-orders">
-                <Package size={14} className="me-2"/> Mis pedidos
+                <Package size={14} className="me-2" /> Mis pedidos
               </Dropdown.Item>
 
               {/* Favoritos adentro del Dropdown */}
               <Dropdown.Item as={Link} to="/my-favorites">
-                <Heart size={14} className="me-2 text-secondary"/> Mis favoritos
+                <Heart size={14} className="me-2 text-secondary" /> Mis
+                favoritos
               </Dropdown.Item>
-              
-              {(user.userRole === "admin" || user.userRole === "superadmin") && (
+
+              {(user.userRole === "admin" ||
+                user.userRole === "superadmin") && (
                 <Dropdown.Item as={Link} to="/admin/dashboard">
                   <ShieldCheck size={14} className="me-2" /> Panel admin
                 </Dropdown.Item>
@@ -181,7 +204,7 @@ function UserHeader() {
                   color: "white",
                   borderRadius: "50%",
                   fontSize: 10,
-                  padding: "2px 6px"
+                  padding: "2px 6px",
                 }}
               >
                 {totalQuantity}
@@ -222,13 +245,13 @@ function UserHeader() {
                 </Nav.Link>
               ))}
               <hr />
-              <Nav.Link 
-                as={Link} 
-                to="/my-favorites" 
+              <Nav.Link
+                as={Link}
+                to="/my-favorites"
                 onClick={() => setShowMobile(false)}
                 className="d-flex align-items-center gap-2"
               >
-                <Heart size={16} className="text-primary" fill="currentColor"/> 
+                <Heart size={16} className="text-primary" fill="currentColor" />
                 Mis Favoritos ({favorites.length})
               </Nav.Link>
             </Nav>
@@ -243,7 +266,6 @@ function UserHeader() {
             </Form>
           </Offcanvas.Body>
         </Offcanvas>
-
       </Container>
     </header>
   );

@@ -41,12 +41,15 @@ function AdminContactGroups() {
   const filteredGroups = contactGroups.filter(
     (group) =>
       group.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      group.fullname.toLowerCase().includes(searchTerm.toLowerCase())
+      group.fullname.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   return (
     <div>
-      <h1 className="h4 fw-bold mb-4" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+      <h1
+        className="h4 fw-bold mb-4"
+        style={{ fontFamily: "'Space Grotesk', sans-serif" }}
+      >
         Consultas
       </h1>
 
@@ -72,17 +75,28 @@ function AdminContactGroups() {
       {filteredGroups.length === 0 ? (
         <Card className="border text-center">
           <Card.Body className="py-5">
-            <Mail size={48} className="text-muted mb-3 d-block mx-auto opacity-50" />
+            <Mail
+              size={48}
+              className="text-muted mb-3 d-block mx-auto opacity-50"
+            />
             <p className="text-muted mb-0">
-              {searchTerm ? "No se encontraron consultas." : "No hay consultas registradas."}
+              {searchTerm
+                ? "No se encontraron consultas."
+                : "No hay consultas registradas."}
             </p>
           </Card.Body>
         </Card>
       ) : (
         <div className="row g-3">
           {filteredGroups.map((group) => (
-            <div key={group.email} className="col-md-6 col-lg-4 d-flex align-items-stretch">
-              <Card className="border tn-card-hover" style={{ width: '100%', aspectRatio: '1 / 1', minHeight: 280 }}>
+            <div
+              key={group.email}
+              className="col-md-6 col-lg-4 d-flex align-items-stretch"
+            >
+              <Card
+                className="border tn-card-hover"
+                style={{ width: "100%", aspectRatio: "1 / 1", minHeight: 280 }}
+              >
                 <Card.Body className="p-3 d-flex flex-column">
                   <div className="d-flex align-items-center gap-2 mb-3 w-100">
                     <div
@@ -97,8 +111,12 @@ function AdminContactGroups() {
                       <User size={16} />
                     </div>
                     <div style={{ minWidth: 0 }}>
-                      <h6 className="mb-0 fw-bold small text-truncate">{group.fullname}</h6>
-                      <small className="text-muted text-truncate d-block">{group.email}</small>
+                      <h6 className="mb-0 fw-bold small text-truncate">
+                        {group.fullname}
+                      </h6>
+                      <small className="text-muted text-truncate d-block">
+                        {group.email}
+                      </small>
                     </div>
                   </div>
 
@@ -107,12 +125,28 @@ function AdminContactGroups() {
                       <div
                         key={msg.id}
                         className="mb-0 p-3 bg-light rounded w-100 h-100"
-                        style={{ borderLeft: "3px solid #0d6efd", fontSize: '0.82rem', minHeight: 140 }}
+                        style={{
+                          borderLeft: "3px solid #0d6efd",
+                          fontSize: "0.82rem",
+                          minHeight: 140,
+                        }}
                       >
-                        <div className="text-muted mb-2" style={{ fontSize: '0.75rem' }}>
+                        <div
+                          className="text-muted mb-2"
+                          style={{ fontSize: "0.75rem" }}
+                        >
                           {new Date(msg.createdAt).toLocaleDateString()}
                         </div>
-                        <div className="text-dark" style={{ overflow: 'hidden', textOverflow: 'ellipsis', display: '-webkit-box', WebkitLineClamp: 5, WebkitBoxOrient: 'vertical' }}>
+                        <div
+                          className="text-dark"
+                          style={{
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            display: "-webkit-box",
+                            WebkitLineClamp: 5,
+                            WebkitBoxOrient: "vertical",
+                          }}
+                        >
                           {msg.message}
                         </div>
                       </div>

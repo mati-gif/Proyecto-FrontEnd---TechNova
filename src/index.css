@@ -9,7 +9,7 @@
   position: sticky;
   top: 0;
   z-index: 1000;
-  background: rgba(255,255,255,0.9);
+  background: rgba(255, 255, 255, 0.9);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid #eee;
 }
@@ -27,7 +27,7 @@
 
 .tn-card-hover:hover {
   transform: translateY(-5px);
-  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
 }
 
 /* Imagen producto */
@@ -41,17 +41,18 @@
 .text-gradient {
   background: linear-gradient(135deg, #2b56f5, #5b8bff);
   -webkit-background-clip: text;
+  background-clip: text;
   color: transparent;
 }
 
 .tn-category-tile {
-    display: block;
-    padding: 1.5rem;
-    border: 1px solid rgba(15, 23, 42, .08);
-    border-radius: 1rem;
-    background: #fff;
-    text-decoration: none;
-    color: inherit;
+  display: block;
+  padding: 1.5rem;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  border-radius: 1rem;
+  background: #fff;
+  text-decoration: none;
+  color: inherit;
 }
 
 .tn-category-tile:hover {
