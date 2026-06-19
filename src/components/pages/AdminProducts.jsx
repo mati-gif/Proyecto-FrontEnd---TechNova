@@ -32,7 +32,8 @@ function AdminProducts() {
       .then((data) => {
         setProducts([...data]);
       })
-      .catch((error) => console.log(error)); //hacer mas robusto este catch
+      // Hacer mas robusto este catch
+      .catch((error) => console.log(error)); 
   }, []);
 
   useEffect(() => {
@@ -82,7 +83,7 @@ function AdminProducts() {
       // 1. Validar si la respuesta es exitosa
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || "Error al eliminar el usuario");
+        throw new Error(errorData.message || "Error al eliminar el producto");
       }
       const data = await response.json();
       // Filtrar el estado actual
@@ -90,7 +91,7 @@ function AdminProducts() {
         prevProducts.filter((p) => p.id !== productToDelete.id),
       );
 
-      successToast(data.message || "Usuario eliminado exitosamente");
+      successToast(data.message || "¡Producto eliminado exitosamente!");
     } catch (error) {
       console.error("Error al eliminar:", error);
       errorToast(error.message);
@@ -132,7 +133,7 @@ function AdminProducts() {
           to="/admin/products/new"
           className="btn btn-primary ms-auto d-inline-flex align-items-center gap-1"
         >
-          <Plus size={16} /> Nuevo producto
+          <Plus size={16} /> Nuevo Producto
         </Link>
       </div>
 
@@ -151,11 +152,12 @@ function AdminProducts() {
                 transform: "translateY(-50%)",
                 color: "#5b6478",
                 pointerEvents: "none",
-                zIndex: 5, // Para asegurar que quede arriba
+                // Para asegurar que quede arriba
+                zIndex: 5, 
               }}
             />
             <Form.Control
-              placeholder="Buscar por nombre o marca..."
+              placeholder="Buscar por nombre o marca"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               style={{
@@ -170,7 +172,7 @@ function AdminProducts() {
             value={selectedCategory}
             onChange={(e) => setSelectedCategory(e.target.value)}
           >
-            <option value="all">Todas las categorías</option>
+            <option value="all">Todas las Categorías</option>
             {categories.map((c) => (
               <option key={c.id} value={c.id}>
                 {c.name}
@@ -195,7 +197,7 @@ function AdminProducts() {
             {filteredProducts.length === 0 && (
               <tr>
                 <td colSpan={5} className="text-center text-secondary py-4">
-                  Sin resultados
+                  Sin Resultados
                 </td>
               </tr>
             )}

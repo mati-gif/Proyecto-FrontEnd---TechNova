@@ -5,7 +5,7 @@ import { LayoutDashboard, Package, Users, ArrowLeft, Mail } from "lucide-react";
 import { AuthContext } from "../../Context/AuthContext/authContext";
 import UserHeader from "../UsuarioLayout/UserHeader";
 
-//estilos personalizados
+// Estilos personalizados
 const sidebarStyles = `
   .tn-sidebar-link {
     display: block;

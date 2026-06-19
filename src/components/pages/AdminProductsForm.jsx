@@ -8,17 +8,13 @@ import { errorToast, successToast } from "../shared/toast/toast";
 
 function AdminProductsForm() {
   const { token } = useContext(AuthContext);
-
   const { id } = useParams();
-
   const [isEditing, setIsEditing] = useState(false);
   const [errors, setErrors] = useState({});
   const [product, setProduct] = useState(null);
   const [categories, setCategories] = useState([]);
   const [products, setProducts] = useState([]);
-
   const navigate = useNavigate();
-
   const [form, setForm] = useState({
     name: "",
     brand: "",
@@ -71,19 +67,20 @@ function AdminProductsForm() {
   }, [id]);
 
   const handleFormChange = (event) => {
-    //hago destructuring con los atributos del input para que sean variables
+    // hago destructuring con los atributos del input para que sean variables
     const { name, value, type, checked } = event.target;
     setForm({
       ...form,
-      [name]: type === "checkbox" ? checked : value, //esto hace que sea dinamico , si name : brand y value: logitech , queda brand:logitech
-      //tambien hace que si el type es checkbox usa checked (para los switches) si no usa value
+      // esto hace que sea dinamico , si name : brand y value: logitech , queda brand:logitech
+      // tambien hace que si el type es checkbox usa checked (para los switches) si no usa value
+      [name]: type === "checkbox" ? checked : value, 
     });
   };
 
   const validateErrors = () => {
     const newErrors = {};
     if (form.name.trim() === "") {
-      newErrors.name = "El nombre no puede estar vacio";
+      newErrors.name = "El nombre no puede estar vacío";
     }
     if (form.brand.trim() === "") {
       newErrors.brand = "La marca es obligatoria";
@@ -232,7 +229,7 @@ function AdminProductsForm() {
         className="h4 fw-bold mb-3"
         style={{ fontFamily: "'Space Grotesk', sans-serif" }}
       >
-        Nuevo producto
+        Nuevo Producto
       </h2>
 
       <Form onSubmit={handleSubmit}>
@@ -277,7 +274,7 @@ function AdminProductsForm() {
 
                   {/* IMAGEN */}
                   <Col sm={6}>
-                    <Form.Label>URL imagen</Form.Label>
+                    <Form.Label>URL de la Imagen</Form.Label>
 
                     <Form.Control
                       name="image"
@@ -334,7 +331,7 @@ function AdminProductsForm() {
             {/* PRECIO */}
             <Card className="border mb-3">
               <Card.Body>
-                <h3 className="h6 fw-bold mb-3">Precio y stock</h3>
+                <h3 className="h6 fw-bold mb-3">Precio y Stock</h3>
 
                 <Form.Group className="mb-2">
                   <Form.Label>Precio</Form.Label>
@@ -383,7 +380,7 @@ function AdminProductsForm() {
                     value={form.categoryId}
                     onChange={handleFormChange}
                   >
-                    <option value="all">Todas las categorías</option>
+                    <option value="all">Todas las Categorías</option>
                     {categories.map((c) => (
                       <option key={c.id} value={c.id}>
                         {c.name}
@@ -400,7 +397,7 @@ function AdminProductsForm() {
                     value={form.subcategory}
                     onChange={handleFormChange}
                   >
-                    <option value="all">Todas las categorias</option>
+                    <option value="all">Todas las categorías</option>
                     <option value="mouses">Mouses</option>
                     <option value="teclados">Teclados</option>
                     <option value="monitores">Monitores</option>
@@ -410,7 +407,7 @@ function AdminProductsForm() {
                     </option>
                     <option value="laptops">Laptops</option>
                     <option value="webcams">Webcams</option>
-                    <option value="microfonos">Microfonos</option>
+                    <option value="microfonos">Micrófonos</option>
                     <option value="almacenamiento">Almacenamiento</option>
                     <option value="wearables">Wearables</option>
                   </Form.Select>
@@ -444,7 +441,7 @@ function AdminProductsForm() {
             {/* PREVIEW */}
             <Card className="border">
               <Card.Body>
-                <h3 className="h6 fw-bold mb-2">Vista previa</h3>
+                <h3 className="h6 fw-bold mb-2">Vista Previa</h3>
 
                 {form.image && (
                   <img
@@ -469,7 +466,7 @@ function AdminProductsForm() {
           </Button>
 
           <Button type="submit" variant="primary">
-            {isEditing == true ? "editar producto" : "crear producto"}
+            {isEditing == true ? "Editar Producto" : "Crear Producto"}
           </Button>
         </div>
       </Form>

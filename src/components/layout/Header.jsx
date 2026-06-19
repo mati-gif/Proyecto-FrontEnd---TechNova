@@ -9,7 +9,7 @@ function Header() {
   const navigate = useNavigate();
   const [showMobile, setShowMobile] = useState(false);
 
-  //carrito real
+  // Carrito real
   const { cart, totalQuantity } = useContext(cartContext);
 
   const [categories, setCategories] = useState([]);

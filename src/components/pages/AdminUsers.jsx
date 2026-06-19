@@ -15,7 +15,7 @@ function AdminUsers() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [userToDelete, setUserToDelete] = useState(null);
 
-  //estados del modal de cambiar la contraseña
+  // Estados del modal de cambiar la contraseña
   const [userToChangePassword, setUserToChangePassword] = useState(null);
   const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [newPw, setNewPw] = useState("");
@@ -41,7 +41,6 @@ function AdminUsers() {
       }
 
       // 2. Si todo sale bien, actualizamos el estado local de los usuarios
-      // Esto hace que el cambio sea instantáneo en la UI
       setUsers((prevUsers) =>
         prevUsers.map((u) =>
           u.id === userToUpdate.id
@@ -50,7 +49,7 @@ function AdminUsers() {
         ),
       );
 
-      successToast("Rol actualizado exitosamente");
+      successToast("¡Rol actualizado exitosamente!");
     } catch (error) {
       console.error("Error al cambiar rol:", error);
       errorToast(error.message);
@@ -60,7 +59,7 @@ function AdminUsers() {
   const roleVariant = (r) =>
     r === "superadmin" ? "warning" : r === "admin" ? "info" : "secondary";
 
-  //obtengo todos los usuarios activos
+  // Obtengo todos los usuarios activos
   useEffect(() => {
     const res = fetch("http://localhost:3000/user/all", {
       method: "GET",
@@ -90,7 +89,7 @@ function AdminUsers() {
     setUserToDelete(null);
   };
 
-  //funciones para manejar el modal de cambiar la contraseña
+  // Funciones para manejar el modal de cambiar la contraseña
   const handleOpenPasswordModal = (user) => {
     setUserToChangePassword(user);
     setShowPasswordModal(true);
@@ -99,7 +98,8 @@ function AdminUsers() {
   const handleHidePasswordModal = () => {
     setUserToChangePassword(null);
     setShowPasswordModal(false);
-    setNewPw(""); // Limpiamos el input al cerrar
+    // Limpiamos el input al cerrar
+    setNewPw(""); 
     setPwError("");
   };
 
@@ -134,7 +134,7 @@ function AdminUsers() {
         prevUsers.filter((u) => u.id !== userToDelete.id),
       );
 
-      successToast(data.message || "Usuario eliminado exitosamente");
+      successToast(data.message || "¡Usuario eliminado exitosamente!");
     } catch (error) {
       console.error("Error al eliminar:", error);
       errorToast(error.message);
@@ -184,12 +184,14 @@ function AdminUsers() {
 
       const data = await response.json();
 
-      successToast(data.message || "Contraseña actualizada exitosamente");
-      handleHidePasswordModal(); // Cierra el modal y limpia los estados
+      successToast(data.message || "¡Contraseña actualizada exitosamente!");
+      // Cierra el modal y limpia los estados
+      handleHidePasswordModal(); 
     } catch (error) {
       console.error("Error cambiando contraseña:", error);
       setPwError(error.message);
-      errorToast(error.message); // También lo muestra en el toast
+      // También lo muestra en el toast
+      errorToast(error.message); 
     }
   };
 
@@ -266,9 +268,9 @@ function AdminUsers() {
                           value={u.role.name.toLowerCase()}
                           onChange={(e) => handleRoleChange(u, e.target.value)}
                         >
-                          <option value="user">user</option>
-                          <option value="admin">admin</option>
-                          <option value="superadmin">superadmin</option>
+                          <option value="user">User</option>
+                          <option value="admin">Admin</option>
+                          <option value="superadmin">SuperAdmin</option>
                         </Form.Select>
                       )}
                     </div>
@@ -291,9 +293,9 @@ function AdminUsers() {
                       disabled={isSuper || isSelf}
                       title={
                         isSuper
-                          ? "No se puede eliminar superadmin"
+                          ? "No se puede eliminar un SuperAdmin"
                           : isSelf
-                            ? "No podés eliminarte"
+                            ? "No podes eliminar tu propio usuario"
                             : "Eliminar"
                       }
                       onClick={() => handleOpenDeleteModal(u)}
@@ -314,7 +316,6 @@ function AdminUsers() {
         onHide={handleCloseDeleteModal}
         onDelete={handleDelete}
       />
-
       {/* Password modal */}
       <ChangePasswordModal
         show={showPasswordModal}

@@ -190,27 +190,27 @@ function AdminDashboard() {
           </h2>
           <div className="d-flex flex-wrap gap-2">
             <Link to="/admin/products/new" className="btn btn-primary btn-sm">
-              Agregar producto
+              Agregar Producto
             </Link>
             <Link
               to="/admin/products"
               className="btn btn-outline-secondary btn-sm"
             >
-              Gestionar productos
+              Gestionar Productos
             </Link>
             {isSuperadmin && (
               <Link
                 to="/admin/users"
                 className="btn btn-outline-secondary btn-sm"
               >
-                Gestionar usuarios
+                Gestionar Usuarios
               </Link>
             )}
             <Link
               to="/admin/contact-us/all"
               className="btn btn-outline-secondary btn-sm"
             >
-              Gestionar consultas
+              Gestionar Consultas
             </Link>
           </div>
           {lowStock > 0 && (
