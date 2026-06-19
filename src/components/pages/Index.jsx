@@ -30,7 +30,8 @@ function Index() {
       .then((data) => {
         setProducts([...data]);
       })
-      .catch((error) => console.log(error)); //hacer mas robusto este catch
+      // hacer mas robusto este catch
+      .catch((error) => console.log(error)); 
   }, []);
 
   useEffect(() => {
@@ -45,7 +46,8 @@ function Index() {
       .then((data) => {
         setCategories([...data]);
       })
-      .catch((error) => console.log(error)); //hacer mas robusto este catch
+      // hacer mas robusto este catch
+      .catch((error) => console.log(error)); 
   }, []);
 
   const featured = products.filter((p) => p.isFeatured).slice(0, 4);
@@ -86,8 +88,6 @@ function Index() {
                 >
                   Ver catálogo <ArrowRight size={16} />
                 </Button>
-
-                <Button variant="outline-light">Ver ofertas</Button>
               </div>
 
               {/* Rating */}
