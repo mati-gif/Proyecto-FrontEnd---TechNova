@@ -8,7 +8,7 @@ import { formatPrice } from "../utils/formatPrice";
 
 function MyFavorites() {
   // Consumimos los contextos globales
-  const { favorites, handleDeleteFavorite } = useContext(favoritesContext);
+  const { favorites, handleToggleFavorite } = useContext(favoritesContext);
   const { cart, handleAddToCart, handleDecreaseQuantity } =
     useContext(cartContext);
 
@@ -68,7 +68,7 @@ function MyFavorites() {
                     style={{ zIndex: 5, width: "30px", height: "30px" }}
                     onClick={(e) => {
                       e.preventDefault();
-                      handleDeleteFavorite(product.id);
+                      handleToggleFavorite(product);
                     }}
                     title="Eliminar de favoritos"
                   >

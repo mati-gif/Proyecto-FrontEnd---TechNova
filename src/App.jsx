@@ -1,12 +1,11 @@
 import Index from "./components/pages";
 import "./index.css";
-import { BrowserRouter, Route, Router, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Toaster as Sonner } from "sonner";
 import MainLayout from "./components/layout/MainLayout";
 import Login from "./components/auth/Login/Login";
 import ProductCategories from "./components/biz/ProductsCategories/ProductCategories";
 import SingleProduct from "./components/biz/SingleProduct/SingleProduct";
-import { useState } from "react";
 import Cart from "./components/biz/Cart/Cart";
 import CartContextProvider from "./components/Context/CartContext/CartContextProvider";
 import MyFavorites from "./components/MyFavorites/MyFavorites";
@@ -17,8 +16,6 @@ import AdminProducts from "./components/pages/AdminProducts";
 import AdminProductsForm from "./components/pages/AdminProductsForm";
 import AdminUsers from "./components/pages/AdminUsers";
 import AdminContactGroups from "./components/pages/AdminContactGroups";
-import UserLayout from "./components/layout/UsuarioLayout/UserLayout";
-import Orders from "./components/biz/Orders/HistoryOrders";
 import CheckOut from "./components/pages/CheckOut";
 import Payment from "./components/pages/Payment";
 import Success from "./components/pages/Success";
@@ -35,12 +32,12 @@ function App() {
     <>
       <Sonner position="top-right" richColors />
       <CartContextProvider>
-        <FavoritesContextProvider>
-          <ShippingAddresContextProvider>
-            <ToastContainer />
-            <BrowserRouter>
+        <ShippingAddresContextProvider>
+          <ToastContainer />
+          <BrowserRouter>
+            <FavoritesContextProvider>
               <Routes>
-                {/* Rutas para el usuario sin loguear */}
+                {/* Rutas públicas y layout principal */}
                 <Route element={<MainLayout />}>
                   <Route path="/" element={<Index />} />
                   <Route path="/my-cart" element={<Cart />} />
@@ -49,20 +46,24 @@ function App() {
                   <Route path="/product/:slug" element={<SingleProduct />} />
                   <Route path="/contact-us" element={<ContactUs />} />
                   <Route path="*" element={<NotFound />} />
+
+                  {/* Rutas protegidas para usuarios */}
+                  <Route
+                    element={
+                      <Protected
+                        allowedRoles={["user", "admin", "superadmin"]}
+                      />
+                    }
+                  >
+                    <Route path="/history-orders" element={<HistoryOrders />} />
+                    <Route path="/my-favorites" element={<MyFavorites />} />
+                    <Route path="/checkout" element={<CheckOut />} />
+                    <Route path="/payment" element={<Payment />} />
+                    <Route path="/success" element={<Success />} />
+                    <Route path="*" element={<NotFound />} />
+                  </Route>
                 </Route>
-                {/* Rutas para el usuario comun,admin y superadmin despues de haberse logueado */}
-                <Route
-                  element={
-                    <Protected allowedRoles={["user", "admin", "superadmin"]} />
-                  }
-                >
-                  <Route path="/history-orders" element={<HistoryOrders />} />
-                  <Route path="/my-favorites" element={<MyFavorites />} />
-                  <Route path="/checkout" element={<CheckOut />} />
-                  <Route path="/payment" element={<Payment />} />
-                  <Route path="/success" element={<Success />} />
-                  <Route path="*" element={<NotFound />} />
-                </Route>
+
                 {/* Rutas para el usuario con rol de admin y superadmin despues de haberse logueado */}
                 <Route
                   element={<Protected allowedRoles={["admin", "superadmin"]} />}
@@ -90,9 +91,9 @@ function App() {
                   </Route>
                 </Route>
               </Routes>
-            </BrowserRouter>
-          </ShippingAddresContextProvider>
-        </FavoritesContextProvider>
+            </FavoritesContextProvider>
+          </BrowserRouter>
+        </ShippingAddresContextProvider>
       </CartContextProvider>
     </>
   );

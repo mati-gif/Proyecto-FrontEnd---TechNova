@@ -233,7 +233,7 @@ function Payment() {
           Pasarela de pago
         </h1>
         <p className="text-secondary mb-4">
-          Paso 2 de 2 — pago seguro simulado
+          Paso 2 de 2 
         </p>
 
         <Row className="g-4">
@@ -295,7 +295,7 @@ function Payment() {
                       <div>
                         <div className="opacity-75">Titular</div>
                         <div className="fw-semibold text-uppercase">
-                          {form.cardName || "NOMBRE APELLIDO"}
+                          {form.cardName || "NOMBRE Y APELLIDO"}
                         </div>
                       </div>
                       <div>
@@ -310,7 +310,7 @@ function Payment() {
                   <Row className="g-3">
                     <Col xs={12}>
                       <Form.Group>
-                        <Form.Label>Número de tarjeta</Form.Label>
+                        <Form.Label>Número de la Tarjeta</Form.Label>
                         <Form.Control
                           inputMode="numeric"
                           placeholder="1234 5678 9012 3456"
@@ -326,7 +326,7 @@ function Payment() {
                     </Col>
                     <Col xs={12}>
                       <Form.Group>
-                        <Form.Label>Nombre del titular</Form.Label>
+                        <Form.Label>Nombre y Apellido del Titular</Form.Label>
                         <Form.Control
                           placeholder="Como figura en la tarjeta"
                           name="cardName"
@@ -341,7 +341,7 @@ function Payment() {
                     </Col>
                     <Col sm={6}>
                       <Form.Group>
-                        <Form.Label>Vencimiento</Form.Label>
+                        <Form.Label>Fecha de Vencimiento</Form.Label>
                         <Form.Control
                           placeholder="MM/AA"
                           name="expiry"
@@ -382,7 +382,6 @@ function Payment() {
                 className="w-100 d-flex align-items-center justify-content-center gap-2 shadow-glow"
                 disabled={processing}
               >
-                <span>Aceptar</span>
                 {processing ? (
                   <>
                     <Spinner as="span" animation="border" size="sm" />{" "}
